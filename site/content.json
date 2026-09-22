@@ -12,7 +12,7 @@
     "requires": "Install DiAuto on the car. Your compatible Android phone uses its built-in Android Auto support. An Android phone is still required; this is not Apple CarPlay.",
     "gallery": "Made for the car",
     "captions": [
-      "Android Auto running on the car, with the map moved to a public location.",
+      "Android Auto with the current music card and a freely panned map. No destination selected.",
       "A clear home screen. Connect your phone in one tap.",
       "Connection, display and sound in one place."
     ],
@@ -58,7 +58,7 @@
     "requires": "ثبّت DiAuto على شاشة السيارة. يستخدم هاتف أندرويد المتوافق دعم Android Auto المدمج فيه. ما زلت تحتاج إلى هاتف أندرويد؛ هذا التطبيق ليس Apple CarPlay.",
     "gallery": "مصمّم للسيارة",
     "captions": [
-      "أندرويد أوتو يعمل على شاشة السيارة، والخريطة تعرض موقعاً عاماً.",
+      "أندرويد أوتو مع بطاقة الموسيقى الحالية وخريطة تم تحريكها يدوياً، دون تحديد وجهة.",
       "شاشة رئيسية واضحة. وصّل هاتفك بلمسة.",
       "الاتصال والعرض والصوت في مكان واحد."
     ],
@@ -104,7 +104,7 @@
     "requires": "Установите DiAuto в автомобиле. Совместимый Android-телефон использует встроенную поддержку Android Auto. Android-телефон всё равно необходим; это не Apple CarPlay.",
     "gallery": "Создано для автомобиля",
     "captions": [
-      "Android Auto на экране автомобиля: карта перемещена к общественному месту.",
+      "Android Auto с текущей музыкой и картой, перемещённой вручную. Пункт назначения не выбран.",
       "Понятный главный экран. Подключение одним нажатием.",
       "Подключение, экран и звук в одном месте."
     ],
@@ -150,7 +150,7 @@
     "requires": "Instala DiAuto en el coche. Tu teléfono Android compatible usa su soporte integrado de Android Auto. Sigue siendo necesario un teléfono Android; no es Apple CarPlay.",
     "gallery": "Diseñado para el coche",
     "captions": [
-      "Android Auto funcionando en el coche, con el mapa centrado en un lugar público.",
+      "Android Auto con la música actual y el mapa desplazado manualmente, sin destino seleccionado.",
       "Una pantalla de inicio clara. Conecta el teléfono con un toque.",
       "Conexión, pantalla y sonido en un solo lugar."
     ],
@@ -196,7 +196,7 @@
     "requires": "将 DiAuto 安装到车机上。兼容的安卓手机使用内置的 Android Auto 支持。仍需一部安卓手机；本应用不是 Apple CarPlay。",
     "gallery": "为车载使用而设计",
     "captions": [
-      "Android Auto 在车机上运行，地图已移至公共地点。",
+      "Android Auto 显示当前音乐和手动平移后的地图，未设置目的地。",
       "清晰的主界面，一键连接手机。",
       "连接、显示和声音设置集中管理。"
     ],
