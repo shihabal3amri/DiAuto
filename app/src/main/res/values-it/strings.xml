@@ -1,0 +1,892 @@
+<resources>
+    <string name="app_name">DiAuto</string>
+    <string name="menu">Menu</string>
+    <string name="settings">Impostazioni</string>
+
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="dummy_button">Pulsante di prova</string>
+    <string name="dummy_content">CONTENUTO\nDI PROVA</string>
+    <string name="allowed">Consentito</string>
+    <string name="ignored">Ignorato</string>
+    <string name="exit">Esci</string>
+    <string name="video">Android Auto</string>
+    <string name="self_mode">Modalità Self</string>
+    <string name="to_android_auto">A Android Auto</string>
+    <string name="title">DiAuto</string>
+    <string name="remove">Rimuovi</string>
+    <string name="usb">USB</string>
+    <string name="wifi">WiFi</string>
+    <string name="dpi">Densità pixel (DPI)</string>
+    <string name="mic_sample_rate">Frequenza campionamento microfono</string>
+    <string name="keymap">Mappatura tasti</string>
+    <string name="night_mode">Modalità scura (Android Auto)</string>
+    <string name="night_mode_threshold">Soglia modalità notte</string>
+    <string name="enter_threshold_value">Inserisci valore soglia</string>
+    <string name="threshold_lux_desc">Valore Lux (0–10000). Al di sotto = Notte.</string>
+    <string name="threshold_brightness_desc">Valore luminosità (0–255). Al di sotto = Notte.</string>
+    <string name="threshold_light_title">Sensibilità luce</string>
+    <string name="threshold_brightness_title">Livello luminosità</string>
+    <string name="threshold_light_hint">La modalità notte si attiva quando la luce ambientale scende sotto questo livello</string>
+    <string name="threshold_brightness_hint">La modalità notte si attiva quando la luminosità dello schermo è inferiore a questo valore. Android riporta la luminosità tra 0 e 255, ma l\'intervallo effettivo può variare in base al dispositivo. Potrebbe essere necessario sperimentare per trovare la soglia giusta per il tuo dispositivo.</string>
+    <string name="current_light_reading">Luce attuale: %d Lux</string>
+    <string name="enable_fine_lux_control">Controllo di precisione (0–100 Lux)</string>
+    <string name="night_mode_start">Ora inizio modalità notte</string>
+    <string name="night_mode_end">Ora fine modalità notte</string>
+
+    <string name="app_theme">Modalità scura (Applicazione)</string>
+    <string name="app_theme_description">Controlla l\'aspetto visivo dell\'app</string>
+    <string name="change_app_theme">Cambia tema app</string>
+    <string name="monochrome_icons">Icone monocromatiche</string>
+    <string name="monochrome_icons_description">Usa icone in scala di grigi nella schermata iniziale in modalità Scura o Molto Scura</string>
+    <string name="use_extreme_dark">Usa Molto Scura</string>
+    <string name="use_extreme_dark_description">Usa uno sfondo nero puro quando la modalità scura è attiva</string>
+    <string name="use_gradient_background">Usa sfondo sfumato</string>
+    <string name="use_gradient_background_description_on">L\'app disegna il proprio sfondo con il cerchio sfumato centrato</string>
+    <string name="use_gradient_background_description_off">Viene utilizzato lo sfondo classico dell\'app</string>
+    <string name="use_gradient_background_description_on_auto">L\'app disegna il proprio sfondo con il cerchio sfumato centrato. Non si applica alla modalità Molto Scura</string>
+    <string name="use_gradient_background_description_off_auto">Viene utilizzato lo sfondo classico dell\'app. Non si applica alla modalità Molto Scura</string>
+    <string name="category_dark_mode">Modalità Scura</string>
+    <string name="category_automation">Automazione</string>
+    <string name="dark_mode_settings">Impostazioni Modalità Scura</string>
+    <string name="app_theme_short">App</string>
+    <string name="night_mode_short">Android Auto</string>
+    <string name="aa_monochrome">Rendi Android Auto monocromatico</string>
+    <string name="aa_monochrome_description">Riduce i colori di Android Auto per la guida notturna. Richiede la modalità di visualizzazione GLES. Ha effetto solo quando la modalità scura è abilitata</string>
+    <string name="aa_desaturation">Desaturazione</string>
+    <string name="aa_desaturation_description">Controlla quanto colore viene rimosso. Ha effetto solo quando la modalità scura è abilitata</string>
+    <string name="gles_required_title">GLES richiesto</string>
+    <string name="gles_required_message">La modalità monocromatica necessita del rendering GLES per applicare un filtro in scala di grigi all\'uscita video. Abilitare GLES?</string>
+    <string name="enable_gles">Abilita GLES</string>
+    <string name="category_navigation">Navigazione</string>
+    <string name="category_wireless">Connessione Wireless</string>
+
+    <string name="reconnection_required_title">Riconnessione richiesta</string>
+    <string name="reconnection_required_message">Il dispositivo è in stato di attesa. Scollegare e ricollegare il cavo USB per avviare nuovamente Android Auto.</string>
+
+    <string name="bluetooth_address_s">Indirizzo Bluetooth</string>
+    <string name="enter_bluetooth_mac">Inserisci MAC bluetooth</string>
+    <string name="reset">Ripristina</string>
+    <string name="gps_for_navigation">Gps per navigazione</string>
+    <string name="gps_for_navigation_description">Usa Gps per la navigazione</string>
+    <string name="enabled">Abilitato</string>
+    <string name="disabled">Disabilitato</string>
+    <string name="resolution">Risoluzione</string>
+    <string name="change_resolution">Cambia risoluzione</string>
+    <string name="change_dpi">Cambia Dpi</string>
+    <string name="change_view_mode">Cambia modalità visualizzazione</string>
+    <string name="view_mode">Modalità visualizzazione</string>
+    <string name="surface_view">SurfaceView</string>
+    <string name="texture_view">TextureView</string>
+    <string name="gles_view">GLES20</string>
+    <string name="auto">Auto</string>
+    <string name="screen_orientation">Orientamento schermo</string>
+    <string name="change_screen_orientation">Cambia orientamento schermo</string>
+    <string name="orientation_system_default">Predefinito di sistema</string>
+    <string name="orientation_auto_sensor">Auto (Sensore)</string>
+    <string name="orientation_landscape">Orizzontale (0°)</string>
+    <string name="orientation_landscape_reverse">Orizzontale invertito (180°)</string>
+    <string name="orientation_portrait">Verticale (90°)</string>
+    <string name="orientation_portrait_reverse">Verticale invertito (270°)</string>
+    <string name="enter_dpi_value">Inserisci valore DPI (0 per auto)</string>
+    <string name="custom_margin">Margine personalizzato</string>
+    <string name="custom_margin_description">Imposta margini di visualizzazione personalizzati (0 per auto)</string>
+    <string name="enter_custom_margins">Inserisci margini personalizzati (0 per auto)</string>
+    <string name="margin_left">Sinistra</string>
+    <string name="margin_top">Sopra</string>
+    <string name="margin_right">Destra</string>
+    <string name="margin_bottom">Sotto</string>
+
+    <string name="start_in_fullscreen_mode">Modalità schermo</string>
+    <string name="start_in_fullscreen_mode_description">Scegli come gestire le barre di sistema (stato e navigazione).</string>
+    <string name="fullscreen_none">Normale (Tutte le barre visibili)</string>
+    <string name="fullscreen_immersive">Immersiva (Sovrapponi Notch)</string>
+    <string name="fullscreen_status_only">Nascondi solo barra di stato</string>
+    <string name="fullscreen_immersive_avoid_notch">Immersiva (Evita Notch)</string>
+    <string name="fullscreen_immersive_avoid_notch_desc">Nasconde tutte le barre e aggiunge spaziatura per evitare che la proiezione venga coperta dal Notch/Rientranza.</string>
+
+    <string name="usb_status">Stato USB: %s</string>
+    <string name="projection_status">Stato Proiezione: %s</string>
+    <string name="connected">Connesso</string>
+    <string name="disconnected">Scollegato</string>
+    <string name="running">In esecuzione</string>
+    <string name="not_running">Non in esecuzione</string>
+    <string name="no_android_auto_device_connected">Nessun dispositivo Android Auto connesso. Controllare la connessione USB.</string>
+    <string name="no_usb_device_connected">Nessun dispositivo USB connesso al dispositivo.</string>
+    <string name="press_back_again_to_exit">Premi di nuovo indietro per uscire</string>
+    <string name="back">Indietro</string>
+    <string name="debug_mode">Modalità Debug</string>
+    <string name="debug_mode_description">Attiva più log</string>
+    <string name="log_level">Livello Log</string>
+    <string name="log_level_description">Filtra livello log durante l\'esportazione</string>
+    <string name="log_source">Origine dei log</string>
+    <string name="log_source_logcat">Logcat</string>
+    <string name="log_source_applog_file">Direttamente su file</string>
+    <string name="log_location">Posizione file di log</string>
+    <string name="log_location_default">Predefinita (Memoria app)</string>
+    <string name="log_location_downloads">Cartella Download</string>
+    <string name="start_log_capture">Avvia acquisizione log</string>
+    <string name="start_log_capture_description">Inizia a registrare i log completi per il debug</string>
+    <string name="start_log_capture_in_applog_file">I messaggi Log vengono scritti su file solo durante la cattura attiva</string>
+    <string name="start_log_capture_in_silent">Impossibile avviare la registrazione: livello di registrazione silenzioso selezionato</string>
+    <string name="stop_log_capture">Ferma acquisizione log</string>
+    <string name="stop_log_capture_description">Registrazione in corso… tocca per fermare</string>
+    <string name="export_logs">Esporta Log</string>
+    <string name="export_logs_description">Salva i log per il debug</string>
+
+
+    <string name="not_set">Non impostato</string>
+    <string name="keymap_description">Cambia le associazioni dei tasti per la tua Headunit</string>
+
+    <string name="key_soft_left">Soft Left</string>
+    <string name="key_soft_right">Soft Right</string>
+    <string name="key_dpad_up">D-Pad Su</string>
+    <string name="key_dpad_down">D-Pad Giù</string>
+    <string name="key_dpad_left">D-Pad Sinistra</string>
+    <string name="key_dpad_right">D-Pad Destra</string>
+    <string name="key_dpad_center">D-Pad Centro (OK)</string>
+    <string name="key_media_play">Media Riproduci</string>
+    <string name="key_media_pause">Media Pausa</string>
+    <string name="key_media_play_pause">Media Riproduci/Pausa</string>
+    <string name="key_media_next">Brano successivo</string>
+    <string name="key_media_prev">Brano precedente</string>
+    <string name="key_search">Comando vocale</string>
+    <string name="key_call">Telefono (Accetta)</string>
+    <string name="key_endcall">Termina chiamata (Rifiuta)</string>
+    <string name="key_music">Musica</string>
+    <string name="key_nav">Navigazione</string>
+    <string name="key_night">Alterna modalità notte</string>
+    <string name="key_enter">Invio</string>
+    <string name="key_home">Home</string>
+    <string name="key_app_switch">App recenti</string>
+    <string name="key_button_a">Pulsante A (Seleziona)</string>
+    <string name="key_button_b">Pulsante B (Indietro)</string>
+
+
+    <!-- Language Settings -->
+    <string name="app_language">Lingua app</string>
+    <string name="system_default">Predefinita di sistema</string>
+    <string name="change_language">Cambia lingua</string>
+
+    <!-- Categories for SettingsFragment -->
+    <string name="category_general">Generale</string>
+    <string name="auto_start_self_mode">Avvio automatico Self-Mode</string>
+    <string name="auto_start_self_mode_description">Avvia automaticamente la Self-Mode all\'apertura dell\'applicazione.</string>
+    <string name="usb_auto_connect">Connessione automatica USB</string>
+    <string name="usb_auto_connect_description">Connettiti automaticamente a un dispositivo USB noto all\'apertura dell\'applicazione.</string>
+    <string name="auto_start_bt_label">Avvio automatico su Bluetooth</string>
+    <string name="auto_start_bt_description">Apri automaticamente Open Headunit quando si connette un dispositivo Bluetooth specifico.</string>
+    <string name="auto_start_wifi_label">Avvio automatico su WiFi</string>
+    <string name="auto_start_wifi_description">Apre Open Headunit automaticamente quando ci si connette a un SSID WiFi specifico.</string>
+    <string name="auto_start_wifi_ssid_label">SSID WiFi</string>
+    <string name="auto_start_wifi_ssid_description">Connetti solo se associato a questo SSID WiFi</string>
+    <string name="auto_start_wifi_warning">Funzione legacy: Potrebbe non funzionare in modo affidabile su Android 8+ a causa delle restrizioni in background. Assicurati che l\'app sia esclusa dall\'ottimizzazione della batteria.</string>
+    <string name="enter_wifi_ssid">Inserisci SSID WiFi</string>
+    <string name="wifi_ssid_not_set">Non impostato</string>
+
+    <string name="listen_for_usb_devices_label">Ascolta dispositivi USB</string>
+    <string name="listen_for_usb_devices_description">Mostra il messaggio di sistema Android quando viene collegato un dispositivo USB.</string>
+    <string name="show_toast_messages">Mostra messaggi Toast</string>
+    <string name="show_toast_messages_description">Mostra popup di stato alla connessione, disconnessione e cambio modalità.</string>
+    <string name="auto_start_usb_label">Avvio automatico su USB</string>
+    <string name="auto_start_usb_description">Apri automaticamente l\'app e tenta la connessione quando viene collegato un dispositivo USB</string>
+    <string name="auto_start_settings">Impostazioni avvio automatico</string>
+    <string name="auto_start_settings_description">Configura quando l\'app deve avviarsi automaticamente</string>
+    <string name="auto_start_oem_warning">Questo dispositivo potrebbe richiedere l\'abilitazione dell\'avvio automatico e la rimozione dell\'ottimizzazione della batteria o delle restrizioni in background per questa app.\n\nSulle head unit con Quick Boot (avvio rapido), l\'avvio automatico potrebbe non funzionare. Cerca \"DuraSpeed\" nelle impostazioni di sistema e abilita questa app. Su alcune head unit, DuraSpeed è nascosto e potrebbe essere necessaria un\'app come \"Hidden Settings\" per trovarlo. Se non hai DuraSpeed, prova a disabilitare Quick Boot.</string>
+    <string name="auto_start_on_boot_label">Avvia all\'accensione</string>
+    <string name="auto_start_on_boot_description">Apri l\'app automaticamente all\'avvio del dispositivo. Richiede il permesso \'Mostra sopra altre app\' su Android 10+</string>
+    <string name="auto_start_screen_on_label">Avvia all\'accensione dello schermo</string>
+    <string name="auto_start_screen_on_description">Apri l\'app ogni volta che lo schermo si accende. Ideale per head unit che non si spengono mai completamente o utilizzano modalità di avvio rapido dove le altre opzioni di avvio automatico non funzionano. Non raccomandato per telefoni o tablet.</string>
+    <string name="select_bt_device">Seleziona dispositivo Bluetooth</string>
+    <string name="bt_device_not_set">Non impostato</string>
+    <string name="bt_permission_denied_title">Permesso Bluetooth richiesto</string>
+    <string name="bt_permission_denied_message">Il permesso Bluetooth è necessario per selezionare i dispositivi associati. Per favore, concedilo nelle impostazioni dell\'app.</string>
+    <string name="overlay_permission_title">Permesso avvio in background</string>
+    <string name="overlay_permission_description">Per consentire a Open Headunit di aprirsi automaticamente quando si connette il Bluetooth, abilita il permesso \"Mostra sopra altre app\" nella schermata successiva.</string>
+    <string name="open_settings">Impostazioni</string>
+    <string name="right_hand_drive">Guida a destra</string>
+    <string name="right_hand_drive_description">Posiziona l\'interfaccia utente per la guida sul lato destro</string>
+    <string name="wireless_connection_settings">Connessione Wireless</string>
+    <string name="category_graphic">Grafica</string>
+    <string name="custom_insets">Spaziature personalizzate (Margini)</string>
+    <string name="inset_top">Sopra</string>
+    <string name="inset_bottom">Sotto</string>
+    <string name="inset_left">Sinistra</string>
+    <string name="inset_right">Destra</string>
+    <string name="category_debug">Debug</string>
+
+    <!-- Video Settings -->
+    <string name="category_video">Video</string>
+    <string name="force_software_decoding">Forza decodifica software</string>
+    <string name="force_software_decoding_description">Potrebbe risolvere problemi su alcuni dispositivi, ma è meno performante</string>
+    <string name="wireless_mode">Modalità Wireless</string>
+    <string name="wireless_mode_description">Seleziona come l\'app si connette in modalità wireless (Elenco manuale, ricerca automatica Phone o modalità Wireless Launcher)</string>
+    <string-array name="wireless_connection_modes">
+        <item>Manuale (Elenco)</item>
+        <item>Ricerca automatica (Headunit Server)</item>
+        <item>Wireless Helper (In attesa del telefono)</item>
+        <item>Android Auto Nativo (Handshake ufficiale)</item>
+    </string-array>
+    <string name="auto_connect_last_session">Riconnetti ultima sessione</string>
+    <string name="auto_connect_last_session_description">Riconnettiti automaticamente all\'ultimo dispositivo utilizzato all\'avvio dell\'app</string>
+    <string name="auto_connect_single_usb">Connessione automatica USB</string>
+    <string name="auto_connect_single_usb_description">Connettiti automaticamente quando è disponibile un solo dispositivo compatibile</string>
+    <string name="auto_connect_settings">Impostazioni connessione automatica</string>
+    <string name="auto_connect_settings_description">Configura i metodi di connessione automatica e il loro ordine di priorità</string>
+    <string name="auto_connect_help">Questi metodi vengono eseguiti automaticamente all\'apertura dell\'app. Abilita quelli che desideri, quindi trascina per impostare l\'ordine. Verrà utilizzato il primo metodo abilitato che ha successo.</string>
+    <string name="auto_connect_priority">Priorità %d</string>
+    <string name="auto_connect_all_disabled">Tutti disabilitati</string>
+    <string name="drag_to_reorder">Trascina per riordinare</string>
+    <string name="move_up">Sposta su</string>
+    <string name="move_down">Sposta giù</string>
+    <string name="auto_connecting_single_usb">Connessione automatica al dispositivo USB…</string>
+    <string name="video_codec">Codec Video</string>
+    <string name="fps_limit">Limite FPS</string>
+    <string name="save">Salva</string>
+    <string name="save_and_restart">Salva (Richiesta riconnessione)</string>
+    <string name="add_new">Aggiungi nuovo</string>
+    <string name="cancel">Annulla</string>
+    <string name="enable">Abilita</string>
+    <string name="pref_stretch_screen_title">Adatta allo schermo</string>
+    <string name="pref_stretch_screen_summary">Ignora le proporzioni per riempire l\'intero display (rimuove le barre nere)</string>
+    <string name="forced_scale">Scala forzata (Fix Legacy)</string>
+    <string name="forced_scale_description">Corregge i problemi di ridimensionamento su alcuni dispositivi più vecchi che utilizzano SurfaceView. Utilizzare solo se l\'immagine appare distorta o spostata.</string>
+    <string name="hud_mirroring">Modalità HUD (Capovolgimento orizzontale)</string>
+    <string name="hud_mirroring_description">Capovolge lo schermo orizzontalmente per il riflesso sul parabrezza (Head-Up Display). Richiede la modalità di visualizzazione TextureView o GLES20 (non funziona con SurfaceView).</string>
+
+
+    <!-- Audio Settings -->
+    <string name="category_audio">Audio</string>
+    <string name="enable_audio_sink">Audio Sink</string>
+    <string name="enable_audio_sink_description">Se disabilitato, la headunit non riceverà l\'audio. Il suono verrà riprodotto dal telefono.</string>
+    <string name="separate_audio_streams">Flussi audio separati</string>
+    <string name="separate_audio_streams_description">Separa i canali audio per musica, chiamate e notifiche invece di un singolo flusso multimediale (potrebbe non funzionare correttamente su alcuni dispositivi).</string>
+    <string name="use_aac_audio">Usa Audio AAC</string>
+    <string name="use_aac_audio_description">Usa il codec AAC per l\'audio per risparmiare larghezza di banda (Sperimentale).</string>
+    <string name="attach_hw_dsp_equalizer">Attivatore equalizzatore DSP hardware</string>
+    <string name="attach_hw_dsp_equalizer_description">Collega un effetto equalizzatore fittizio alla sessione audio per forzare il reindirizzamento DSP hardware su specifiche autoradio. Lasciare disattivato se si utilizza ViPER4Android / ViperFX o se l\'audio risulta ovattato su versioni Android più datate.</string>
+    <string name="audio_volume_offset">Offset volume audio</string>
+    <string name="media_volume_offset">Offset volume media</string>
+    <string name="assistant_volume_offset">Offset volume assistente</string>
+    <string name="navigation_volume_offset">Offset volume navigazione</string>
+    <string name="mic_input_source">Sorgente ingresso microfono</string>
+    <string name="mic_input_source_description">Scegli la sorgente audio per il microfono.</string>
+    <string-array name="mic_input_sources">
+        <item>Predefinito (Sistema decide)</item>
+        <item>Microfono integrato (Ingresso Raw)</item>
+        <item>Riconoscimento vocale (Riduzione rumore)</item>
+        <item>Comunicazione vocale (Cancellazione eco + rumore)</item>
+        <item>Cuffie Bluetooth (SCO)</item>
+    </string-array>
+
+    <!-- Info Settings -->
+    <string name="category_info">Informazioni</string>
+    <string name="about">Informazioni e Supporto</string>
+    <string name="about_description">Ottieni maggiori informazioni su Open Headunit</string>
+    <string name="version">Versione</string>
+    <string name="about_title">Informazioni su Open Headunit</string>
+    <string name="copyright">© 2025-%d André Rinas</string>
+
+    <!-- Safety Disclaimer -->
+    <string name="disclaimer_title">Sicurezza e Responsabilità</string>
+    <string name="disclaimer_header">Avvertimento Importante</string>
+    <string name="disclaimer_accept">Capisco e Accetto</string>
+    <string name="disclaimer_text"><![CDATA[
+        <b>1. Concentrati sulla strada</b><br/>
+        L\'utilizzo di questo software durante la guida può distrarre e risultare pericoloso. Dai sempre priorità a una guida sicura e rispetta tutte le normative locali sul traffico. Utilizza questa applicazione solo quando è sicuro farlo.<br/><br/>
+        <b>2. Limitazione di responsabilità</b><br/>
+        Open Headunit è fornito "così com\'è" senza garanzie di alcun tipo. Gli sviluppatori non si assumono alcuna responsabilità per eventuali incidenti, danni al veicolo/dispositivo o conseguenze legali derivanti dall\'uso di questo software.<br/><br/>
+        <b>3. Nessuna affiliazione</b><br/>
+        Questo progetto è un\'iniziativa indipendente open-source e non è affiliato, approvato o collegato a Google LLC o al marchio Android Auto.
+    ]]></string>
+
+    <!-- Toast Messages -->
+    <string name="searching">Ricerca in corso…</string>
+    <string name="auto_connecting_to">Connessione automatica a %s…</string>
+    <string name="auto_connecting_usb">Connessione automatica al dispositivo USB…</string>
+    <string name="already_connected">Già connesso</string>
+    <string name="already_scanning">Ricerca già in corso…</string>
+    <string name="searching_headunit_server">Ricerca Headunit Server…</string>
+    <string name="already_searching_phone">Ricerca telefono già in corso…</string>
+    <string name="searching_phone">Ricerca telefono…</string>
+    <string name="key_mappings_reset">Mappature tasti ripristinate</string>
+    <string name="press_key_to_assign">Premi un tasto da assegnare a \'%s\'…</string>
+    <string name="key_assigned">\'%1$s\' assegnato a \'%2$s\'</string>
+    <string name="last_key_press">Ultima pressione tasto: %1$s (%2$d)</string>
+    <string name="scan">Scansiona</string>
+    <string name="scanning_network">Scansione rete in corso…</string>
+    <string name="found_connecting">Trovato %s, connessione in corso…</string>
+    <string name="no_devices_found">Nessun dispositivo trovato</string>
+    <string name="unsaved_changes">Modifiche non salvate</string>
+    <string name="unsaved_changes_message">Hai modifiche non salvate. Vuoi scartarle?</string>
+    <string name="discard">Scarta</string>
+    <string name="stopping_service">Arresto del servizio per applicare le modifiche…</string>
+    <string name="settings_saved">Impostazioni salvate</string>
+    <string name="logs_exported">Log esportati</string>
+    <string name="log_saved_to">Log salvato in:\n%s</string>
+    <string name="share">Condividi</string>
+    <string name="close">Chiudi</string>
+    <string name="failed_export_logs">Esportazione log fallita</string>
+    <string name="failed_export_in_silent_logs">Impossibile esportare i log: livello di registrazione silenzioso selezionato</string>
+    <string name="switching_to_android_auto">Passaggio ad Android Auto…</string>
+    <string name="switch_failed">Passaggio fallito</string>
+    <string name="requesting_usb_permission">Richiesta permesso USB…</string>
+    <string name="enter_ip_address">Inserisci indirizzo IP</string>
+    <string name="switching_usb_accessory_mode">Passaggio del dispositivo USB alla modalità accessorio %s</string>
+    <string name="success">Successo</string>
+    <string name="failed">Fallito</string>
+    <string name="failed_start_android_auto">Avvio di Android Auto fallito</string>
+    <string name="failed_self_mode_android10">La modalità Self è probabilmente bloccata da Google su Android 10 (AA 16.4+). Vedere il README.</string>
+    <string name="android_auto_starting">Android Auto si sta avviando…</string>
+    <string name="connection_interrupted">Connessione persa</string>
+    <string name="connection_interrupted_detail">Riprovo…</string>
+    <string name="wifi_disconnect_toast">Android Auto scollegato: Se usi AA wireless, disabilita \"Passa tra reti\" o \"Accelerazione di rete\" nelle impostazioni WiFi del telefono</string>
+    <string name="reset_usb_option">Ripristina connessione USB</string>
+    <string name="reset_usb_timeout">Dispositivo USB non trovato. Controllare la connessione.</string>
+    <string name="notification_service_running">Open Headunit è in esecuzione</string>
+    <string name="notification_projection_active">Android Auto è proiettato</string>
+    <string name="shortcut_connect_title">Connetti</string>
+    <string name="shortcut_connect_desc">Connetti automaticamente all\'ultimo telefono</string>
+    <string name="shortcut_selfmode_title">Self Mode</string>
+    <string name="shortcut_selfmode_desc">Avvia Android Auto su questo dispositivo</string>
+    <string name="shortcut_disconnect_title">Disconnetti</string>
+    <string name="shortcut_disconnect_desc">Termina sessione corrente</string>
+    <string name="shortcut_exit_title">Chiudi App</string>
+    <string name="shortcut_exit_desc">Ferma tutti i servizi e chiudi l\'app</string>
+    <string name="shortcut_night_mode_auto_title">Modo: Auto</string>
+    <string name="shortcut_night_mode_auto_desc">Ripristina modalità notte automatica</string>
+    <string name="shortcut_night_mode_day_title">Modo: Giorno</string>
+    <string name="shortcut_night_mode_day_desc">Forza modalità giorno</string>
+    <string name="shortcut_night_mode_night_title">Modo: Notte</string>
+    <string name="shortcut_night_mode_night_desc">Forza modalità notte</string>
+    <string name="setup_welcome_title">Configurazione rapida</string>
+    <string name="setup_welcome_msg">Questa procedura guidata ti aiuta a scegliere le impostazioni migliori per un\'esperienza Android Auto fluida.\n\nPuoi sempre modificare queste impostazioni in seguito o riavviare questa procedura dalle impostazioni dell\'app.</string>
+    <string name="setup_start">Inizia</string>
+    <string name="setup_size_title">Dimensioni display</string>
+    <string name="setup_size_phone">Telefono / Piccolo (4-6\")</string>
+    <string name="setup_size_small">Tablet piccolo (7-8\")</string>
+    <string name="setup_size_standard">Standard (9-10\")</string>
+    <string name="setup_size_large">Grande (11\"+)</string>
+    <string name="setup_orientation_title">Orientamento dispositivo</string>
+    <string name="setup_orientation_landscape">Orizzontale</string>
+    <string name="setup_orientation_portrait">Verticale</string>
+    <string name="setup_result_title">Ottimizzazione terminata</string>
+    <string name="setup_apply">Applica</string>
+    <string name="setup_widescreen_detected">Rilevato display widescreen.</string>
+    <string name="auto_optimize">Ottimizzazione automatica impostazioni</string>
+    <string name="auto_optimize_desc">Esegui il controllo del sistema per trovare le migliori impostazioni per il tuo dispositivo.</string>
+
+    <!-- Navigation notifications (from any AA nav app) -->
+    <string name="show_navigation_notifications">Notifiche di navigazione</string>
+    <string name="show_navigation_notifications_description">Mostra \"Tra X metri fai Y\" e la strada attuale nelle notifiche (per il debug)</string>
+    <string name="nav_notification_channel_name">Navigazione</string>
+    <string name="nav_notification_channel_description">Aggiornamenti di navigazione turn-by-turn da Android Auto</string>
+    <string name="nav_notification_title_format">Tra %1$d m — %2$s</string>
+    <string name="nav_notification_street_format">Strada: %1$s</string>
+    <string name="nav_action_unknown">Azione</string>
+    <string name="nav_action_depart">Parti</string>
+    <string name="nav_action_name_change">Cambio nome</string>
+    <string name="nav_action_slight_turn">Svolta leggera</string>
+    <string name="nav_action_turn">Svolta</string>
+    <string name="nav_action_sharp_turn">Svolta decisa</string>
+    <string name="nav_action_uturn">Inversione a U</string>
+    <string name="nav_action_on_ramp">Entra</string>
+    <string name="nav_action_off_ramp">Esci</string>
+    <string name="nav_action_merge">Confluisci</string>
+    <string name="nav_action_roundabout_enter">Entra in rotonda</string>
+    <string name="nav_action_roundabout_exit">Esci dalla rotonda</string>
+    <string name="nav_action_roundabout">Rotonda</string>
+    <string name="nav_action_straight">Dritto</string>
+    <string name="nav_action_ferry">Traghetto</string>
+    <string name="nav_action_ferry_train">Traghetto / treno</string>
+    <string name="nav_action_destination">Arrivo</string>
+    <string name="show_fps_counter">Mostra contatore FPS</string>
+    <string name="show_fps_counter_description">Mostra un overlay FPS in tempo reale nell\'angolo in alto a sinistra durante la proiezione.</string>
+
+    <!-- Auto-start permission strings -->
+    <string name="reopen_on_reconnection_label">Riapri alla riconnessione</string>
+    <string name="reopen_on_reconnection_description">Quando premi il pulsante Esci, l\'app rimane in esecuzione in background e continua a monitorare le connessioni USB. Se un dispositivo si riconnette, l\'app si riapre automaticamente.</string>
+    <string name="overlay_permission_required">L\'avvio automatico richiede il permesso \'Mostra sopra altre app\'</string>
+    <string name="usb_permission_denied">Permesso USB negato. Per favore, consenti l\'accesso USB per connetterti automaticamente.</string>
+    <string name="overlay_permission_denied_auto_start_disabled">Permesso overlay non concesso. L\'avvio automatico è stato disabilitato.</string>
+
+    <!-- Theme -->
+    <string name="use_white_background">Usa sfondo bianco nella home</string>
+    <string name="category_input">Impostazioni ingresso</string>
+    <string name="enable_rotary">Abilita controller rotativo</string>
+    <string name="enable_rotary_description">Annuncia il supporto per manopole e rotelle fisiche. Disabilita se lo schermo touch non funziona correttamente.</string>
+
+    <string name="kill_on_disconnect">Chiudi app alla disconnessione</string>
+    <string name="kill_on_disconnect_description">Chiudi automaticamente l\'app quando Android Auto si disconnette</string>
+    <string name="kill_on_disconnect_warning_title">Avvertimento</string>
+    <string name="kill_on_disconnect_warning">Le seguenti impostazioni di riconnessione entreranno in conflitto con la chiusura dell\'app alla disconnessione:\n\n%1$s\n\nLe impostazioni di connessione iniziale (connessione automatica, avvio automatico) funzioneranno comunque all\'accensione della headunit. Tuttavia, dopo la prima disconnessione l\'app si chiuderà immediatamente invece di tentare la riconnessione.\n\nNota: Alcune head unit aftermarket non si spengono mai completamente: vanno in ibernazione, come un telefono che blocca lo schermo ma non si spegne mai. Con questa opzione abilitata, l\'app si chiuderà dopo la prima disconnessione e potrebbe non riaprirsi automaticamente al ciclo di accensione successivo.\n\nVuoi disabilitare le impostazioni di riconnessione sopra elencate?</string>
+    <string name="kill_on_disconnect_disable_and_enable">Disabilita e abilita</string>
+    <string name="kill_on_disconnect_enable_anyway">Abilita comunque</string>
+    <string name="kill_on_disconnect_conflicts_disabled">Le impostazioni in conflitto sono state disabilitate</string>
+    <string name="kill_on_disconnect_boot_warning">Hai abilitato \"Avvia all\'accensione\". Se l\'app si chiude alla disconnessione e questo dispositivo va in ibernazione invece di spegnersi, l\'app potrebbe non riaprirsi automaticamente al ciclo di accensione successivo perché non viene attivato alcun evento di avvio: il dispositivo si sveglia semplicemente dal sonno.</string>
+    <string name="kill_on_disconnect_screen_on_warning">Hai abilitato \"Avvia all\'accensione dello schermo\". Questa impostazione apre l\'app ogni volta che lo schermo si accende. In combinazione con la chiusura alla disconnessione, l\'app si chiuderà dopo la disconnessione ma si riaprirà immediatamente quando lo schermo si accende di nuovo, creando un loop di riavvio.</string>
+
+    <string name="wifi_disabled_info">Info: Il Wi-Fi è disabilitato.</string>
+    <string name="bt_not_enabled">Il Bluetooth è disabilitato</string>
+
+    <!-- Vehicle Info Settings -->
+    <string name="vehicle_info_settings">Informazioni veicolo</string>
+    <string name="vehicle_info_settings_description">Personalizza come il tuo veicolo appare sul telefono</string>
+    <string name="ui_scale">Scala UI</string>
+    <string name="ui_scale_home">Schermata Home</string>
+    <string name="ui_scale_settings">Schermata Impostazioni</string>
+    <string name="category_vehicle">Veicolo</string>
+    <string name="category_head_unit">Head Unit</string>
+    <string name="vehicle_display_name_label">Nome visualizzato</string>
+    <string name="vehicle_display_name_description">Nome mostrato sul telefono per questo veicolo</string>
+    <string name="vehicle_make_label">Marca</string>
+    <string name="vehicle_make_description">Produttore del veicolo (es. Honda, Toyota)</string>
+    <string name="vehicle_model_label">Modello</string>
+    <string name="vehicle_model_description">Modello del veicolo (es. Civic, Corolla)</string>
+    <string name="vehicle_year_label">Anno</string>
+    <string name="vehicle_year_description">Anno del veicolo</string>
+    <string name="vehicle_id_label">ID Veicolo</string>
+    <string name="vehicle_id_description">Solo identificatore interno. Modificandolo, il telefono tratterà questo come un veicolo diverso, ripristinando le preferenze di Android Auto per questa auto.</string>
+    <string name="head_unit_make_label">Marca</string>
+    <string name="head_unit_make_description">Produttore della head unit</string>
+    <string name="head_unit_make_hint">Il tuo telefono mostra questo nome nelle impostazioni di Android Auto.</string>
+    <string name="head_unit_model_label">Modello</string>
+    <string name="head_unit_model_description">Modello della head unit</string>
+    <string name="vehicle_year_error_invalid">Inserisci un anno valido</string>
+    <string name="vehicle_year_error_max">L\'anno non può essere successivo al %1$d</string>
+    <string name="vehicle_info_restart_note">Questi dati vengono inviati ad Android Auto ogni volta che ti connetti.</string>
+
+    <string name="auto_enable_hotspot">Abilita Hotspot automaticamente</string>
+    <string name="auto_enable_hotspot_description">Avvia automaticamente un hotspot Wi-Fi su questo dispositivo. (Non funzionerà su tutti i dispositivi)</string>
+    <string name="hotspot_warning_title">Funzionalità Sperimentale</string>
+    <string name="hotspot_warning_message">Questa funzione utilizza la riflessione e potrebbe non funzionare su tutti i dispositivi. Potrebbe anche richiedere la concessione manuale del permesso \"Modifica impostazioni di sistema\".</string>
+    <string name="hotspot_permission_title">Permesso richiesto</string>
+    <string name="hotspot_permission_message">La funzione hotspot richiede il permesso \"Modifica impostazioni di sistema\". Abilitalo nella schermata successiva.</string>
+
+    <string name="supported_nativeaa">Supporto Wireless avanzato</string>
+    <string name="supported_nativeaa_desc">Ottime notizie! Il tuo dispositivo supporta la modalità \"Native Wireless\", che offre un\'esperienza Android Auto più fluida. \n\nPer abilitarla, dobbiamo aggiornare la cache Bluetooth. Per favore: \n1. Rimuovi l\'associazione esistente sul telefono \n2. Clicca OK per riavviare il Bluetooth \n3. Associa nuovamente il telefono \n\nVuoi passare alla modalità Native AA ora?</string>
+    <string name="not_supported_nativeaa">Native Wireless non sembra supportato</string>
+    <string name="not_supported_nativeaa_desc">Il tuo dispositivo potrebbe non supportare le funzioni Bluetooth o Wi-Fi necessarie per Native Wireless. Puoi provare comunque, ma se fallisce, utilizza la modalità \"Wireless Helper\" o \"Auto (Headunit Server)\".</string>
+
+    <string name="wait_for_wifi">Attendi WiFi prima di WiFi Direct</string>
+    <string name="wait_for_wifi_description">All\'avvio, attendi la connessione WiFi prima di avviare il WiFi Direct. Abilita se la tua head unit ha bisogno di qualche secondo per connettersi al WiFi dopo l\'accensione.</string>
+    <string name="wait_for_wifi_timeout">Timeout attesa WiFi</string>
+    <string name="wireless_24ghz_warning">Nota: Android Auto wireless su dispositivi a 2.4GHz può causare lag, scatti e disconnessioni. Se riscontri problemi, prova via USB per confermare se si tratta di un limite della rete.</string>
+    <string name="fake_speed_title">Disabilita blocco video (Fake Speed)</string>
+    <string name="fake_speed_description">Riporta una velocità costante bassa (0,5 m/s) al telefono per evitare che i contenuti video vengano bloccati durante la guida. Usare con cautela.</string>
+    <string name="wireless_mode_helper">Wireless Helper</string>
+    <string name="wireless_mode_native">Native</string>
+    <string name="wireless_mode_server">Headunit Server</string>
+    <string name="server_mode_label">Modalità Server</string>
+    <string name="server_mode_manual">Manuale</string>
+    <string name="server_mode_auto">Auto</string>
+    <string name="helper_strategy_label">Metodo di connessione (Helper)</string>
+    <string-array name="helper_strategies">
+        <item>WiFi Comune (NSD)</item>
+        <item>WiFi Direct (P2P)</item>
+        <item>Dispositivi nelle vicinanze (Beta)</item>
+        <item>Hotspot Telefono (Host)</item>
+        <item>Hotspot Headunit (Passivo)</item>
+    </string-array>
+
+    <string name="select_nearby_device">Seleziona dispositivo nelle vicinanze</string>
+    <string name="nearby_device_found">Dispositivo nelle vicinanze trovato</string>
+    <string name="connecting_to_nearby">Connessione a %s…</string>
+
+    <string name="exit_dialog_title">Esci da Android Auto</string>
+    <string name="exit_dialog_stop">Interrompi connessione</string>
+    <string name="exit_dialog_pip">Picture-in-Picture</string>
+    <string name="exit_dialog_background">Sposta in background</string>
+    <string name="gesture_hint">Suggerimento: Scorri dal bordo sinistro con 2 dita per aprire il menu di uscita.</string>
+    <string name="audio_latency_multiplier">Moltiplicatore di latenza audio</string>
+    <string name="audio_latency_multiplier_description">Regola la dimensione del buffer audio (Più basso = meno lag, Più alto = meno stutter)</string>
+    <string name="audio_queue_capacity">Capacità della coda audio (Backpressure)</string>
+    <string name="media_action_previous">Precedente</string>
+    <string name="media_action_play">Riproduci</string>
+    <string name="media_action_pause">Pausa</string>
+    <string name="media_action_next">Successivo</string>
+    <string name="media_session_aa_status_placeholder">Connesso</string>
+    <string name="sync_media_session_aa_metadata">Brano AA corrente nella sessione multimediale</string>
+    <string name="sync_media_session_aa_metadata_description">Mostra titolo, artista, durata e copertina dal telefono nella sessione multimediale di sistema e nella notifica multimediale</string>
+    <string name="error_usb_permission_failed">Errore di sistema: Impossibile richiedere la finestra di dialogo del permesso USB.</string>
+
+    <!-- Custom loading screen -->
+    <string name="loading_screen">Schermata di caricamento</string>
+    <string name="loading_screen_default">Predefinita</string>
+    <string name="loading_screen_custom">Personalizzata</string>
+    <string name="loading_screen_dialog_title">Schermata di caricamento personalizzata</string>
+    <string name="loading_screen_select_file">Seleziona file</string>
+    <string name="loading_screen_remove">Rimuovi</string>
+    <string name="loading_screen_recommendation">Risoluzione consigliata: %1$dx%2$d</string>
+    <string name="loading_screen_supported_formats">Supportati: Immagini (PNG, JPG, BMP, WEBP, GIF) \u2022 Video (MP4, MKV, WEBM, 3GP) \u2022 Max: 10 MB</string>
+    <string name="loading_screen_no_media">Nessun contenuto personalizzato selezionato</string>
+    <string name="loading_screen_file_too_large">File troppo grande (max 10 MB)</string>
+    <string name="loading_screen_unsupported_format">Formato non supportato. Usa un file immagine o video</string>
+    <string name="loading_screen_file_error">Impossibile caricare il file selezionato</string>
+    <string name="loading_screen_show_text">Mostra testo \\"Android Auto si sta avviando\\"</string>
+    <string name="loading_screen_tap_preview">Tocca per anteprima</string>
+    <string name="loading_screen_tap_to_close">Tocca ovunque per chiudere</string>
+    <string name="loading_screen_keep_aspect_ratio">Mantieni proporzioni</string>
+    <string name="loading_screen_scale">Scala</string>
+    <string name="loading_screen_recommended_aspect_ratio">Proporzioni consigliate: %1$d:%2$d</string>
+    <string name="loading_screen_tap_fullscreen_hint">Tocca l\'anteprima per vederla a schermo intero</string>
+    <string name="loading_screen_loop_video">Ripeti animazioni brevi in loop</string>
+    <string name="microphone_settings">Impostazioni Microfono</string>
+    <string name="microphone_settings_description">Configura l\'ingresso del microfono e l\'elaborazione audio.</string>
+    <string name="mic_echo_canceler">Cancellazione dell\'eco (AEC)</string>
+    <string name="mic_echo_canceler_description">Tenta di rimuovere l\'eco dal microfono. Disabilita se riscontri silenzio o distorsione.</string>
+    <string name="mic_noise_suppressor">Soppressione del rumore (NS)</string>
+    <string name="mic_noise_suppressor_description">Tenta di ridurre il rumore di fondo. Disabilita se la tua voce risulta ovattata.</string>
+    <string name="mic_auto_gain_control">Controllo automatico del guadagno (AGC)</string>
+    <string name="mic_auto_gain_control_description">Regola automaticamente il volume del microfono. Disabilita se il volume è instabile.</string>
+    <string name="mic_feature_unsupported">Questa funzionalità non è supportata sul tuo dispositivo.</string>
+    <string name="bt_permission_denied">Autorizzazione Bluetooth negata. Impossibile scansionare i dispositivi.</string>
+    <string name="wifi_autostart_title">Avvio automatico WiFi</string>
+    <string name="wifi_autostart_content">Connesso a %s. Tocca per avviare Android Auto.</string>
+
+    <!-- New strings merged from 2.3.1 -->
+    <string name="bt_devices_selected">dispositivi selezionati</string>
+    <string name="static_audio_focus">Focus audio statico</string>
+    <string name="static_audio_focus_description">Forza il telefono a credere che il focus audio sia sempre attivo, prevenendo perdite di instradamento dell\'audio sulle unità principali generiche. Esegue anche l\'attenuazione software del volume (ducking) durante le istruzioni vocali di navigazione.</string>
+    <string name="bluetooth_adapter_label">Adattatore Bluetooth</string>
+    <string name="bluetooth_adapter_description">Seleziona l\'adattatore/controller Bluetooth da utilizzare per l\'handshake. Utile per i sistemi con doppio Bluetooth.</string>
+    <string name="select_bt_adapter">Seleziona adattatore Bluetooth</string>
+    <!-- QR Code Generator -->
+    <string name="share_hotspot_qr_title">Configura Wireless Helper</string>
+    <string name="share_hotspot_qr_desc">Mostra il codice QR per la connessione automatica del telefono</string>
+    <string name="hotspot_qr_description">Codice QR di configurazione di Wireless Helper</string>
+    <string name="scan_with_wireless_helper">Scansiona questo codice QR usando lo scanner QR in Wireless Helper sul tuo telefono.</string>
+    <string name="share_hotspot_qr_error">Impossibile recuperare le credenziali dell\'hotspot Wi-Fi attivo. Assicurati che l\'hotspot sia attivo e che la geolocalizzazione sia abilitata.</string>
+
+    <!-- Brightness, quick settings, key back, backup, wireless helper QR -->
+    <string name="current_brightness_reading">Luminosità attuale: %d / 255</string>
+    <string name="exit_dialog_settings">Impostazioni rapide</string>
+    <string name="key_back">Indietro</string>
+    <string name="category_backup">Backup</string>
+    <string name="export_settings">Esporta impostazioni</string>
+    <string name="export_settings_description">Salva un backup delle impostazioni come file JSON</string>
+    <string name="export_settings_app_folder">Salva nella cartella backup dell\'app</string>
+    <string name="export_settings_downloads">Salva in Download</string>
+    <string name="export_settings_choose_location">Scegli posizione di salvataggio</string>
+    <string name="settings_exported">Impostazioni esportate</string>
+    <string name="settings_export_failed">Esportazione delle impostazioni non riuscita: %1$s</string>
+    <string name="settings_backup_saved_to">Backup impostazioni salvato in:\n%1$s</string>
+    <string name="share_settings_backup">Condividi backup impostazioni</string>
+    <string name="import_settings">Importa impostazioni</string>
+    <string name="import_settings_description">Ripristina le impostazioni da un backup di Open Headunit</string>
+    <string name="import_settings_app_folder">Importa dalla cartella backup dell\'app</string>
+    <string name="import_settings_downloads">Importa da Download</string>
+    <string name="import_settings_choose_file">Scegli file di backup</string>
+    <string name="import_settings_discard_pending">L\'importazione di un backup eliminerà le modifiche non salvate. Continuare?</string>
+    <string name="settings_imported">Impostazioni importate: %1$d applicate, %2$d saltate</string>
+    <string name="settings_import_failed">Importazione delle impostazioni non riuscita: %1$s</string>
+    <string name="no_settings_backups_title">Nessun backup trovato</string>
+    <string name="no_settings_backups_message">Nessun backup di Open Headunit trovato nella cartella backup dell\'app. Esporta prima un backup e poi importalo da qui.</string>
+    <string name="no_settings_backups_downloads_message">Nessun backup di Open Headunit trovato in Download. Esporta prima un backup in Download e poi importalo da qui.</string>
+    <string name="no_file_picker_title">Nessun selettore file disponibile</string>
+    <string name="no_file_picker_message">Questo dispositivo non ha un selettore file compatibile. Puoi usare Download o la cartella backup dell\'app.</string>
+    <string name="storage_permission_denied_backup">Permesso di archiviazione negato. Impossibile usare Download.</string>
+    <string name="reset_settings">Ripristina valori predefiniti</string>
+    <string name="reset_settings_description">Cancella tutte le configurazioni, i dati nella cache e le preferenze di connessione automatica. L\'app si riavvierà per applicare i valori predefiniti.</string>
+    <string name="reset_settings_confirm">Sei sicuro di voler ripristinare tutte le impostazioni ai valori predefiniti? L\'app verrà riavviata.</string>
+    <string name="reset_settings_confirm_message">Tutte le impostazioni torneranno ai valori predefiniti. I backup e i file dell\'app non saranno eliminati. Continuare?</string>
+    <string name="reset_settings_discard_pending">Il ripristino delle impostazioni eliminerà le modifiche non salvate. Continuare?</string>
+    <string name="settings_reset">Impostazioni ripristinate ai valori predefiniti</string>
+    <string name="settings_reset_failed">Ripristino delle impostazioni non riuscito: %1$s</string>
+    <string name="hotspot_ssid_hint">SSID hotspot</string>
+    <string name="hotspot_pass_hint">Password hotspot</string>
+    <!-- Native USB Driver -->
+    <string name="use_libusb">Usa driver USB nativo</string>
+    <string name="use_libusb_description">Usa libusb per la comunicazione. Disattiva per utilizzare l\'API USB standard di Android.</string>
+
+    <string name="software_video_decoder">Sorgente decodificatore software</string>
+    <string name="software_video_decoder_bundled">FFmpeg integrato</string>
+    <string name="software_video_decoder_device">MediaCodec del dispositivo</string>
+
+    <string name="btn_show_qr">Mostra codice QR</string>
+    <string name="renderer_fallback_surface">Il video continuava a bloccarsi, quindi la visualizzazione è passata a SurfaceView per questa sessione. Se è stabile, imposta la Modalità visualizzazione su SurfaceView nelle Impostazioni.</string>
+    <string name="dpi_resolution_over_panel_warning">La risoluzione scelta (%1$s) è più alta del tuo pannello. È limitata a %2$s e il DPI è calcolato per quella. Se sembra sbagliata, usa la risoluzione consigliata (%2$s).</string>
+    <string name="renderer_confirm_question">Vedi la schermata di Android Auto?</string>
+    <string name="renderer_confirm_yes">Sì</string>
+    <string name="renderer_confirm_switch">Cambia renderer</string>
+    <string name="renderer_switched_to">Renderer: %1$s</string>
+
+    <string name="self_mode_overlay_permission_description">Per consentire l\'avvio affidabile della Modalità Personale in background, abilita l\'autorizzazione \"Mostra sopra altre app\" nella schermata successiva.</string>
+
+    <string name="delete">Elimina</string>
+    <string name="night_mode_coordinates">Coordinate</string>
+    <string name="geofence_locations_title">Posizioni</string>
+    <string name="geofence_none">Nessuna</string>
+    <string name="geofence_count_summary">%1$d aree</string>
+    <string name="geofence_empty_hint">Nessuna posizione ancora. Aggiungine una per forzare il giorno o la notte per area, o per limitare l\'avvio automatico a una zona.</string>
+    <string name="geofence_unnamed">Posizione senza nome</string>
+    <string name="geofence_add">Aggiungi posizione</string>
+    <string name="geofence_pick_location">Scegli posizione</string>
+    <string name="geofence_name_hint">Nome (es. Casa)</string>
+    <string name="geofence_force_dark">Forza la modalità scura in quest\'area</string>
+    <string name="geofence_allow_automation">Avvia automaticamente / connetti solo in quest\'area</string>
+    <string name="geofence_use_gps">Usa la mia posizione attuale</string>
+    <string name="geofence_no_location">Nessuna posizione disponibile al momento</string>
+    <string name="geofence_saved">Posizione salvata</string>
+    <string name="geofence_delete_title">Eliminare la posizione?</string>
+    <string name="geofence_delete_message">Questa posizione verrà rimossa.</string>
+    <string name="geofence_internet_title">Internet richiesto</string>
+    <string name="geofence_internet_message">La mappa necessita di una connessione a Internet per caricarsi. Le tessere della mappa vengono scaricate solo mentre imposti la posizione.</string>
+    <string name="geofence_radius_summary">Raggio: %1$d m</string>
+    <string name="geofence_mode_dark">Scuro</string>
+    <string name="geofence_mode_light">Chiaro</string>
+    <string name="geofence_gate_on">Avvio automatico limitato</string>
+    <string name="location_section">Posizione</string>
+    <string name="sunrise_location_title">Posizione alba/tramonto</string>
+    <string name="sunrise_location_gps">GPS (automatico)</string>
+    <string name="sunrise_location_fixed">Punto fisso</string>
+    <string name="geofence_pick_on_map">Scegli sulla mappa</string>
+    <string name="geofence_overridden_note">Un luogo salvato ha la priorità mentre ti trovi al suo interno.</string>
+    <string name="geofence_current_status_label">Attualmente</string>
+    <string name="geofence_current_status">%1$s (dentro %2$s)</string>
+    <string name="geofence_override_theme">Forza un tema qui</string>
+    <string name="geofence_dark_inside">Scuro in quest\'area</string>
+    <string name="geofence_scope_label">Si applica a</string>
+    <string name="geofence_scope_app">App</string>
+    <string name="geofence_scope_aa">Android Auto</string>
+    <string name="geofence_scope_both">Entrambi</string>
+    <string name="geofence_gate_here">Avvia automaticamente / connetti solo qui</string>
+    <string name="dont_show_again">Non mostrare più</string>
+    <string name="location_open_entry">Luoghi e punto dell\'alba</string>
+    <string name="sunrise_section">Alba / tramonto</string>
+    <string name="location_places_hint">Forza un aspetto chiaro o scuro in un\'area e, facoltativamente, l\'avvio automatico solo lì. Usa il GPS.</string>
+    <string name="appearance_label">Quando all\'interno, imposta l\'aspetto</string>
+    <string name="appearance_off">Disattivato</string>
+    <string name="location_manage_places">Luoghi salvati</string>
+    <string name="location_outside_label">Fuori dai luoghi salvati</string>
+    <string name="location_places_desc">Imposta un aspetto chiaro o scuro in un\'area mentre ti trovi al suo interno. Usa il GPS.</string>
+    <string name="coordinates_enter">Inserisci coordinate</string>
+    <string name="coordinate_latitude">Latitudine</string>
+    <string name="coordinate_longitude">Longitudine</string>
+    <string name="coordinates_invalid">Coordinate non valide</string>
+    <string name="coordinates_format_help">Gradi decimali, punto o virgola. Esempio: 40.4168, -3.7038</string>
+
+    <!-- Settings redesign and onboarding -->
+    <string name="settings_tab_basic">Base</string>
+    <string name="settings_tab_advanced">Avanzate</string>
+    <string name="settings_search_hint">Cerca impostazioni</string>
+    <string name="connection_mode">Modalità di connessione</string>
+    <string name="connection_kind_usb_cable">Cavo USB (diretto)</string>
+    <string name="connection_kind_usb_wireless_adapter">Adattatore wireless USB</string>
+    <string name="connection_kind_wifi">WiFi</string>
+    <string name="connection_kind_unset">Non impostato</string>
+    <string name="onb_next">Avanti</string>
+    <string name="onb_skip">Salta</string>
+    <string name="onb_ready_finish">Fine</string>
+    <string name="onb_welcome_title">Benvenuto in Open Headunit</string>
+    <string name="onb_welcome_body">Questa configurazione rapida analizza il tuo dispositivo e sceglie per te le migliori impostazioni video, di visualizzazione e di modalità notte. Potrai modificare tutto in seguito nelle Impostazioni.</string>
+    <string name="onb_safety_title">La sicurezza prima di tutto</string>
+    <string name="onb_safety_accept">Ho letto e accetto i termini</string>
+    <string name="onb_connection_title">Come ti connetti?</string>
+    <string name="onb_connection_help">Scegli come si connette il tuo telefono. In questo modo la schermata delle impostazioni resta focalizzata su ciò che ti riguarda.</string>
+    <string name="onb_connection_cable_detail">Telefono collegato direttamente alla head unit con un cavo USB. Le opzioni wireless restano nascoste.</string>
+    <string name="onb_connection_adapter_detail">Un dongle USB collega il cavo a un link wireless. Le opzioni wireless vengono mostrate.</string>
+    <string name="onb_connection_wifi_detail">Il telefono si connette via WiFi.</string>
+    <string name="onb_display_title">Visualizzazione</string>
+    <string name="onb_display_detected">Pannello rilevato: %1$d x %2$d px, %3$d dpi, hardware %4$s.</string>
+    <string name="onb_display_size_label">Dimensioni schermo</string>
+    <string name="onb_display_orientation_label">Orientamento</string>
+    <string name="onb_display_apply">Applica impostazioni consigliate</string>
+    <string name="onb_display_result">Applicato: %1$s, %2$d dpi, %3$s, vista %4$s.</string>
+    <string name="onb_appearance_title">Aspetto</string>
+    <string name="onb_appearance_theme_label">Tema app</string>
+    <string name="onb_theme_auto">Auto</string>
+    <string name="onb_theme_light">Chiaro</string>
+    <string name="onb_theme_dark">Scuro</string>
+    <string name="onb_appearance_night_label">Modalità notte di Android Auto</string>
+    <string name="onb_night_auto">Automatica</string>
+    <string name="onb_night_day">Giorno</string>
+    <string name="onb_night_night">Notte</string>
+    <string name="onb_night_light_sensor_available">È stato rilevato un sensore di luce, quindi la modalità Automatica può seguire la luce ambientale.</string>
+    <string name="onb_night_no_light_sensor">Nessun sensore di luce rilevato, quindi la modalità Automatica segue l\'alba e il tramonto.</string>
+    <string name="onb_ready_title">Tutto pronto</string>
+    <string name="onb_ready_summary">Connessione: %1$s\nRisoluzione: %2$s\nCodec: %3$s\n\nPuoi mettere a punto tutto nelle Impostazioni.</string>
+    <string name="onb_language_help">Scegli la lingua dell\'app.</string>
+    <string name="connection_kind_usb">USB</string>
+    <string name="onb_connection_usb_detail">Telefono collegato via USB, con cavo diretto o adattatore USB wireless.</string>
+    <string name="onb_more_appearance">Altre impostazioni di aspetto</string>
+    <string name="onb_automation_title">Automazione</string>
+    <string name="onb_automation_help">Scegli come l\'app si avvia e si connette autonomamente. Apri le impostazioni di connessione automatica per trascinare l\'ordine di priorità.</string>
+    <string name="onb_gps_title">Posizione</string>
+    <string name="onb_gps_help">Quale GPS deve usare Android Auto per la navigazione?</string>
+    <string name="onb_gps_this_device">Questo dispositivo</string>
+    <string name="onb_gps_phone">Telefono connesso</string>
+    <string name="onb_do_it_later">Fallo più tardi</string>
+    <string name="onb_display_dpi_label">Dimensione di Android Auto</string>
+    <string name="onb_dpi_small">Piccolo</string>
+    <string name="onb_dpi_medium">Medio</string>
+    <string name="onb_dpi_large">Grande</string>
+    <string name="onb_appearance_more_hint">Puoi trovare altre opzioni della modalità scura nelle Impostazioni.</string>
+    <string name="onb_automation_more_hint">Puoi trovare altre opzioni nelle impostazioni di Connessione automatica e Avvio automatico.</string>
+    <string name="onb_dpi_help">Un DPI più alto ingrandisce le icone e il testo di Android Auto, quindi entra meno nello schermo. Un DPI più basso li rende più piccoli e ne entra di più. Si applica quando colleghi Android Auto.</string>
+    <string name="onb_change_later">Puoi modificarlo più tardi nelle Impostazioni.</string>
+    <string name="dpi_automatic">Automatico</string>
+    <string name="dpi_automatic_desc">Usa la densità del dispositivo</string>
+    <string name="onb_conn_usb_label">USB (o adattatore)</string>
+    <string name="onb_connection_self_detail">La modalità autonoma esegue Android Auto su questo dispositivo senza collegare un telefono.</string>
+    <string name="connection_kind_all">Tutti</string>
+    <string name="onb_connection_all_detail">Mostra sia le impostazioni USB sia quelle WiFi.</string>
+    <string name="onb_connection_warning">Scegliendo un tipo di connessione, le impostazioni non pertinenti vengono nascoste sia in Base sia in Avanzate. Per rivederle, scegli in seguito un altro modo nelle impostazioni di connessione.</string>
+    <string name="resolution_recommended_format">%1$s (Consigliata)</string>
+    <string name="resolution_high_bandwidth_format">%1$s · banda elevata</string>
+    <string name="resolution_too_high_title">Risoluzione superiore allo schermo</string>
+    <string name="resolution_too_high_message">Questa è più alta di quanto supporti il tuo pannello. L\'immagine è limitata a ciò che il tuo pannello può mostrare (%1$s), quindi una risoluzione più alta usa solo più banda senza migliorare la qualità.</string>
+    <string name="resolution_high_bandwidth_title">Serve più banda</string>
+    <string name="resolution_high_bandwidth_message">Questa risoluzione consuma molta più banda e richiede una connessione forte: un buon WiFi a 5GHz o una connessione USB stabile. Se noti lag, scegli una risoluzione più bassa.</string>
+    <string name="resolution_use_anyway">Usa comunque</string>
+    <string name="resolution_use_recommended">Usa consigliata</string>
+    <string name="dpi_automatic_desc_format">Usa la densità del dispositivo (%1$d DPI)</string>
+    <string name="dpi_input_hint">DPI</string>
+    <string name="onb_dpi_huge">Enorme</string>
+    <string name="onb_vehicle_title">La tua auto</string>
+    <string name="onb_vehicle_input_hint">Marca o nome</string>
+    <string name="onb_vehicle_help_aa">Questo nome viene inviato ad Android Auto. Appare nella cronologia delle connessioni del telefono e nella schermata di benvenuto di Android Auto.</string>
+    <string name="onb_vehicle_help_advanced">Puoi regolare altri dettagli del veicolo nella scheda Avanzate. Non usiamo questi dati; vengono inviati solo ad Android Auto perché li richiede.</string>
+    <string name="onb_summary_vehicle_format">Veicolo: %1$s</string>
+    <string name="sunrise_reference_help">Il punto di riferimento usato per calcolare l\'alba e il tramonto. Scegli la tua posizione una volta; funziona senza GPS.</string>
+    <string name="support">Segnala un problema</string>
+    <string name="support_description">Cerca o segnala bug su GitHub</string>
+    <string name="support_title">Segnala un problema</string>
+    <string name="support_help">Se riscontri un bug o un problema, cerca prima nella lista delle segnalazioni su GitHub. Se nessuno lo ha ancora riportato, apri una nuova segnalazione e descrivi cosa succede, la tua autoradio e i passaggi per riprodurlo.</string>
+    <string name="support_open_issues">Apri la pagina delle segnalazioni su GitHub</string>
+    <string name="support_scan_qr">Oppure scansiona questo codice QR per aprire la lista delle segnalazioni su un altro dispositivo.</string>
+    <string name="support_github_account_warning">Nota: è necessario un account GitHub gratuito per creare una segnalazione.</string>
+    <string name="onb_ready_extras_title">Prima di finire, puoi anche configurare:</string>
+    <string name="onb_extra_loading_desc">Un\'immagine personalizzata mostrata mentre l\'auto si connette</string>
+
+    <!-- Support rules -->
+    <string name="support_rules_button">Regole per le segnalazioni</string>
+    <string name="support_rules_english_desc">Scrivi sempre la segnalazione in inglese. È la lingua che il maintainer e la maggior parte di chi aiuta qui ha in comune, e un thread in molte lingue diventa rapidamente una piccola torre di Babele in cui nessuno riesce ad aiutare nessuno. Nessuno ti giudica per il tuo livello di inglese o per come scrivi, quindi non preoccuparti degli errori. Se può aiutare, un traduttore come Google Translate o DeepL, oppure un\'AI come ChatGPT o Claude, può scrivere e sistemare il tuo messaggio in inglese al posto tuo.</string>
+    <string name="support_rules_device_title">Di\' cosa fa girare l\'app</string>
+    <string name="support_rules_device_desc">La versione Android del dispositivo che proietta Android Auto (la tua autoradio o schermo), e la marca e il modello se li conosci.</string>
+    <string name="support_rules_connection_title">Di\' come ti connetti</string>
+    <string name="support_rules_connection_desc">Cavo USB, adattatore wireless USB, WiFi Direct, WiFi (headunit server) o Self Mode. Se è wireless, aggiungi il modello dell\'adattatore o dongle.</string>
+    <string name="support_rules_appversion_title">Includi la versione dell\'app</string>
+    <string name="support_rules_appversion_desc">La versione di Open Headunit, mostrata nella schermata Informazioni e Supporto.</string>
+    <string name="support_rules_logs_title">Allega i log, subito dopo che accade</string>
+    <string name="support_rules_logs_desc">Vai nella scheda Avanzate delle Impostazioni, attiva la Modalità Debug nella sezione Debug, riproduci il problema, poi tocca Esporta Log subito dopo, in modo che il log copra il momento in cui si è rotto e non solo l\'avvio. Allega quel file alla segnalazione.</string>
+    <string name="support_rules_search_title">Nessun duplicato</string>
+    <string name="support_rules_search_desc">Cerca prima tra le segnalazioni esistenti. Se ce n\'è già una aperta che descrive il tuo problema, aggiungi lì i tuoi dettagli come commento invece di aprirne una nuova. Apri una nuova segnalazione solo se non ne esiste nessuna corrispondente.</string>
+    <string name="support_rules_phone_title">Anche il tuo telefono conta</string>
+    <string name="support_rules_phone_desc">Il modello del tuo telefono, la versione Android e la versione dell\'app Android Auto sul telefono. Alcuni problemi vengono da una versione specifica di Android Auto.</string>
+    <string name="support_rules_describe_title">Descrivi chiaramente</string>
+    <string name="support_rules_describe_desc">Cosa hai fatto, cosa ti aspettavi e cosa è successo davvero. Uno screenshot o un breve video aiuta molto per i problemi visivi.</string>
+    <string name="support_rules_oneissue_title">Un problema per segnalazione</string>
+    <string name="support_rules_oneissue_desc">Tieni ogni segnalazione a un singolo problema, così è più facile tracciarlo e risolverlo. Apri segnalazioni separate per problemi non correlati.</string>
+    <string name="support_rules_intro">Sono richieste solo due cose. Tutto il resto è facoltativo, ma aiuta a risolvere il problema molto più in fretta.</string>
+    <string name="support_rules_section_required">Obbligatorio</string>
+    <string name="support_rules_section_recommend">Consigli (facoltativi)</string>
+    <string name="rename_notice_title">Il nostro nome sta cambiando in Open Headunit</string>
+    <string name="rename_notice_message">Headunit Revived sta crescendo, grazie a voi, e sta diventando qualcosa di suo: Open Headunit. Introdurremo il nuovo nome nei prossimi aggiornamenti, quindi per un po\' potresti vedere ancora il vecchio nome in alcuni punti.\n\nStessa app, stesse persone dietro, e tutte le tue impostazioni restano esattamente come sono.</string>
+    <string name="rename_notice_button">Ho capito</string>
+
+    <string name="onb_summary_permissions_format">Permissions: %1$d of %2$d granted</string>
+    <string name="onb_ready_loading_intro">One more thing: you can now set a custom loading screen, shown while the car connects.</string>
+    <string name="onb_ready_loading_button">Set up a loading screen</string>
+    <string name="onb_permissions_title">Enable permissions</string>
+    <string name="onb_permissions_help">Turn on the permissions the app needs so everything works without surprise prompts later. You can change these any time.</string>
+    <string name="onb_perms_enable_all">Enable all</string>
+    <string name="perm_allow">Allow</string>
+    <string name="perm_granted">Granted</string>
+    <string name="perm_optional_format">%1$s (optional)</string>
+    <string name="permissions">Permissions</string>
+    <string name="permissions_desc">Review and grant the permissions the app needs</string>
+    <string name="perm_mic_title">Microphone</string>
+    <string name="perm_mic_help">Lets Android Auto use voice commands, the Google Assistant and phone calls.</string>
+    <string name="perm_location_title">Location</string>
+    <string name="perm_location_help">Sends GPS to the phone for navigation, scans for wireless connections and drives location based night mode.</string>
+    <string name="perm_nearby_title">Nearby devices</string>
+    <string name="perm_nearby_help">Needed to connect over Bluetooth and Wi-Fi, route Bluetooth audio and auto start on a paired device.</string>
+    <string name="perm_notifications_title">Notifications</string>
+    <string name="perm_notifications_help">Shows the ongoing notification while Android Auto is running.</string>
+    <string name="perm_overlay_title">Display over other apps</string>
+    <string name="perm_overlay_help">Lets the app open the car screen on top of other apps, including auto start.</string>
+    <string name="perm_write_settings_title">Modify system settings</string>
+    <string name="perm_write_settings_help">Lets the app turn the hotspot on automatically for wireless connections.</string>
+    <string name="perm_storage_title">Storage</string>
+    <string name="perm_storage_help">Needed to back up and restore your settings and to pick a custom loading image.</string>
+    <string name="onb_vehicle_help_sideload">Picking a real car brand also shows that brand\'s logo on the Android Auto exit button, but Android Auto then stops listing apps you installed from outside the Play Store. Keep \"Google\" or \"Open Headunit\" if you use those apps.</string>
+    <string-array name="vehicle_brands">
+        <item>Google</item>
+        <item>Android</item>
+        <item>Audi</item>
+        <item>BMW</item>
+        <item>Chevrolet</item>
+        <item>Chrysler</item>
+        <item>Fiat</item>
+        <item>Ford</item>
+        <item>Honda</item>
+        <item>Hyundai</item>
+        <item>Jeep</item>
+        <item>Kia</item>
+        <item>Mazda</item>
+        <item>Mercedes-Benz</item>
+        <item>Nissan</item>
+        <item>Peugeot</item>
+        <item>Renault</item>
+        <item>Subaru</item>
+        <item>Suzuki</item>
+        <item>Tesla</item>
+        <item>Toyota</item>
+        <item>Volkswagen</item>
+        <item>Volvo</item>
+    </string-array>
+    <string name="dpi_size_s">S</string>
+    <string name="dpi_size_m">M</string>
+    <string name="dpi_size_l">L</string>
+    <string name="dpi_size_xl">XL</string>
+    <string name="onb_dpi_recommended">Recommended for your screen: %1$d dpi</string>
+    <string name="dpi_value_format">%1$d DPI</string>
+    <string name="pixel_aspect_ratio">Pixel aspect ratio</string>
+    <string name="enter_pixel_aspect_ratio_value">Pixel aspect ratio x10000 (10000 = square pixels)</string>
+    <string name="cannot_open_settings">Could not open system settings</string>
+    <string name="static_bssid_title">Static BSSID</string>
+    <string name="static_bssid_enter_value">Enter BSSID (XX:XX:XX:XX:XX:XX)</string>
+    <string name="static_bssid_desc">Manually set the BSSID for the wireless handshake if auto-detection is blocked by system permissions</string>
+    <string name="use_measured_touch_surface">Experimental touch alignment fix</string>
+    <string name="use_measured_touch_surface_description">Normalize touch input against the measured projection overlay. May help when small Android Auto controls feel shifted.</string>
+    <string name="media_key_routing">Send Media Buttons To Android Auto</string>
+    <string name="media_key_routing_always">Always</string>
+    <string name="media_key_routing_auto">Automatic</string>
+    <string name="media_key_routing_never">Never</string>
+    <string name="media_key_routing_always_hint">Next, previous and play/pause are always sent to Android Auto. Use this unless one press skips two tracks.</string>
+    <string name="media_key_routing_auto_hint">Stops sending them while this headunit has a Bluetooth media connection to the phone, because that connection already performs the action. Choose this if one press skips two tracks and your phone is paired to this headunit.</string>
+    <string name="media_key_routing_never_hint">Never sends them, leaving the buttons to Bluetooth. Choose this if one press skips two tracks and your phone is paired to the car\'s own system rather than to this headunit — Automatic cannot detect that connection.</string>
+    <string name="media_key_routing_hint_common">Only the media buttons are affected. Rotary controllers, D-pad, Back and Enter always reach Android Auto.</string>
+    <string name="playback_focus_mode">Pause Other Audio During Playback</string>
+    <string name="playback_focus_mode_auto">Automatic</string>
+    <string name="playback_focus_mode_always">Always</string>
+    <string name="playback_focus_mode_never">Never</string>
+    <string name="playback_focus_mode_auto_hint">Pauses another player on the headunit (for example the radio) while Android Auto audio plays, but not while a Bluetooth audio link is connected — that link is usually the same phone, and pausing it would stop Android Auto\'s own sound.</string>
+    <string name="playback_focus_mode_always_hint">Always pauses other audio while Android Auto plays. If your music stops after a second or two whenever Bluetooth is on, switch back to Automatic.</string>
+    <string name="playback_focus_mode_never_hint">Never touches system audio focus. Other audio on the headunit may keep playing over Android Auto.</string>
+    <string name="playback_focus_mode_static_hint">With Static Audio Focus on, this applies from the moment the phone connects and lasts the whole session, rather than only while audio is playing.</string>
+    <string name="github_issues_url">https://github.com/shihabal3amri/DiAuto/issues</string>
+    <string name="support_rules_english_title">All posts in English</string>
+    <string name="boot_loop_paused_title">Wireless start-up paused</string>
+    <string name="boot_loop_paused_generic">This device restarted three times in a row shortly after Open Headunit started wireless, so wireless was left off this time. USB still works. Open the app to turn it back on.</string>
+    <string name="boot_loop_paused_native_wifi_direct">This device restarted three times in a row shortly after Open Headunit started wireless, so wireless was left off this time. On some head units the WiFi chipset takes the whole system down when a phone joins a WiFi Direct network. Try switching Android Auto mode to the head unit hotspot. USB still works.</string>
+    <string name="vehicle_make_hint">A real car brand shows that brand\'s logo on the Android Auto exit button, but Android Auto then stops listing apps installed from outside the Play Store. Set it back to \"Google\" to get those apps listed again.</string>
+    <string name="external_bt_nativeaa">Native Wireless cannot work on this head unit</string>
+    <string name="external_bt_nativeaa_desc">This head unit uses its own Bluetooth module (%1$s) instead of the one Android exposes to apps. Your phone pairs with that module, so anything this app sends over Bluetooth never reaches it — the connection will look like it is working and then stall.\n\nThis is a hardware limitation and cannot be worked around from the app. Please use USB, or the \"Wireless Helper\" or \"Auto (Headunit Server)\" mode, which do not need the Bluetooth handshake.</string>
+    <string name="manual_secondary_bt_service_title">Manual Secondary Radio</string>
+    <string name="manual_secondary_bt_service_message">Advanced: force an extra Bluetooth radio, for dual-radio units whose second radio isn\'t found automatically. Find it via \"adb shell service list\" (look for a Bluetooth-sounding entry besides bluetooth_manager) or an engineering menu, then paste either the name before the colon or the interface shown in brackets - both work. Not guaranteed to help on every unit: some head units run a customized Bluetooth stack that this can\'t bridge to no matter what you enter here. Leave blank to disable.</string>
+    <string name="native_ap_transport">Network transport</string>
+    <string name="native_ap_transport_wifi_direct">WiFi Direct</string>
+    <string name="native_ap_transport_hotspot">Hotspot</string>
+    <string name="native_ap_transport_hint">Experimental. The phone joins this device\'s own hotspot instead of a WiFi Direct group. Switch the hotspot on yourself before connecting, and set it to 5 GHz if you can - over 2.4 GHz the phone connects and then drops the session repeatedly without any picture, unless you lower the resolution and frame rate. If the network name cannot be read automatically, enter it below.</string>
+    <string name="hotspot_interface_override">Hotspot network interface</string>
+    <string name="hotspot_interface_override_message">Leave blank to work it out automatically. Set this if the log says more than one interface could be the access point, or picks the wrong one. The name is the one the log reports after &quot;Providing credentials from&quot;, or the entry holding your hotspot\'s address in &quot;ip -brief addr&quot; from a shell. Common names: ap0, wlan0, wlan1, wlan2, softap0, ra0.</string>
+    <string name="hotspot_ssid_override">Hotspot name (manual)</string>
+    <string name="hotspot_ssid_override_message">Leave blank to read the name from this device\'s hotspot settings automatically. Some devices do not let apps read it - if the log says the name could not be read, type it here exactly as it appears in your hotspot settings.</string>
+    <string name="hotspot_password_override">Hotspot password (manual)</string>
+    <string name="hotspot_password_override_message">Leave blank to read the password automatically. Needed on devices that do not let apps read the hotspot configuration. The phone will be given this password to join.</string>
+    <string name="hotspot_config_unreadable_toast">Can\'t read this device\'s hotspot name. Set it manually under Hotspot name/password in Settings.</string>
+    <string name="native_wifi_version_exchange">Modern handshake (version exchange)</string>
+    <string name="native_wifi_version_exchange_description">Opens the Bluetooth handshake by telling the phone which protocol version this head unit speaks, the way factory head units do, instead of going straight to the connection details. Off by default. Worth trying if wireless worked before an Android Auto update and has failed since; if it makes no difference, turn it back off.</string>
+    <string name="su_needed_keymaps_warning">Warning: Your headunit must be either rooted, or have Shizuku installed. If that\'s the case, you must allow SU rights, once prompted. Steering keys likely are not functional until this is fixed.</string>
+</resources>

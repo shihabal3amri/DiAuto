@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/wifi_direct_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="16dp"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="4dp"
+        android:background="@drawable/bg_pill_translucent"
+        android:textColor="@color/text_primary"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:text="WiFi Direct: OpenHU"
+        tools:visibility="visible" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        app:navGraph="@navigation/nav_graph"
+        app:defaultNavHost="true" />
+
+    <!-- Auto-connect loading overlay: covers the home screen during automatic
+         connection attempts (auto-connect last session / single USB / self mode
+         / USB auto-attach). Uses the same media as AapProjectionActivity for a
+         seamless handoff once the projection activity launches. -->
+    <FrameLayout
+        android:id="@+id/auto_connect_loading_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#CC000000"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/auto_connect_loading_custom_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:visibility="gone" />
+
+        <VideoView
+            android:id="@+id/auto_connect_loading_custom_video"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/auto_connect_loading_default_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ProgressBar
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:indeterminate="true"
+                    android:indeterminateTint="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/auto_connect_loading_default_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/android_auto_starting"
+                    android:textColor="@android:color/white"
+                    android:textSize="27sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/auto_connect_loading_custom_text_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:indeterminate="true"
+                android:indeterminateTint="@android:color/white" />
+
+            <TextView
+                android:id="@+id/auto_connect_loading_custom_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="@string/android_auto_starting"
+                android:textColor="@android:color/white"
+                android:textSize="22sp"
+                android:shadowColor="#AA000000"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="4" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/auto_connect_loading_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:background="@drawable/bg_pill_translucent"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/cancel"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
+    <!-- Auto-connect status pill: non-blocking indicator shown during
+         automatic background connection attempts. Anchored to bottom-center
+         to avoid overlapping with the top wifi_direct_info pill and the
+         bottom-right Exit button. Home buttons remain tappable; user can
+         tap the pill to cancel. -->
+    <LinearLayout
+        android:id="@+id/auto_connect_pill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:paddingHorizontal="14dp"
+        android:paddingVertical="6dp"
+        android:background="@drawable/bg_pill_translucent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ProgressBar
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:indeterminate="true"
+            android:indeterminateTint="@android:color/white" />
+
+        <TextView
+            android:id="@+id/auto_connect_pill_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@string/android_auto_starting"
+            android:textColor="@color/text_primary"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <!-- Splash Overlay for controlled delay and branding text -->
+    <RelativeLayout
+        android:id="@+id/splash_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/da_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:src="@drawable/ic_android_auto" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-10dp"
+                android:text="@string/da_brand"
+                android:textColor="@color/splash_text_white"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-4dp"
+                android:text="@string/da_wireless"
+                android:textAllCaps="true"
+                android:textColor="@color/da_accent"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </RelativeLayout>
+</FrameLayout>

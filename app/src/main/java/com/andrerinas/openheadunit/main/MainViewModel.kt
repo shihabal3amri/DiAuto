@@ -1,0 +1,89 @@
+package com.andrerinas.openheadunit.main
+
+import android.app.Application
+import android.hardware.usb.UsbDevice
+import android.hardware.usb.UsbManager
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
+import com.andrerinas.openheadunit.App
+import com.andrerinas.openheadunit.connection.UsbDeviceCompat
+import com.andrerinas.openheadunit.connection.UsbReceiver
+import com.andrerinas.openheadunit.utils.Settings
+
+class MainViewModel(application: Application): AndroidViewModel(application), UsbReceiver.Listener {
+
+    val usbDevices = MutableLiveData<List<UsbDeviceCompat>>()
+
+    private val app: App
+        get() = getApplication()
+    private val settings = Settings(application)
+    private val usbReceiver = UsbReceiver(this)
+
+    fun register() {
+        ContextCompat.registerReceiver(app, usbReceiver, UsbReceiver.createFilter(), ContextCompat.RECEIVER_NOT_EXPORTED)
+        usbDevices.value = createDeviceList(settings.allowedDevices)
+    }
+
+    override fun onCleared() {
+        app.unregisterReceiver(usbReceiver)
+        super.onCleared()
+    }
+
+    override fun onUsbDetach(device: android.hardware.usb.UsbDevice) {
+        usbDevices.value = createDeviceList(settings.allowedDevices)
+    }
+
+    override fun onUsbAccessoryDetach() {
+        usbDevices.value = createDeviceList(settings.allowedDevices)
+    }
+
+    override fun onUsbAttach(device: android.hardware.usb.UsbDevice) {
+        usbDevices.value = createDeviceList(settings.allowedDevices)
+    }
+
+    override fun onUsbPermission(granted: Boolean, connect: Boolean, device: UsbDevice) {
+        usbDevices.value = createDeviceList(settings.allowedDevices)
+    }
+
+    private fun createDeviceList(allowDevices: Set<String>): List<UsbDeviceCompat> {
+        val manager = app.getSystemService(android.content.Context.USB_SERVICE) as UsbManager
+        val devices = manager.deviceList.values.map { UsbDeviceCompat(it) }
+        return filterAndSort(devices, allowDevices)
+    }
+
+    companion object {
+        /**
+         * During AOA mode switching the phone briefly appears as two separate USB entries:
+         * normal mode (e.g. "Samsung Galaxy") and accessory mode ("18D1:2D00").
+         * When both are present we hide the accessory-mode entry — it requires no user
+         * action and causes the duplicate-device confusion reported as Bug 2.
+         */
+        @JvmStatic
+        internal fun shouldIncludeDevice(isInAccessoryMode: Boolean, anyNonAccessoryPresent: Boolean): Boolean =
+            !(isInAccessoryMode && anyNonAccessoryPresent)
+
+        /** Removes duplicate names — same phone can get different kernel paths on each reconnect. */
+        @JvmStatic
+        internal fun deduplicateNames(names: List<String>): List<String> = names.distinct()
+
+        @JvmStatic
+        internal fun filterAndSort(devices: List<UsbDeviceCompat>, allowDevices: Set<String>): List<UsbDeviceCompat> {
+            val anyNonAccessory = devices.any { !it.isInAccessoryMode }
+            return devices
+                .filter { shouldIncludeDevice(it.isInAccessoryMode, anyNonAccessory) }
+                .distinctBy { it.uniqueName }
+                                .sortedWith(Comparator { lhs, rhs ->
+                    if (lhs.isInAccessoryMode != rhs.isInAccessoryMode) {
+                        return@Comparator if (lhs.isInAccessoryMode) -1 else 1
+                    }
+                    val lhsAllowed = allowDevices.contains(lhs.uniqueName)
+                    val rhsAllowed = allowDevices.contains(rhs.uniqueName)
+                    if (lhsAllowed != rhsAllowed) {
+                        return@Comparator if (lhsAllowed) -1 else 1
+                    }
+                    lhs.uniqueName.compareTo(rhs.uniqueName)
+                })
+        }
+    }
+}

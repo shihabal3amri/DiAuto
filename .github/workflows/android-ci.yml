@@ -1,0 +1,107 @@
+name: Android CI
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+# Cancel superseded runs on the same ref (e.g. a new push to an open PR).
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# Read-only; this workflow needs no write scopes and touches no secrets,
+# so it runs unchanged on pull requests opened from forks.
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build (github debug)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      # NDK/CMake versions are pinned in app/build.gradle.kts; install the
+      # exact versions rather than relying on whatever the runner ships.
+      # Retried because sdkmanager downloads occasionally arrive corrupt
+      # ("Error on ZipFile unknown archive") on GitHub-hosted runners.
+      - name: Install pinned NDK and CMake
+        run: |
+          for attempt in 1 2 3; do
+            sdkmanager "platforms;android-36" "build-tools;36.0.0" "ndk;29.0.14206865" "cmake;3.22.1" && exit 0
+            echo "sdkmanager attempt $attempt failed; retrying in 15s..." >&2
+            sleep 15
+          done
+          echo "sdkmanager failed after 3 attempts" >&2
+          exit 1
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      # github flavor only: the playstore flavor cannot compile because
+      # VpnControl.kt lives solely in app/src/github. When that source-set
+      # split is fixed, add an assemblePlaystoreDebug build here.
+      - name: Assemble github debug APK
+        run: ./gradlew :app:testGithubDebugUnitTest :app:assembleGithubDebug :app:assembleGithubRelease --stacktrace
+
+      - name: Upload debug APK
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: diauto-review-apk
+          path: app/build/outputs/apk/github/debug/*.apk
+          if-no-files-found: warn
+
+  unit-test:
+    name: Unit tests (github debug)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      # See the build job for why NDK/CMake are pinned and the install is retried.
+      - name: Install pinned NDK and CMake
+        run: |
+          for attempt in 1 2 3; do
+            sdkmanager "platforms;android-36" "build-tools;36.0.0" "ndk;29.0.14206865" "cmake;3.22.1" && exit 0
+            echo "sdkmanager attempt $attempt failed; retrying in 15s..." >&2
+            sleep 15
+          done
+          echo "sdkmanager failed after 3 attempts" >&2
+          exit 1
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run unit tests
+        run: ./gradlew :app:testGithubDebugUnitTest --stacktrace
+
+      - name: Upload unit test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-report
+          path: |
+            app/build/reports/tests/testGithubDebugUnitTest
+            app/build/test-results/testGithubDebugUnitTest
+          if-no-files-found: warn

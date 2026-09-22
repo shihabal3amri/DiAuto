@@ -1,0 +1,885 @@
+<resources>
+    <string name="app_name">DiAuto</string>
+    <string name="menu">Menü</string>
+    <string name="settings">Beállítások</string>
+
+    <string name="title_activity_settings">Beállítások</string>
+    <string name="dummy_button">Dummy gomb</string>
+    <string name="dummy_content">DUMMY\nTARTALOM</string>
+    <string name="allowed">Engedélyezett</string>
+    <string name="ignored">Ignorált</string>
+    <string name="exit">Kilépés</string>
+    <string name="video">Android Auto</string>
+    <string name="self_mode">Önálló mód</string>
+    <string name="to_android_auto">Android Auto-ba</string>
+    <string name="title">DiAuto</string>
+    <string name="remove">Eltávolít</string>
+    <string name="usb">USB</string>
+    <string name="wifi">WiFi</string>
+    <string name="dpi">Pixel sűrűség (DPI)</string>
+    <string name="mic_sample_rate">Mikrofon mintavételi frekvencia</string>
+    <string name="keymap">Gombkiosztás</string>
+    <string name="night_mode">Sötét mód (Android Auto)</string>
+    <string name="night_mode_threshold">Éjszakai mód küszöb</string>
+    <string name="enter_threshold_value">Add meg a küszöb értéket</string>
+    <string name="threshold_lux_desc">Lux érték (0–10000). Ez alatt = Éjszaka.</string>
+    <string name="threshold_brightness_desc">Fényerő érték (0–255). Ez alatt = Éjszaka.</string>
+    <string name="threshold_light_title">Fényérzékenység</string>
+    <string name="threshold_brightness_title">Fényerő szint</string>
+    <string name="threshold_light_hint">A sötét mód aktiválódik, ha a környezeti fény ez alá a szint alá csökken</string>
+    <string name="threshold_brightness_hint">A sötét mód aktiválódik, ha a képernyő fényereje ez alatt az érték alatt van. Az Android 0–255 közötti értékként jelenti a fényerőt, de a tényleges tartomány eszközönként eltérhet. Előfordulhat, hogy kísérletezni kell a megfelelő küszöbérték megtalálásához.</string>
+    <string name="current_light_reading">Jelenlegi fény: %d Lux</string>
+    <string name="enable_fine_lux_control">Finom szabályozás (0–100 Lux)</string>
+    <string name="night_mode_start">Éjszakai mód kezdete</string>
+    <string name="night_mode_end">Éjszakai mód vége</string>
+
+    <string name="app_theme">Sötét mód (Alkalmazás)</string>
+    <string name="app_theme_description">Az alkalmazás megjelenésének vezérlése</string>
+    <string name="change_app_theme">Téma módosítása</string>
+    <string name="use_gradient_background">Színátmenetes háttér használata</string>
+    <string name="use_gradient_background_description_on">Az alkalmazás saját hátteret rajzol a középre igazított színátmenetes körrel</string>
+    <string name="use_gradient_background_description_off">Az alkalmazás klasszikus háttere van használatban</string>
+    <string name="use_gradient_background_description_on_auto">Az alkalmazás saját hátteret rajzol a középre igazított színátmenetes körrel. Nem vonatkozik az Extrém sötét módra</string>
+    <string name="use_gradient_background_description_off_auto">Az alkalmazás klasszikus háttere van használatban. Nem vonatkozik az Extrém sötét módra</string>
+    <string name="category_dark_mode">Sötét mód</string>
+    <string name="category_automation">Automatizálás</string>
+    <string name="dark_mode_settings">Sötét mód beállítások</string>
+    <string name="app_theme_short">App</string>
+    <string name="night_mode_short">Android Auto</string>
+    <string name="aa_monochrome">Android Auto monokróm megjelenítés</string>
+    <string name="aa_monochrome_description">Csökkenti az Android Auto színeit az éjszakai vezetéshez. GLES megjelenítési mód szükséges. Csak bekapcsolt sötét módban lép érvénybe</string>
+    <string name="aa_desaturation">Színtelenítés</string>
+    <string name="aa_desaturation_description">Szabályozza, mennyi szín kerüljön eltávolításra. Csak bekapcsolt sötét módban lép érvénybe</string>
+    <string name="gles_required_title">GLES szükséges</string>
+    <string name="gles_required_message">A monokróm mód GLES renderelést igényel a szürkeárnyalatos szűrő alkalmazásához a videokimeneten. Engedélyezed a GLES-t?</string>
+    <string name="enable_gles">GLES engedélyezése</string>
+    <string name="category_navigation">Navigáció</string>
+    <string name="category_wireless">Vezeték nélküli kapcsolat</string>
+
+    <string name="reconnection_required_title">Újrakapcsolódás szükséges</string>
+    <string name="reconnection_required_message">Az eszköz várakozó állapotban van. Kérlek húzd ki, majd dugd vissza az USB-kábelt az Android Auto újraindításához.</string>
+    <string name="bluetooth_address_s">Bluetooth cím</string>
+    <string name="enter_bluetooth_mac">Add meg a Bluetooth MAC-et</string>
+    <string name="reset">Visszaállítás</string>
+    <string name="gps_for_navigation">GPS a navigációhoz</string>
+    <string name="gps_for_navigation_description">GPS használata a navigációhoz.</string>
+    <string name="enabled">Engedélyezve</string>
+    <string name="disabled">Letiltva</string>
+    <string name="resolution">Felbontás</string>
+    <string name="change_resolution">Felbontás megváltoztatása</string>
+    <string name="change_dpi">DPI megváltoztatása</string>
+    <string name="change_view_mode">Megjelenítés megváltoztatása</string>
+    <string name="view_mode">Megjelenítési mód</string>
+    <string name="surface_view">SurfaceView</string>
+    <string name="texture_view">TextureView</string>
+    <string name="gles_view">GLES20</string>
+    <string name="auto">Auto</string>
+    <string name="screen_orientation">Képernyő tájolása</string>
+    <string name="change_screen_orientation">Képernyő tájolásának megváltoztatása</string>
+    <string name="orientation_system_default">Rendszer alapértelmezett</string>
+    <string name="orientation_auto_sensor">Automatikus (Érzékelő)</string>
+    <string name="orientation_landscape">Fekvő (0°)</string>
+    <string name="orientation_landscape_reverse">Fordított fekvő (180°)</string>
+    <string name="orientation_portrait">Álló (90°)</string>
+    <string name="orientation_portrait_reverse">Fordított álló (270°)</string>
+    <string name="enter_dpi_value">Add meg a DPI értéket (0 az automatikushoz)</string>
+    <string name="custom_margin">Egyedi margó</string>
+    <string name="custom_margin_description">Állíts be egyedi margót (0 az automatikushoz).</string>
+    <string name="enter_custom_margins">Add meg az egyedi margókat (0 az automatikushoz)</string>
+    <string name="margin_left">Bal</string>
+    <string name="margin_top">Felső</string>
+    <string name="margin_right">Jobb</string>
+    <string name="margin_bottom">Alsó</string>
+
+    <string name="start_in_fullscreen_mode">Indítás teljes képernyős módban</string>
+    <string name="start_in_fullscreen_mode_description">A változtatások érvényesítéséhez újra kell indítani az alkalmazást.</string>
+
+    <string name="usb_status">USB állapota: %s</string>
+    <string name="projection_status">Kivetítés állapota: %s</string>
+    <string name="connected">Kapcsolódva</string>
+    <string name="disconnected">Leválasztva</string>
+    <string name="running">Fut</string>
+    <string name="not_running">Nem fut</string>
+    <string name="no_android_auto_device_connected">Nincs Android Auto eszköz csatlakoztatva. Ellenőrizd az USB kapcsolatot.</string>
+    <string name="no_usb_device_connected">Nincs USB eszköz csatlakoztatva az eszközhöz.</string>
+    <string name="press_back_again_to_exit">Nyomd meg a visszát újra a kilépéshez</string>
+    <string name="back">Vissza</string>
+    <string name="debug_mode">Hibakeresési mód</string>
+    <string name="debug_mode_description">Naplózás ki- és bekapcsolása.</string>
+    <string name="export_logs">Naplók exportálása</string>
+    <string name="export_logs_description">Naplók mentése hibakereséshez.</string>
+
+
+    <string name="not_set">Nincs beállítva</string>
+    <string name="keymap_description">A fejegység gombkiosztásának módosítása.</string>
+
+    <string name="key_soft_left">Soft bal</string>
+    <string name="key_soft_right">Soft jobb</string>
+    <string name="key_dpad_up">D-Pad fel</string>
+    <string name="key_dpad_down">D-Pad le</string>
+    <string name="key_dpad_left">D-Pad bal</string>
+    <string name="key_dpad_right">D-Pad jobb</string>
+    <string name="key_dpad_center">D-Pad közép (OK)</string>
+    <string name="key_media_play">Média lejátszás</string>
+    <string name="key_media_pause">Média megállítás</string>
+    <string name="key_media_play_pause">Média lejátszás/megállítás</string>
+    <string name="key_media_next">Következő zeneszám</string>
+    <string name="key_media_prev">Előző zeneszám</string>
+    <string name="key_search">Hangutasítás</string>
+    <string name="key_call">Telefon (Elfogadás)</string>
+    <string name="key_endcall">Hívás befejezése (Elutasítás)</string>
+    <string name="key_music">Zene</string>
+    <string name="key_nav">Navigáció</string>
+    <string name="key_night">Éjszakai mód kapcsolása</string>
+    <string name="key_enter">Enter</string>
+    <string name="key_home">Kezdőlap</string>
+    <string name="key_app_switch">Legutóbbi alkalmazások</string>
+    <string name="key_button_a">A gomb (Kiválasztás)</string>
+    <string name="key_button_b">B gomb (Vissza)</string>
+
+
+    <!-- Language Settings -->
+    <string name="app_language">Alkalmazás nyelve</string>
+    <string name="system_default">Rendszer alapértelmezett</string>
+    <string name="change_language">Nyelv megváltoztatása</string>
+
+    <!-- Categories for SettingsFragment -->
+    <string name="category_general">Általános</string>
+    <string name="auto_start_self_mode">Önálló mód automatikus indítása</string>
+    <string name="auto_start_self_mode_description">Az alkalmazás megnyitásakor az önálló mód automatikus indítása.</string>
+    <string name="usb_auto_connect">Automatikus USB-csatlakozás</string>
+    <string name="usb_auto_connect_description">Az alkalmazás megnyitásakor automatikus csatlakozás egy ismert USB-eszközhöz.</string>
+    <string name="auto_start_bt_label">Bluetooth automatikus indítás</string>
+    <string name="auto_start_bt_description">A Open Headunit automatikus megnyitása, amikor egy adott Bluetooth-eszköz csatlakozik.</string>
+    <string name="auto_start_wifi_label">WiFi automatikus indítás</string>
+    <string name="auto_start_wifi_description">A Open Headunit automatikus megnyitása egy adott WiFi SSID-hez való csatlakozáskor.</string>
+    <string name="auto_start_wifi_ssid_label">WiFi SSID</string>
+    <string name="auto_start_wifi_ssid_description">Csak akkor csatlakozzon, ha ehhez a WiFi SSID-hez kapcsolódik</string>
+    <string name="auto_start_wifi_warning">Régi funkció: a háttérbeli korlátozások miatt Android 8+ rendszeren nem biztos, hogy megbízhatóan működik. Győződjön meg róla, hogy az alkalmazás ki van véve az akkumulátor-optimalizálás alól.</string>
+    <string name="enter_wifi_ssid">Adja meg a WiFi SSID-t</string>
+    <string name="wifi_ssid_not_set">Nen beállítva</string>
+
+    <string name="listen_for_usb_devices_label">USB-eszközök figyelése</string>
+    <string name="listen_for_usb_devices_description">Az Android rendszerüzenet megjelenítése USB-eszköz csatlakoztatásakor.</string>
+    <string name="show_toast_messages">Toast üzenetek megjelenítése</string>
+    <string name="show_toast_messages_description">Állapotjelző felugró üzenetek megjelenítése csatlakozáskor, bontáskor és módváltáskor.</string>
+    <string name="auto_start_usb_label">Automatikus indítás USB-n</string>
+    <string name="auto_start_usb_description">Az alkalmazás automatikus megnyitása és csatlakozási kísérlet USB-eszköz csatlakoztatásakor</string>
+    <string name="auto_start_settings">Automatikus indítás beállításai</string>
+    <string name="auto_start_settings_description">Adja meg, mikor induljon el az alkalmazás automatikusan</string>
+    <string name="auto_start_oem_warning">Ez az eszköz megkövetelheti az automatikus indítás engedélyezését és az akkumulátor-optimalizálás vagy háttérkorlátozások eltávolítását ehhez az alkalmazáshoz.\n\nA Quick Boot (gyorsindítás) funkcióval rendelkező fejegységeken az automatikus indítás nem feltétlenül működik. Keresse a \"DuraSpeed\" opciót a rendszerbeállításokban és engedélyezze ott ezt az alkalmazást. Egyes fejegységeken a DuraSpeed rejtett, és szükség lehet egy olyan alkalmazásra, mint a \"Hidden Settings\" a megtalálásához. Ha nincs DuraSpeed, próbálja meg kikapcsolni a Quick Boot funkciót.</string>
+    <string name="auto_start_on_boot_label">Indítás rendszerindításkor</string>
+    <string name="auto_start_on_boot_description">Az alkalmazás automatikus megnyitása az eszköz indításakor. Android 10+-on szükséges a \'Megjelenítés más alkalmazások felett\' engedély</string>
+    <string name="auto_start_screen_on_label">Indítás képernyő bekapcsolásakor</string>
+    <string name="auto_start_screen_on_description">Az alkalmazás megnyitása minden alkalommal, amikor a képernyő bekapcsol. Ideális olyan autórádiókhoz, amelyek soha nem kapcsolnak ki teljesen, vagy gyorsindítási módot használnak, ahol a többi automatikus indítási lehetőség nem működik. Telefonokhoz és táblagépekhez nem ajánlott.</string>
+    <string name="select_bt_device">Bluetooth eszköz kiválasztása</string>
+    <string name="bt_device_not_set">Nincs beállítva</string>
+    <string name="bt_permission_denied_title">Bluetooth-engedély szükséges</string>
+    <string name="bt_permission_denied_message">A párosított eszközök kiválasztásához Bluetooth-engedély szükséges. Kérjük, engedélyezze az alkalmazás beállításaiban.</string>
+    <string name="overlay_permission_title">Háttérben indítás engedélye</string>
+    <string name="overlay_permission_description">Ahhoz, hogy a Open Headunit automatikusan megnyíljon Bluetooth-csatlakozáskor, engedélyezd a következő képernyőn a „Megjelenítés más alkalmazások felett” jogosultságot.</string>
+    <string name="open_settings">Beállítások</string>
+    <string name="wireless_connection_settings">Vezeték nélküli kapcsolat</string>
+    <string name="right_hand_drive">Jobbkormányos vezetés</string>
+    <string name="right_hand_drive_description">Felhasználói felület pozícionálása jobbkormányos vezetéshez</string>
+    <string name="category_graphic">Grafika</string>
+    <string name="custom_insets">Egyéni behúzás (margók)</string>
+    <string name="inset_top">Felső</string>
+    <string name="inset_bottom">Alsó</string>
+    <string name="inset_left">Bal</string>
+    <string name="inset_right">Jobb</string>
+    <string name="category_debug">Hibakeresés</string>
+
+    <!-- Video Settings -->
+    <string name="category_video">Videó</string>
+    <string name="force_software_decoding">Szoftveres dekódolás kényszerítése</string>
+    <string name="force_software_decoding_description">Egyes eszközökön segíthet, de teljesítményvesztéssel jár.</string>
+    <string name="wireless_mode">Vezeték nélküli mód</string>
+    <string name="wireless_mode_description">Válaszd ki, hogyan csatlakozzon az alkalmazás vezeték nélkül.</string>
+    <string-array name="wireless_connection_modes">
+        <item>Kézi (Lista)</item>
+        <item>Auto-keresés (fejegység szerver)</item>
+        <item>Wireless Helper (Várakozás a telefonra)</item>
+        <item>Native Android Auto</item>
+    </string-array>
+    <string name="auto_connect_last_session">Automatikus folytatás</string>
+    <string name="auto_connect_last_session_description">Indításkor automatikus újracsatlakozás a legutóbb használt eszközhöz.</string>
+    <string name="auto_connect_single_usb">USB-eszköz automatikus csatlakoztatása</string>
+    <string name="auto_connect_single_usb_description">Automatikus csatlakozás, ha csak egy kompatibilis eszköz érhető el</string>
+    <string name="auto_connecting_single_usb">Automatikus csatlakozás USB-eszközhöz…</string>
+    <string name="auto_connect_settings">Automatikus csatlakozás beállítások</string>
+    <string name="auto_connect_settings_description">Az automatikus csatlakozási módok és prioritásuk konfigurálása</string>
+    <string name="auto_connect_help">Ezek a módszerek automatikusan futnak az alkalmazás megnyitásakor. Engedélyezze a kívántakat, majd húzza őket a sorrend beállításához. Az első sikeres engedélyezett módszer kerül felhasználásra.</string>
+    <string name="auto_connect_priority">Prioritás %d</string>
+    <string name="auto_connect_all_disabled">Mind letiltva</string>
+    <string name="drag_to_reorder">Húzza az átrendezéshez</string>
+    <string name="move_up">Felfelé</string>
+    <string name="move_down">Lefelé</string>
+    <string name="video_codec">Videókódek</string>
+    <string name="fps_limit">FPS korlát</string>
+    <string name="save">Mentés</string>
+    <string name="save_and_restart">Mentés (újracsatlakozás szükséges)</string>
+    <string name="add_new">Új hozzáadása</string>
+    <string name="cancel">Mégse</string>
+    <string name="enable">Engedélyezés</string>
+    <string name="pref_stretch_screen_title">Kinyújtás teljes képernyőre</string>
+    <string name="pref_stretch_screen_summary">Figyelmen kívül hagyja a képarányt a teljes kijelző kitöltéséhez (eltávolítja a fekete sávokat)</string>
+
+    <!-- Audio Settings -->
+    <string name="forced_scale">Kényszerített méretezés (Legacy javítás)</string>
+    <string name="forced_scale_description">Javítja a méretezési problémákat egyes régebbi, SurfaceView-t használó eszközökön. Csak akkor használja, ha a kép torz vagy eltolt.</string>
+    <string name="hud_mirroring">HUD mód (Vízszintes tükrözés)</string>
+    <string name="hud_mirroring_description">Vízszintesen tükrözi a kijelzőt a szélvédőre vetítéshez (Head-Up Display). TextureView vagy GLES20 nézetmódot igényel (SurfaceView-val nem működik).</string>
+
+    <string name="category_audio">Hang</string>
+    <string name="enable_audio_sink">Hang fogadása</string>
+    <string name="enable_audio_sink_description">Ha nincs engedélyezve, a fejegység nem kap hangot. A hang a telefonon fog szólni.</string>
+    <string name="separate_audio_streams">Különálló hangfolyamok</string>
+    <string name="separate_audio_streams_description">Különálló hangcsatornák a zene, a hívások és az értesítések számára az egységes multimédia folyam helyett (előfordulhat, hogy néhány eszközön nem működik megfelelően).</string>
+    <string name="use_aac_audio">AAC hang használata</string>
+    <string name="use_aac_audio_description">AAC kódek használata a sávszélesség csökkentéséért (Kísérleti).</string>
+    <string name="attach_hw_dsp_equalizer">Hardveres DSP hangszínszabályzó indító</string>
+    <string name="attach_hw_dsp_equalizer_description">Egy virtuális hangszínszabályzó effektet csatlakoztat az audió munkamenethez a hardveres DSP útvonal kényszerítéséhez egyes fejegységeken. Hagyja kikapcsolva, ha ViPER4Android / ViperFX-et használ, vagy ha a hang tompa a régebbi Android verziókon.</string>
+    <string name="audio_volume_offset">Hangerő-eltolás</string>
+    <string name="media_volume_offset">Média hangerő-eltolás</string>
+    <string name="assistant_volume_offset">Asszisztens hangerő-eltolás</string>
+    <string name="navigation_volume_offset">Navigációs hangerő-eltolás</string>
+    <string name="mic_input_source">Mikrofon bemeneti forrás</string>
+    <string name="mic_input_source_description">Válaszd ki a mikrofon hangforrását.</string>
+    <string-array name="mic_input_sources">
+        <item>Alapértelmezett</item>
+        <item>Mikrofon</item>
+        <item>Hangfelismerő</item>
+        <item>Hangkommunikáció</item>
+        <item>Bluetooth headset (SCO)</item>
+    </string-array>
+
+    <!-- Info Settings -->
+    <string name="category_info">Információ</string>
+    <string name="about">Rólunk &amp; támogatás</string>
+    <string name="about_description">További információk a Open Headunit-ról.</string>
+    <string name="version">Verzió</string>
+    <string name="about_title">Open Headunit-ról</string>
+    <string name="copyright">© 2025-%d André Rinas</string>
+
+    <!-- Safety Disclaimer -->
+    <string name="disclaimer_title">Biztonság &amp; felelősség</string>
+    <string name="disclaimer_header">Fontos figyelmeztetés</string>
+    <string name="disclaimer_accept">Megértettem és elfogadom</string>
+    <string name="disclaimer_text"><![CDATA[
+        <b>1. Figyelj az útra</b><br/>
+        A szoftver használata vezetés közben elvonhatja a figyelmet és veszélyes lehet. Mindig a biztonságos vezetést helyezd előtérbe, és tartsd be a helyi közlekedési szabályokat. Az alkalmazást csak akkor használd, ha az biztonságos.<br/><br/>
+        <b>2. Felelősség korlátozása</b><br/>
+        A Open Headunit „adott állapotában” kerül szolgáltatásra, bármiféle garancia nélkül. A fejlesztők nem vállalnak felelősséget a szoftver használatából eredő balesetekért, a járműben vagy eszközben keletkezett károkért, illetve az esetleges jogi következményekért.<br/><br/>
+        <b>3. Nincs kapcsolat</b><br/>
+        Ez a projekt egy független, nyílt forráskódú kezdeményezés, mely nem áll kapcsolatban a Google LLC-vel vagy az Android Auto márkával, valamint nem kap tőlük támogatást és nincs jóváhagyva általuk.
+    ]]></string>
+
+    <!-- Toast Messages -->
+    <string name="searching">Keresés…</string>
+    <string name="auto_connecting_to">Automatikus csatlakozás %s-hoz…</string>
+    <string name="auto_connecting_usb">Automatikus csatlakozás az USB eszközhöz…</string>
+    <string name="already_connected">Már csatlakoztatva</string>
+    <string name="already_scanning">Felderítés folyamatban…</string>
+    <string name="searching_headunit_server">Fejegység szerver keresése…</string>
+    <string name="already_searching_phone">Telefon keresése folyamatban…</string>
+    <string name="searching_phone">Telefon keresése…</string>
+    <string name="key_mappings_reset">Gombkiosztás visszaállítása</string>
+    <string name="press_key_to_assign">Nyomj le egy gombot, hogy hozzá rendeld ehhez: \'%s\'…</string>
+    <string name="key_assigned">\'%1$s\' hozzárendelve ehhez: \'%2$s\'</string>
+    <string name="last_key_press">Utoljára megnyomott gomb: %1$s (%2$d)</string>
+    <string name="scan">Felderítés</string>
+    <string name="scanning_network">Hálózat felderítése…</string>
+    <string name="found_connecting">%s megtalálva. Csatlakozás…</string>
+    <string name="no_devices_found">Nem található eszköz</string>
+    <string name="unsaved_changes">Nem mentett módosítások</string>
+    <string name="unsaved_changes_message">Nem mentett módosításaid vannak. Elveted a módosításokat?</string>
+    <string name="discard">Elvetés</string>
+    <string name="stopping_service">Szolgáltatás leállítása a módosítások alkalmazásához…</string>
+    <string name="settings_saved">Beállítások elmentve</string>
+    <string name="logs_exported">Naplók exportálva</string>
+    <string name="log_saved_to">Naplók elmentve ide:\n%s</string>
+    <string name="share">Megosztás</string>
+    <string name="close">Bezárás</string>
+    <string name="failed_export_logs">Naplók exportálása sikertelen</string>
+    <string name="failed_export_in_silent_logs">A naplók exportálása nem sikerült: Csendes naplózási szint kiválasztva</string>
+    <string name="switching_to_android_auto">Váltás Android Auto-ra…</string>
+    <string name="switch_failed">Sikertelen váltás</string>
+    <string name="requesting_usb_permission">USB-hozzáférés kérése…</string>
+    <string name="enter_ip_address">Add meg az IP címet</string>
+    <string name="switching_usb_accessory_mode">Az USB-eszköz átváltása kiegészítő módba: %s</string>
+    <string name="success">Sikeres</string>
+    <string name="failed">Sikertelen</string>
+    <string name="failed_start_android_auto">Az Android Auto indítása sikertelen</string>
+    <string name="failed_self_mode_android10">Az Önálló módot (Self-mode) valószínűleg blokkolja a Google az Android 10-en (AA 16.4+). Lásd a README-t.</string>
+    <string name="android_auto_starting">Az Android Auto indul…</string>
+    <string name="connection_interrupted">Kapcsolat elveszett</string>
+    <string name="connection_interrupted_detail">Újrapróbálkozás…</string>
+    <string name="wifi_disconnect_toast">Android Auto leválasztva: Ha vezeték nélküli AA-t használ, tiltsa le a \"Hálózatok közötti váltás\" vagy \"Hálózatgyorsítás\" opciót a telefon WiFi beállításaiban</string>
+    <string name="notification_service_running">Open Headunit fut</string>
+    <string name="notification_projection_active">Android Auto kivetítve</string>
+    <string name="shortcut_connect_title">Kapcsolódás</string>
+    <string name="shortcut_connect_desc">Kapcsolódás az utolsó ismert eszközhöz</string>
+    <string name="shortcut_selfmode_title">Saját mód</string>
+    <string name="shortcut_selfmode_desc">Android Auto indítása ezen az eszközön</string>
+    <string name="shortcut_disconnect_title">Leválasztás</string>
+    <string name="shortcut_disconnect_desc">Az aktuális munkamenet befejezése</string>
+    <string name="shortcut_exit_title">Kilépés az alkalmazásból</string>
+    <string name="shortcut_exit_desc">Összes szolgáltatás leállítása és kilépés</string>
+    <string name="shortcut_night_mode_auto_title">Mód: Auto</string>
+    <string name="shortcut_night_mode_auto_desc">Automatikus éjszakai mód visszaállítása</string>
+    <string name="shortcut_night_mode_day_title">Mód: Nappali</string>
+    <string name="shortcut_night_mode_day_desc">Nappali mód kényszerítése</string>
+    <string name="shortcut_night_mode_night_title">Mód: Éjszakai</string>
+    <string name="shortcut_night_mode_night_desc">Éjszakai mód kényszerítése</string>
+    <string name="reset_usb_option">USB kapcsolat visszaállítása</string>
+    <string name="reset_usb_timeout">USB eszköz nem található. Ellenőrizze a csatlakozást.</string>
+    <string name="setup_welcome_title">Gyorsbeállítás</string>
+    <string name="setup_welcome_msg">Ez a varázsló segít kiválasztani a legjobb beállításokat a zökkenőmentes Android Auto élményhez.\n\nEzeket a beállításokat bármikor módosíthatja később az alkalmazás beállításaiban.</string>
+    <string name="setup_start">Indítás</string>
+    <string name="setup_size_title">Kijelző mérete</string>
+    <string name="setup_size_phone">Telefon / Kicsi (4-6\")</string>
+    <string name="setup_size_small">Kis táblagép (7-8\")</string>
+    <string name="setup_size_standard">Normál (9-10\")</string>
+    <string name="setup_size_large">Nagy (11\"+)</string>
+    <string name="setup_orientation_title">Eszköz tájolása</string>
+    <string name="setup_orientation_landscape">Fekvő (vízszintes)</string>
+    <string name="setup_orientation_portrait">Álló (függőleges)</string>
+    <string name="setup_result_title">Optimalizálás kész</string>
+    <string name="setup_apply">Alkalmaz</string>
+    <string name="setup_widescreen_detected">Szélesvásznú kijelző észlelve.</string>
+    <string name="auto_optimize">Beállítások automatikus optimalizálása</string>
+    <string name="auto_optimize_desc">Rendszerellenőrzés futtatása az eszközhöz legjobban illő beállítások megtalálásához.</string>
+    <string name="fullscreen_none">Normál (Minden sáv látható)</string>
+    <string name="fullscreen_immersive">Teljes képernyő (Minden sáv rejtett)</string>
+    <string name="fullscreen_immersive_avoid_notch">Immerzív (Notch elkerülése)</string>
+    <string name="fullscreen_immersive_avoid_notch_desc">Elrejti az összes sávot, és kitöltést ad hozzá, hogy megakadályozza a vetítés Notch/Kivágás általi lefedését.</string>
+    <string name="fullscreen_status_only">Csak az állapotsor elrejtése</string>
+    <string name="log_level">Naplózási szint</string>
+    <string name="log_level_description">A hibaelhárításhoz szükséges részletesség beállítása.</string>
+    <string name="log_source">Naplóforrás</string>
+    <string name="log_source_logcat">Logcat</string>
+    <string name="log_source_applog_file">Közvetlenül fájlba</string>
+    <string name="log_location">Napló mentési helye</string>
+    <string name="log_location_default">Alapértelmezett (Alkalmazás tárhely)</string>
+    <string name="log_location_downloads">Letöltések mappa</string>
+    <string name="start_log_capture">Naplózás indítása</string>
+    <string name="start_log_capture_description">Rögzíti a rendszernaplókat egy helyi fájlba a hibaelhárításhoz.</string>
+    <string name="start_log_capture_in_applog_file">Az Log üzenetek csak aktív rögzítés közben íródnak fájlba</string>
+    <string name="start_log_capture_in_silent">Nem lehet elindítani a rögzítést: Csendes naplózási szint kiválasztva</string>
+    <string name="stop_log_capture">Naplózás leállítása</string>
+    <string name="stop_log_capture_description">Leállítja a naplózást és menti a fájlt.</string>
+
+    <!-- Navigation notifications -->
+    <string name="show_navigation_notifications">Navigációs értesítések</string>
+    <string name="show_navigation_notifications_description">„X méter múlva Y\" és az aktuális utca megjelenítése az értesítésekben (hibakereséshez)</string>
+    <string name="nav_notification_channel_name">Navigáció</string>
+    <string name="nav_notification_channel_description">Részletes navigációs utasítások az Android Auto-tól</string>
+    <string name="nav_notification_title_format">%1$d m múlva — %2$s</string>
+    <string name="nav_notification_street_format">Utca: %1$s</string>
+    <string name="nav_action_unknown">Művelet</string>
+    <string name="nav_action_depart">Indulás</string>
+    <string name="nav_action_name_change">Névváltás</string>
+    <string name="nav_action_slight_turn">Enyhe kanyar</string>
+    <string name="nav_action_turn">Kanyar</string>
+    <string name="nav_action_sharp_turn">Éles kanyar</string>
+    <string name="nav_action_uturn">Megfordulás</string>
+    <string name="nav_action_on_ramp">Felhajtó</string>
+    <string name="nav_action_off_ramp">Lehajtó</string>
+    <string name="nav_action_merge">Besorolás</string>
+    <string name="nav_action_roundabout_enter">Körforgalomba behajtás</string>
+    <string name="nav_action_roundabout_exit">Körforgalom elhagyása</string>
+    <string name="nav_action_roundabout">Körforgalom</string>
+    <string name="nav_action_straight">Egyenesen</string>
+    <string name="nav_action_ferry">Komp</string>
+    <string name="nav_action_ferry_train">Komp / vonat</string>
+    <string name="nav_action_destination">Megérkezés</string>
+    <string name="monochrome_icons">Monokróm ikonok</string>
+    <string name="monochrome_icons_description">Szürkeárnyalatos ikonok használata a kezdőképernyőn Sötét vagy Extrém sötét módban</string>
+    <string name="use_extreme_dark">Extrém sötét használata</string>
+    <string name="use_extreme_dark_description">Tiszta fekete háttér használata sötét módban</string>
+    <string name="show_fps_counter">FPS számláló megjelenítése</string>
+    <string name="overlay_permission_required">Az automatikus indításhoz szükséges a \'Megjelenítés más alkalmazások felett\' engedély</string>
+    <string name="usb_permission_denied">USB-engedély megtagadva. Kérjük, engedélyezze az USB-hozzáférést az automatikus csatlakozáshoz.</string>
+    <string name="overlay_permission_denied_auto_start_disabled">Az átfedési engedély nem lett megadva. Az automatikus indítás letiltásra került.</string>
+    <string name="use_white_background">Fehér főképernyő háttérkép használata</string>
+    <string name="reopen_on_reconnection_label">Újranyitás újracsatlakozáskor</string>
+    <string name="reopen_on_reconnection_description">A Kilépés gomb megnyomásakor az alkalmazás a háttérben fut tovább, és folyamatosan figyeli az USB-kapcsolatokat. Ha egy eszköz újracsatlakozik, az alkalmazás automatikusan megnyílik.</string>
+    <string name="show_fps_counter_description">Valós idejű FPS overlay megjelenítése a bal felső sarokban a vetítés alatt.</string>
+
+    <string name="category_input">Beviteli beállítások</string>
+    <string name="enable_rotary">Forgókapcsoló (Rotary) engedélyezése</string>
+    <string name="enable_rotary_description">Fizikai forgatógombok és kerekek támogatásának bejelentése. Kapcsolja ki, ha az érintőképernyő nem működik megfelelően.</string>
+    <string name="kill_on_disconnect">Alkalmazás bezárása leválasztáskor</string>
+    <string name="kill_on_disconnect_description">Az alkalmazás automatikus bezárása, amikor az Android Auto leválik</string>
+    <string name="kill_on_disconnect_warning_title">Figyelmeztetés</string>
+    <string name="kill_on_disconnect_warning">A következő újracsatlakozási beállítások ütköznek az alkalmazás leállításával leválasztáskor:\n\n%1$s\n\nA kezdeti csatlakozási beállítások (automatikus csatlakozás, automatikus indítás) továbbra is működnek a fejegység bekapcsolásakor. Az első leválasztás után azonban az alkalmazás azonnal bezárul az újracsatlakozás megkísérlése helyett.\n\nMegjegyzés: Egyes utólagos fejegységek soha nem kapcsolnak ki teljesen — ehelyett hibernálnak, hasonlóan egy telefonhoz, amely lezárja a képernyőjét, de soha nem kapcsol ki ténylegesen. Ezzel az opcióval az alkalmazás az első leválasztás után bezárul, és a következő indítási ciklusban nem biztos, hogy automatikusan újranyílik.\n\nSzeretné letiltani a fent felsorolt újracsatlakozási beállításokat?</string>
+    <string name="kill_on_disconnect_disable_and_enable">Letiltás és engedélyezés</string>
+    <string name="kill_on_disconnect_enable_anyway">Engedélyezés mindenképp</string>
+    <string name="kill_on_disconnect_boot_warning">A \"Indítás rendszerindításkor\" be van kapcsolva. Ha az alkalmazás bezárul lecsatlakozáskor és ez az eszköz hibernálódik kikapcsolás helyett, az alkalmazás nem feltétlenül nyílik meg automatikusan a következő indításkor, mert nem jön létre rendszerindítási esemény — az eszköz egyszerűen felébred az alvó módból.</string>
+    <string name="kill_on_disconnect_screen_on_warning">A \"Bekapcsolás a képernyő bekapcsolásakor\" funkció aktív. Ez a beállítás minden alkalommal megnyitja az alkalmazást, amikor a képernyő bekapcsol. A lekapcsoláskor történő bezárással kombinálva az alkalmazás lekapcsolás után bezárul, de azonnal újranyílik, amikor a képernyő ismét bekapcsol, ami újraindítási hurkot eredményez.</string>
+    <string name="kill_on_disconnect_conflicts_disabled">Az ütköző beállítások letiltásra kerültek</string>
+    <string name="wifi_disabled_info">Infó: A Wi-Fi ki van kapcsolva.</string>
+    <string name="bt_not_enabled">Infó: A Bluetooth ki van kapcsolva.</string>
+
+    <!-- Vehicle Info Settings -->
+    <string name="vehicle_info_settings">Járműinformáció</string>
+    <string name="vehicle_info_settings_description">Testreszabhatja, hogyan jelenik meg járműve a telefonján</string>
+    <string name="ui_scale">UI méretezés</string>
+    <string name="ui_scale_home">Kezdőképernyő</string>
+    <string name="ui_scale_settings">Beállítások képernyő</string>
+    <string name="category_vehicle">Jármű</string>
+    <string name="category_head_unit">Fejegység</string>
+    <string name="vehicle_display_name_label">Megjelenítési név</string>
+    <string name="vehicle_display_name_description">A telefonján megjelenő név ehhez a járműhöz</string>
+    <string name="vehicle_make_label">Gyártó</string>
+    <string name="vehicle_make_description">Jármű gyártója (pl. Honda, Toyota)</string>
+    <string name="vehicle_model_label">Modell</string>
+    <string name="vehicle_model_description">Jármű modellje (pl. Civic, Corolla)</string>
+    <string name="vehicle_year_label">Évjárat</string>
+    <string name="vehicle_year_description">Jármű évjárata</string>
+    <string name="vehicle_id_label">Jármű-azonosító</string>
+    <string name="vehicle_id_description">Csak belső azonosító. Megváltoztatása azt eredményezi, hogy telefonja ezt más járműként érzékeli, visszaállítva az Android Auto beállításait ehhez az autóhoz.</string>
+    <string name="head_unit_make_label">Gyártó</string>
+    <string name="head_unit_make_description">Fejegység gyártója</string>
+    <string name="head_unit_make_hint">A telefonja ezt a nevet jeleníti meg az Android Auto beállításaiban.</string>
+    <string name="head_unit_model_label">Modell</string>
+    <string name="head_unit_model_description">Fejegység modellje</string>
+    <string name="vehicle_year_error_invalid">Adjon meg egy érvényes évet</string>
+    <string name="vehicle_year_error_max">Az év nem lehet későbbi, mint %1$d</string>
+    <string name="vehicle_info_restart_note">Ezek az adatok minden csatlakozáskor elküldésre kerülnek az Android Auto-nak.</string>
+    <string name="auto_enable_hotspot">Hotspot automatikus bekapcsolása</string>
+    <string name="auto_enable_hotspot_description">Automatikusan bekapcsolja a Wi-Fi hotspotot ezen az eszközön. (Nem minden eszközön fog működni)</string>
+    <string name="hotspot_warning_title">Kísérleti funkció</string>
+    <string name="hotspot_warning_message">Ez a funkció reflexiót használ, és nem minden eszközön működik. Szükség lehet a \"Rendszerbeállítások módosítása\" engedély manuális megadására.</string>
+    <string name="hotspot_permission_title">Engedély szükséges</string>
+    <string name="hotspot_permission_message">A hotspot funkció a \"Rendszerbeállítások módosítása\" engedélyt igényli. Kérjük, engedélyezze a következő képernyőn.</string>
+    <string name="not_supported_nativeaa">A natív vezeték nélküli mód úgy tűnik, nem támogatott</string>
+    <string name="not_supported_nativeaa_desc">Lehet, hogy eszköze nem támogatja a natív vezeték nélküli módhoz szükséges Bluetooth vagy Wi-Fi funkciókat. Ennek ellenére megpróbálhatja, de ha nem sikerül, kérjük, használja helyette a „Wireless Helper” vagy az „Auto (Headunit Server)” módot.</string>
+    <string name="wait_for_wifi">Várakozás WiFi-re a WiFi Direct előtt</string>
+    <string name="wait_for_wifi_description">Indításkor megvárja a WiFi csatlakozást a WiFi Direct elindítása előtt. Hasznos, ha a fejegység néhány másodpercet vesz igénybe a WiFi csatlakozáshoz bekapcsolás után.</string>
+    <string name="wait_for_wifi_timeout">WiFi várakozási időkorlát</string>
+    <string name="wireless_24ghz_warning">Megjegyzés: A vezeték nélküli Android Auto 2,4 GHz-es eszközökön akadozáshoz, szaggatáshoz és leálláshoz vezethet. Ha problémákat tapasztal, kérjük, tesztelje USB-n keresztül, hogy megerősítse, hálózati korlátozásról van-e szó.</string>
+    <string name="supported_nativeaa">Speciális vezeték nélküli támogatás</string>
+    <string name="supported_nativeaa_desc">Jó hírek! Eszköze támogatja a „Native Wireless” módot, amely zökkenőmentesebb Android Auto élményt nyújt. \n\nA bekapcsoláshoz frissítenünk kell a Bluetooth-gyorsítótárat. Kérjük: \n1. Távolítsa el a meglévő párosítást a telefonjáról \n2. Kattintson az OK gombra a Bluetooth újraindításához \n3. Párosítsa újra a telefont \n\nSzeretne jetzt átváltani a Native AA módra?</string>
+    <string name="fake_speed_title">Videózár letiltása (Fake Speed)</string>
+    <string name="fake_speed_description">Folyamatos alacsony sebességet (0,5 m/s) jelent a telefonnak, hogy megakadályozza a videótartalmak blokkolását vezetés közben. Óvatosan használja.</string>
+    <string name="wireless_mode_helper">Wireless Helper</string>
+    <string name="wireless_mode_native">Native</string>
+    <string name="wireless_mode_server">Headunit Server</string>
+    <string name="server_mode_label">Szerver mód</string>
+    <string name="server_mode_manual">Kézi</string>
+    <string name="server_mode_auto">Automatikus</string>
+
+    <string name="helper_strategy_label">Segédcsatlakozási stratégia</string>
+    <string-array name="helper_strategies">
+        <item>Közös Wifi (NSD)</item>
+        <item>WiFi Direct (P2P)</item>
+        <item>Közeli eszközök (Beta)</item>
+        <item>Telefon hotspot (Host)</item>
+        <item>Fejegység hotspot (Passzív)</item>
+    </string-array>
+
+    <string name="select_nearby_device">Válasszon közeli eszközt</string>
+    <string name="nearby_device_found">Közeli eszköz található</string>
+    <string name="connecting_to_nearby">Csatlakozás: %s…</string>
+
+    <string name="exit_dialog_title">Kilépés az Android Auto-ból</string>
+    <string name="exit_dialog_stop">Kapcsolat leállítása</string>
+    <string name="exit_dialog_pip">Kép a képben (PiP)</string>
+    <string name="exit_dialog_background">Áthelyezés a háttérbe</string>
+    <string name="gesture_hint">Tipp: Legyintsen 2 ujjal a bal szélről a kilépés menü megnyitásához.</string>
+    <string name="audio_latency_multiplier">Audio késleltetési szorzó</string>
+    <string name="audio_latency_multiplier_description">Audió pufferméret beállítása (Alacsonyabb = kisebb késleltetés, Magasabb = kevesebb akadozás)</string>
+    <string name="audio_queue_capacity">Audió sor kapacitása (Backpressure)</string>
+    <string name="media_action_previous">Előző</string>
+    <string name="media_action_play">Lejátszás</string>
+    <string name="media_action_pause">Szünet</string>
+    <string name="media_action_next">Következő</string>
+    <string name="media_session_aa_status_placeholder">Csatlakoztatva</string>
+    <string name="sync_media_session_aa_metadata">AA aktuális szám a médialejátszási munkamenetben</string>
+    <string name="sync_media_session_aa_metadata_description">A telefonról származó számcímet, előadót, időtartamot és borítót jelenítse meg a rendszer médialejátszási munkamenetében és médiás értesítésben</string>
+    <string name="error_usb_permission_failed">Rendszerhiba: Nem sikerült lekérni az USB engedélykérő ablakot.</string>
+
+    <!-- Custom loading screen -->
+    <string name="loading_screen">Betöltő képernyő</string>
+    <string name="loading_screen_default">Alapértelmezett</string>
+    <string name="loading_screen_custom">Egyéni</string>
+    <string name="loading_screen_dialog_title">Egyéni betöltő képernyő</string>
+    <string name="loading_screen_select_file">Fájl kiválasztása</string>
+    <string name="loading_screen_remove">Eltávolítás</string>
+    <string name="loading_screen_recommendation">Ajánlott felbontás: %1$dx%2$d</string>
+    <string name="loading_screen_supported_formats">Támogatott: Képek (PNG, JPG, BMP, WEBP, GIF) \u2022 Videók (MP4, MKV, WEBM, 3GP) \u2022 Max: 10 MB</string>
+    <string name="loading_screen_no_media">Nincs egyéni tartalom kiválasztva</string>
+    <string name="loading_screen_file_too_large">A fájl túl nagy (max 10 MB)</string>
+    <string name="loading_screen_unsupported_format">Nem támogatott formátum. Használjon kép- vagy videófájlt</string>
+    <string name="loading_screen_file_error">A kiválasztott fájl nem tölthető be</string>
+    <string name="loading_screen_show_text">\"Az Android Auto indul\" szöveg megjelenítése</string>
+    <string name="loading_screen_tap_preview">Érintse meg az előnézethez</string>
+    <string name="loading_screen_tap_to_close">Érintse meg bárhol a bezáráshoz</string>
+    <string name="loading_screen_keep_aspect_ratio">Képarány megőrzése</string>
+    <string name="loading_screen_scale">Méretezés</string>
+    <string name="loading_screen_recommended_aspect_ratio">Ajánlott képarány: %1$d:%2$d</string>
+    <string name="loading_screen_tap_fullscreen_hint">Érintse meg az előnézetet a teljes képernyős megjelenítéshez</string>
+    <string name="loading_screen_loop_video">Rövid animációk ismétlése</string>
+    <string name="microphone_settings">Mikrofon beállítások</string>
+    <string name="microphone_settings_description">A mikrofonbemenet és a hangfeldolgozás konfigurálása.</string>
+    <string name="mic_echo_canceler">Visszhangkioltás (AEC)</string>
+    <string name="mic_echo_canceler_description">Megpróbálja eltávolítani a visszhangot a mikrofonból. Kapcsolja ki, ha csendet vagy torzítást tapasztal.</string>
+    <string name="mic_noise_suppressor">Zajcsökkentés (NS)</string>
+    <string name="mic_noise_suppressor_description">Megpróbálja csökkenteni a háttérzajt. Kapcsolja ki, ha a hangja tompának tűnik.</string>
+    <string name="mic_auto_gain_control">Automatikus erősítésszabályozás (AGC)</string>
+    <string name="mic_auto_gain_control_description">Automatikusan szabályozza a mikrofon hangerejét. Kapcsolja ki, ha a hangerő instabil.</string>
+    <string name="mic_feature_unsupported">Ez a funkció nem támogatott az eszközén.</string>
+    <string name="bt_permission_denied">Bluetooth engedély megtagadva. Nem lehet eszközöket keresni.</string>
+    <string name="wifi_autostart_title">WiFi automatikus indítás</string>
+    <string name="wifi_autostart_content">Csatlakozva a következőhöz: %s. Koppintson az Android Auto indításához.</string>
+
+    <!-- New strings merged from 2.3.1 -->
+    <string name="bt_devices_selected">kiválasztott eszköz</string>
+    <string name="static_audio_focus">Statikus audió fókusz</string>
+    <string name="static_audio_focus_description">Arra kényszeríti a telefont, hogy azt higgye, az audió fókusz mindig aktív, megakadályozva az audió útvonalválasztási hibákat az univerzális fejegységeken. Szoftveres hangerő-csökkentést (ducking) is végez a navigációs hangutasítások alatt.</string>
+    <string name="bluetooth_adapter_label">Bluetooth adapter</string>
+    <string name="bluetooth_adapter_description">Válassza ki a kézfogáshoz használandó Bluetooth adaptert/vezérlőt. Kettős Bluetooth-rendszerek esetén hasznos.</string>
+    <string name="select_bt_adapter">Bluetooth adapter kiválasztása</string>
+
+    <!-- Brightness, quick settings, key back, backup, wireless helper QR -->
+    <string name="current_brightness_reading">Aktuális fényerő: %d / 255</string>
+    <string name="exit_dialog_settings">Gyors beállítások</string>
+    <string name="key_back">Vissza</string>
+    <string name="category_backup">Biztonsági mentés</string>
+    <string name="export_settings">Beállítások exportálása</string>
+    <string name="export_settings_description">Mentse a beállítások biztonsági mentését JSON fájlként</string>
+    <string name="export_settings_app_folder">Mentés az alkalmazás mentési mappájába</string>
+    <string name="export_settings_downloads">Mentés a Letöltésekbe</string>
+    <string name="export_settings_choose_location">Mentési hely kiválasztása</string>
+    <string name="settings_exported">Beállítások exportálva</string>
+    <string name="settings_export_failed">A beállítások exportálása sikertelen: %1$s</string>
+    <string name="settings_backup_saved_to">Biztonsági mentés ide mentve:\n%1$s</string>
+    <string name="share_settings_backup">Biztonsági mentés megosztása</string>
+    <string name="import_settings">Beállítások importálása</string>
+    <string name="import_settings_description">Beállítások visszaállítása egy Open Headunit mentésből</string>
+    <string name="import_settings_app_folder">Importálás az alkalmazás mentési mappájából</string>
+    <string name="import_settings_downloads">Importálás a Letöltésekből</string>
+    <string name="import_settings_choose_file">Mentési fájl kiválasztása</string>
+    <string name="import_settings_discard_pending">Egy mentés importálása eldobja a nem mentett változtatásokat. Folytatja?</string>
+    <string name="settings_imported">Beállítások importálva: %1$d alkalmazva, %2$d kihagyva</string>
+    <string name="settings_import_failed">A beállítások importálása sikertelen: %1$s</string>
+    <string name="no_settings_backups_title">Nem található mentés</string>
+    <string name="no_settings_backups_message">Az alkalmazás mentési mappájában nem található Open Headunit mentés. Először exportáljon egy mentést, majd importálja innen.</string>
+    <string name="no_settings_backups_downloads_message">A Letöltések mappában nem található Open Headunit mentés. Először exportáljon egy mentést a Letöltésekbe, majd importálja innen.</string>
+    <string name="no_file_picker_title">Nem érhető el fájlválasztó</string>
+    <string name="no_file_picker_message">Ezen az eszközön nincs kompatibilis fájlválasztó. Helyette használhatja a Letöltések mappát vagy az alkalmazás mentési mappáját.</string>
+    <string name="storage_permission_denied_backup">Tárhely engedély megtagadva. A Letöltések nem használható.</string>
+    <string name="reset_settings">Alapértékek visszaállítása</string>
+    <string name="reset_settings_description">Törli az összes beállítást, gyorsítótárazott adatot és automatikus csatlakozási beállítást. Az alkalmazás újraindul a gyári beállítások alkalmazásához.</string>
+    <string name="reset_settings_confirm">Biztosan visszaállítja az összes beállítást az alapértékekre? Ezzel újraindul az alkalmazás.</string>
+    <string name="reset_settings_confirm_message">Ezzel minden beállítás visszaáll az alapértékekre. A mentések és alkalmazás fájlok nem törlődnek. Folytatja?</string>
+    <string name="reset_settings_discard_pending">A beállítások visszaállítása eldobja a nem mentett változtatásokat. Folytatja?</string>
+    <string name="settings_reset">Beállítások visszaállítva</string>
+    <string name="settings_reset_failed">A beállítások visszaállítása sikertelen: %1$s</string>
+    <string name="hotspot_ssid_hint">Hotspot SSID</string>
+    <string name="hotspot_pass_hint">Hotspot jelszó</string>
+    <!-- QR Code Generator -->
+    <string name="share_hotspot_qr_title">Wireless Helper konfigurálása</string>
+    <string name="share_hotspot_qr_desc">QR-kód megjelenítése a telefon automatikus csatlakozásához</string>
+    <string name="hotspot_qr_description">Wireless Helper konfigurációs QR-kód</string>
+    <string name="scan_with_wireless_helper">Szkenneld be ezt a QR-kódot a telefonodon lévő Wireless Helper QR-szkennerével.</string>
+    <string name="share_hotspot_qr_error">Nem sikerült lekérni az aktív Wi-Fi hotspot adatait. Győződj meg róla, hogy a hotspot be van kapcsolva, és a helyszolgáltatás engedélyezett.</string>
+    <!-- Native USB Driver -->
+    <string name="use_libusb">Natív USB-illesztőprogram használata</string>
+    <string name="use_libusb_description">Libusb használata a kommunikációhoz. Kapcsolja ki az Android szabványos USB API-jának használatához.</string>
+
+    <string name="software_video_decoder">Szoftveres dekódoló forrása</string>
+    <string name="software_video_decoder_bundled">Beépített FFmpeg</string>
+    <string name="software_video_decoder_device">Eszköz MediaCodec</string>
+
+    <string name="btn_show_qr">QR-kód megjelenítése</string>
+    <string name="renderer_fallback_surface">A videó folyamatosan lefagyott, ezért a megjelenítés erre a munkamenetre SurfaceView-ra váltott. Ha stabil, állítsd a Megjelenítési módot SurfaceView-ra a Beállításokban.</string>
+    <string name="dpi_resolution_over_panel_warning">A választott felbontás (%1$s) magasabb, mint a paneled. %2$s értékre korlátozódik, és a DPI ehhez van kiszámítva. Ha rosszul néz ki, használd az ajánlott felbontást (%2$s).</string>
+    <string name="renderer_confirm_question">Látod az Android Auto képernyőt?</string>
+    <string name="renderer_confirm_yes">Igen</string>
+    <string name="renderer_confirm_switch">Megjelenítő váltása</string>
+    <string name="renderer_switched_to">Megjelenítő: %1$s</string>
+
+    <string name="self_mode_overlay_permission_description">A Saját mód háttérben történő megbízható indításához engedélyezze a „Megjelenítés más alkalmazások felett” jogosultságot a következő képernyőn.</string>
+
+    <string name="delete">Törlés</string>
+    <string name="night_mode_coordinates">Koordináták</string>
+    <string name="geofence_locations_title">Helyek</string>
+    <string name="geofence_none">Nincs</string>
+    <string name="geofence_count_summary">%1$d terület</string>
+    <string name="geofence_empty_hint">Még nincsenek helyek. Adjon hozzá egyet a nappali vagy éjszakai mód terület szerinti kényszerítéséhez, vagy az automatikus indítás egy zónára korlátozásához.</string>
+    <string name="geofence_unnamed">Névtelen hely</string>
+    <string name="geofence_add">Hely hozzáadása</string>
+    <string name="geofence_pick_location">Hely kiválasztása</string>
+    <string name="geofence_name_hint">Név (pl. Otthon)</string>
+    <string name="geofence_force_dark">Sötét mód kényszerítése ezen a területen</string>
+    <string name="geofence_allow_automation">Automatikus indítás / csatlakozás csak ezen a területen</string>
+    <string name="geofence_use_gps">Jelenlegi helyzetem használata</string>
+    <string name="geofence_no_location">Még nincs elérhető hely</string>
+    <string name="geofence_saved">Hely mentve</string>
+    <string name="geofence_delete_title">Hely törlése?</string>
+    <string name="geofence_delete_message">Ez a hely el lesz távolítva.</string>
+    <string name="geofence_internet_title">Internet szükséges</string>
+    <string name="geofence_internet_message">A térkép betöltéséhez internetkapcsolat szükséges. A térképcsempék csak a hely beállítása közben töltődnek le.</string>
+    <string name="geofence_radius_summary">Sugár: %1$d m</string>
+    <string name="geofence_mode_dark">Sötét</string>
+    <string name="geofence_mode_light">Világos</string>
+    <string name="geofence_gate_on">Automatikus indítás korlátozva</string>
+    <string name="location_section">Hely</string>
+    <string name="sunrise_location_title">Napkelte/napnyugta helye</string>
+    <string name="sunrise_location_gps">GPS (automatikus)</string>
+    <string name="sunrise_location_fixed">Rögzített pont</string>
+    <string name="geofence_pick_on_map">Kiválasztás a térképen</string>
+    <string name="geofence_overridden_note">Egy mentett hely felülírja ezt, amíg azon belül tartózkodsz.</string>
+    <string name="geofence_current_status_label">Jelenleg</string>
+    <string name="geofence_current_status">%1$s (%2$s területén belül)</string>
+    <string name="geofence_override_theme">Téma kényszerítése itt</string>
+    <string name="geofence_dark_inside">Sötét ezen a területen belül</string>
+    <string name="geofence_scope_label">Érvényes erre</string>
+    <string name="geofence_scope_app">Alkalmazás</string>
+    <string name="geofence_scope_aa">Android Auto</string>
+    <string name="geofence_scope_both">Mindkettő</string>
+    <string name="geofence_gate_here">Csak itt indítson automatikusan / csatlakozzon</string>
+    <string name="dont_show_again">Ne jelenjen meg többször</string>
+    <string name="location_open_entry">Helyek és napkelte pont</string>
+    <string name="sunrise_section">Napkelte / napnyugta</string>
+    <string name="location_places_hint">Kényszerítsen világos vagy sötét megjelenést egy területen, és opcionálisan csak ott indítson automatikusan. GPS-t használ.</string>
+    <string name="appearance_label">Ha belül van, állítsa be a megjelenést</string>
+    <string name="appearance_off">Ki</string>
+    <string name="location_manage_places">Mentett helyek</string>
+    <string name="location_outside_label">Mentett helyeken kívül</string>
+    <string name="location_places_desc">Állítson be világos vagy sötét megjelenést egy területen, amíg azon belül tartózkodik. GPS-t használ.</string>
+    <string name="coordinates_enter">Koordináták megadása</string>
+    <string name="coordinate_latitude">Szélesség</string>
+    <string name="coordinate_longitude">Hosszúság</string>
+    <string name="coordinates_invalid">Érvénytelen koordináták</string>
+    <string name="coordinates_format_help">Tizedes fok, pont vagy vessző. Példa: 40.4168, -3.7038</string>
+
+    <!-- Settings redesign / onboarding -->
+    <string name="settings_tab_basic">Alapvető</string>
+    <string name="settings_tab_advanced">Speciális</string>
+    <string name="settings_search_hint">Beállítások keresése</string>
+    <string name="connection_mode">Csatlakozási mód</string>
+    <string name="connection_kind_usb_cable">USB-kábel (közvetlen)</string>
+    <string name="connection_kind_usb_wireless_adapter">USB vezeték nélküli adapter</string>
+    <string name="connection_kind_wifi">WiFi</string>
+    <string name="connection_kind_unset">Nincs beállítva</string>
+    <string name="onb_next">Tovább</string>
+    <string name="onb_skip">Kihagyás</string>
+    <string name="onb_ready_finish">Befejezés</string>
+    <string name="onb_welcome_title">Üdvözöl a Open Headunit</string>
+    <string name="onb_welcome_body">Ez a gyorsbeállítás megvizsgálja az eszközödet, és kiválasztja számodra a legjobb videó-, kijelző- és éjszakai mód beállításokat. Mindent később is módosíthatsz a Beállításokban.</string>
+    <string name="onb_safety_title">Biztonság mindenekelőtt</string>
+    <string name="onb_safety_accept">Elolvastam és elfogadom a feltételeket</string>
+    <string name="onb_connection_title">Hogyan csatlakozol?</string>
+    <string name="onb_connection_help">Válaszd ki, hogyan csatlakozik a telefonod. Így a beállítások képernyő csak arra összpontosít, ami rád vonatkozik.</string>
+    <string name="onb_connection_cable_detail">A telefon közvetlenül a fejegységhez csatlakozik USB-kábellel. A vezeték nélküli lehetőségek nem jelennek meg.</string>
+    <string name="onb_connection_adapter_detail">Egy USB-dongle vezeték nélküli kapcsolattá alakítja a kábelt. A vezeték nélküli lehetőségek megjelennek.</string>
+    <string name="onb_connection_wifi_detail">A telefon WiFi-n keresztül csatlakozik.</string>
+    <string name="onb_display_title">Kijelző</string>
+    <string name="onb_display_detected">Észlelt panel: %1$d x %2$d px, %3$d dpi, hardver %4$s.</string>
+    <string name="onb_display_size_label">Kijelző mérete</string>
+    <string name="onb_display_orientation_label">Tájolás</string>
+    <string name="onb_display_apply">Ajánlott beállítások alkalmazása</string>
+    <string name="onb_display_result">Alkalmazva: %1$s, %2$d dpi, %3$s, %4$s megjelenítés.</string>
+    <string name="onb_appearance_title">Megjelenés</string>
+    <string name="onb_appearance_theme_label">Alkalmazás témája</string>
+    <string name="onb_theme_auto">Auto</string>
+    <string name="onb_theme_light">Világos</string>
+    <string name="onb_theme_dark">Sötét</string>
+    <string name="onb_appearance_night_label">Android Auto éjszakai mód</string>
+    <string name="onb_night_auto">Automatikus</string>
+    <string name="onb_night_day">Nappali</string>
+    <string name="onb_night_night">Éjszakai</string>
+    <string name="onb_night_light_sensor_available">Fényérzékelő észlelve, így az Automatikus mód követheti a környezeti fényt.</string>
+    <string name="onb_night_no_light_sensor">Nem észlelhető fényérzékelő, így az Automatikus mód a napkeltét és napnyugtát követi.</string>
+    <string name="onb_ready_title">Minden készen áll</string>
+    <string name="onb_ready_summary">Csatlakozás: %1$s\nFelbontás: %2$s\nKódek: %3$s\n\nMindent finomhangolhatsz a Beállításokban.</string>
+    <string name="onb_language_help">Válaszd ki az alkalmazás nyelvét.</string>
+    <string name="connection_kind_usb">USB</string>
+    <string name="onb_connection_usb_detail">Telefon USB-n keresztül csatlakoztatva, kábellel vagy USB-s vezeték nélküli adapterrel.</string>
+    <string name="onb_more_appearance">További megjelenítési beállítások</string>
+    <string name="onb_automation_title">Automatizálás</string>
+    <string name="onb_automation_help">Válaszd ki, hogyan induljon el és csatlakozzon az alkalmazás magától. Nyisd meg az Automatikus csatlakozás beállításait a prioritási sorrend átrendezéséhez.</string>
+    <string name="onb_gps_title">Hely</string>
+    <string name="onb_gps_help">Melyik GPS-t használja az Android Auto a navigációhoz?</string>
+    <string name="onb_gps_this_device">Ez az eszköz</string>
+    <string name="onb_gps_phone">Csatlakoztatott telefon</string>
+    <string name="onb_do_it_later">Később</string>
+    <string name="onb_display_dpi_label">Android Auto méret</string>
+    <string name="onb_dpi_small">Kicsi</string>
+    <string name="onb_dpi_medium">Közepes</string>
+    <string name="onb_dpi_large">Nagy</string>
+    <string name="onb_appearance_more_hint">További sötét mód beállításokat a Beállításokban találsz.</string>
+    <string name="onb_automation_more_hint">További beállításokat az Automatikus csatlakozás és Automatikus indítás menüben találsz.</string>
+    <string name="onb_dpi_help">A magasabb DPI nagyobbá teszi az Android Auto ikonjait és szövegét, így kevesebb fér a képernyőre. Az alacsonyabb DPI kisebbé teszi, így több fér el. A csatlakozáskor lép érvénybe.</string>
+    <string name="onb_change_later">Ezt később a Beállításokban módosíthatod.</string>
+    <string name="dpi_automatic">Automatikus</string>
+    <string name="dpi_automatic_desc">Az eszköz sűrűségének használata</string>
+    <string name="onb_conn_usb_label">USB (vagy adapter)</string>
+    <string name="onb_connection_self_detail">Az önálló mód telefon csatlakoztatása nélkül futtatja az Android Autót ezen az eszközön.</string>
+    <string name="connection_kind_all">Összes</string>
+    <string name="onb_connection_all_detail">Megjeleníti az USB- és a WiFi-beállításokat is.</string>
+    <string name="onb_connection_warning">Egy kapcsolattípus kiválasztása elrejti a nem megfelelő beállításokat az Alap és a Speciális fülön is. Ha újra látni szeretnéd őket, később válassz másik módot a kapcsolat beállításainál.</string>
+    <string name="resolution_recommended_format">%1$s (Ajánlott)</string>
+    <string name="resolution_high_bandwidth_format">%1$s · nagy sávszélesség</string>
+    <string name="resolution_too_high_title">A képernyőnél nagyobb felbontás</string>
+    <string name="resolution_too_high_message">Ez magasabb, mint amit a paneled támogat. A kép arra korlátozódik, amit a paneled meg tud jeleníteni (%1$s), így a magasabb felbontás csak több sávszélességet használ minőségjavulás nélkül.</string>
+    <string name="resolution_high_bandwidth_title">Nagyobb sávszélesség szükséges</string>
+    <string name="resolution_high_bandwidth_message">Ez a felbontás sokkal több sávszélességet használ, és erős kapcsolatot igényel: jó 5GHz-es WiFi vagy stabil USB. Ha akadozást tapasztalsz, válassz alacsonyabb felbontást.</string>
+    <string name="resolution_use_anyway">Mégis használ</string>
+    <string name="resolution_use_recommended">Ajánlott használata</string>
+    <string name="dpi_automatic_desc_format">Az eszköz sűrűségét használja (%1$d DPI)</string>
+    <string name="dpi_input_hint">DPI</string>
+    <string name="onb_dpi_huge">Hatalmas</string>
+    <string name="onb_vehicle_title">Az autód</string>
+    <string name="onb_vehicle_input_hint">Márka vagy név</string>
+    <string name="onb_vehicle_help_aa">Ez a név elküldésre kerül az Android Autónak. Megjelenik a telefon csatlakozási előzményeiben és az Android Auto üdvözlőképernyőjén.</string>
+    <string name="onb_vehicle_help_advanced">További járműadatokat a Speciális lapon állíthatsz be. Ezeket az adatokat nem használjuk; csak azért küldjük az Android Autónak, mert megköveteli.</string>
+    <string name="onb_summary_vehicle_format">Jármű: %1$s</string>
+    <string name="sunrise_reference_help">A napkelte és napnyugta kiszámításához használt referenciapont. Válassza ki egyszer a helyét; GPS nélkül is működik.</string>
+
+    <string name="support">Probléma bejelentése</string>
+    <string name="support_description">Keress vagy jelents hibákat GitHub-on</string>
+    <string name="support_title">Probléma bejelentése</string>
+    <string name="support_help">Ha hibát vagy problémát tapasztalsz, először keresd meg a GitHub-os hibajelentések között. Ha még senki nem jelentette, nyiss egy új hibajegyet, és írd le, mi történt, milyen fejegységet használsz, és hogyan lehet reprodukálni a hibát.</string>
+    <string name="support_open_issues">GitHub hibajelentések megnyitása</string>
+    <string name="support_scan_qr">Vagy olvasd be ezt a QR-kódot, ha egy másik eszközön szeretnéd megnyitni a hibajelentések listáját.</string>
+    <string name="support_github_account_warning">Megjegyzés: hibajegy létrehozásához ingyenes GitHub-fiókra van szükség.</string>
+    <string name="onb_ready_extras_title">Mielőtt befejeznéd, ezeket is beállíthatod:</string>
+    <string name="onb_extra_loading_desc">Egyéni kép, amely az autó csatlakozása közben jelenik meg</string>
+
+    <!-- Support / issue reporting rules -->
+    <string name="support_rules_button">Hibajelentési szabályok</string>
+    <string name="support_rules_intro">Csak két dolog kötelező. Minden más nem szükséges, de sokat segít a probléma gyorsabb megoldásában.</string>
+    <string name="support_rules_section_required">Kötelező</string>
+    <string name="support_rules_section_recommend">Javaslatok (nem kötelező)</string>
+    <string name="support_rules_english_desc">Kérjük, mindig angolul írd le a problémádat. Ez az egyetlen nyelv, amelyet a karbantartó és a legtöbb segítő közösen ért, és egy sok nyelvű szál hamar olyan Bábel tornyává válik, ahol senki sem tud senkinek segíteni. Senki sem ítél meg az angolod szintje vagy az írásod módja miatt, szóval ne aggódj a hibák miatt. Ha segít, egy fordítóprogram, mint a Google Translate vagy a DeepL, vagy egy mesterséges intelligencia, mint a ChatGPT vagy a Claude, megírja és rendbe teszi az üzeneted angolul.</string>
+    <string name="support_rules_device_title">Mondd el, min fut az alkalmazás</string>
+    <string name="support_rules_device_desc">Az Android Auto-t megjelenítő eszköz (a fejegységed vagy a képernyőd) Android-verziója, és ha tudod, a gyártója és modellje.</string>
+    <string name="support_rules_connection_title">Mondd el, hogyan csatlakozol</string>
+    <string name="support_rules_connection_desc">USB-kábellel, USB-s vezeték nélküli adapterrel, WiFi Direct-tel, WiFi-n (fejegység szerver) vagy Self Mode-ban. Ha vezeték nélküli, add meg az adapter vagy dongle modelljét is.</string>
+    <string name="support_rules_appversion_title">Add meg az alkalmazás verzióját</string>
+    <string name="support_rules_appversion_desc">A Open Headunit verziószámát a Rólunk képernyőn találod.</string>
+    <string name="support_rules_logs_title">Csatold a naplókat, rögtön a hiba után</string>
+    <string name="support_rules_logs_desc">Menj a Beállítások Speciális fülére, kapcsold be a Hibakeresési módot a Hibakeresés részben, idézd elő a problémát, majd közvetlenül utána koppints a Naplók exportálása gombra, hogy a napló tartalmazza a hibás pillanatot, ne csak az indítást. Ezt a fájlt csatold a hibajegyedhez.</string>
+    <string name="support_rules_search_title">Nincs kettőzés</string>
+    <string name="support_rules_search_desc">Először keresd meg a meglévő hibajegyeket. Ha egy nyitott hibajegy már leírja a problémádat, inkább ahhoz fűzz hozzászólást, ne nyiss újat. Csak akkor nyiss új hibajegyet, ha egyik sem egyezik.</string>
+    <string name="support_rules_phone_title">A telefonod is számít</string>
+    <string name="support_rules_phone_desc">A telefon modellje, Android-verziója és az Android Auto alkalmazás verziója a telefonon. Néhány hiba egy adott Android Auto kiadáshoz köthető.</string>
+    <string name="support_rules_describe_title">Írd le érthetően</string>
+    <string name="support_rules_describe_desc">Mit csináltál, mit vártál, és mi történt valójában. Vizuális problémáknál egy képernyőfotó vagy rövid videó sokat segít.</string>
+    <string name="support_rules_oneissue_title">Egy hibajegy, egy probléma</string>
+    <string name="support_rules_oneissue_desc">Minden hibajegy egyetlen problémáról szóljon, hogy könnyen nyomon követhető és javítható legyen. Egymással össze nem függő problémákhoz nyiss külön hibajegyeket.</string>
+    <string name="rename_notice_title">A nevünk erre változik: Open Headunit</string>
+    <string name="rename_notice_message">A Headunit Revived nektek köszönhetően egyre nő, és valami sajáttá válik: Open Headunit. Az új nevet a következő frissítések során fokozatosan vezetjük be, így néhány helyen egy ideig még a régi nevet láthatod.\n\nUgyanaz az alkalmazás, ugyanazokkal az emberekkel a háttérben, és minden beállításod pontosan úgy marad, ahogy van.</string>
+    <string name="rename_notice_button">Értem</string>
+
+    <string name="onb_summary_permissions_format">Permissions: %1$d of %2$d granted</string>
+    <string name="onb_ready_loading_intro">One more thing: you can now set a custom loading screen, shown while the car connects.</string>
+    <string name="onb_ready_loading_button">Set up a loading screen</string>
+    <string name="onb_permissions_title">Enable permissions</string>
+    <string name="onb_permissions_help">Turn on the permissions the app needs so everything works without surprise prompts later. You can change these any time.</string>
+    <string name="onb_perms_enable_all">Enable all</string>
+    <string name="perm_allow">Allow</string>
+    <string name="perm_granted">Granted</string>
+    <string name="perm_optional_format">%1$s (optional)</string>
+    <string name="permissions">Permissions</string>
+    <string name="permissions_desc">Review and grant the permissions the app needs</string>
+    <string name="perm_mic_title">Microphone</string>
+    <string name="perm_mic_help">Lets Android Auto use voice commands, the Google Assistant and phone calls.</string>
+    <string name="perm_location_title">Location</string>
+    <string name="perm_location_help">Sends GPS to the phone for navigation, scans for wireless connections and drives location based night mode.</string>
+    <string name="perm_nearby_title">Nearby devices</string>
+    <string name="perm_nearby_help">Needed to connect over Bluetooth and Wi-Fi, route Bluetooth audio and auto start on a paired device.</string>
+    <string name="perm_notifications_title">Notifications</string>
+    <string name="perm_notifications_help">Shows the ongoing notification while Android Auto is running.</string>
+    <string name="perm_overlay_title">Display over other apps</string>
+    <string name="perm_overlay_help">Lets the app open the car screen on top of other apps, including auto start.</string>
+    <string name="perm_write_settings_title">Modify system settings</string>
+    <string name="perm_write_settings_help">Lets the app turn the hotspot on automatically for wireless connections.</string>
+    <string name="perm_storage_title">Storage</string>
+    <string name="perm_storage_help">Needed to back up and restore your settings and to pick a custom loading image.</string>
+    <string name="onb_vehicle_help_sideload">Picking a real car brand also shows that brand\'s logo on the Android Auto exit button, but Android Auto then stops listing apps you installed from outside the Play Store. Keep \"Google\" or \"Open Headunit\" if you use those apps.</string>
+    <string-array name="vehicle_brands">
+        <item>Google</item>
+        <item>Android</item>
+        <item>Audi</item>
+        <item>BMW</item>
+        <item>Chevrolet</item>
+        <item>Chrysler</item>
+        <item>Fiat</item>
+        <item>Ford</item>
+        <item>Honda</item>
+        <item>Hyundai</item>
+        <item>Jeep</item>
+        <item>Kia</item>
+        <item>Mazda</item>
+        <item>Mercedes-Benz</item>
+        <item>Nissan</item>
+        <item>Peugeot</item>
+        <item>Renault</item>
+        <item>Subaru</item>
+        <item>Suzuki</item>
+        <item>Tesla</item>
+        <item>Toyota</item>
+        <item>Volkswagen</item>
+        <item>Volvo</item>
+    </string-array>
+    <string name="dpi_size_s">S</string>
+    <string name="dpi_size_m">M</string>
+    <string name="dpi_size_l">L</string>
+    <string name="dpi_size_xl">XL</string>
+    <string name="onb_dpi_recommended">Recommended for your screen: %1$d dpi</string>
+    <string name="dpi_value_format">%1$d DPI</string>
+    <string name="pixel_aspect_ratio">Pixel aspect ratio</string>
+    <string name="enter_pixel_aspect_ratio_value">Pixel aspect ratio x10000 (10000 = square pixels)</string>
+    <string name="cannot_open_settings">Could not open system settings</string>
+    <string name="static_bssid_title">Static BSSID</string>
+    <string name="static_bssid_enter_value">Enter BSSID (XX:XX:XX:XX:XX:XX)</string>
+    <string name="static_bssid_desc">Manually set the BSSID for the wireless handshake if auto-detection is blocked by system permissions</string>
+    <string name="use_measured_touch_surface">Experimental touch alignment fix</string>
+    <string name="use_measured_touch_surface_description">Normalize touch input against the measured projection overlay. May help when small Android Auto controls feel shifted.</string>
+    <string name="media_key_routing">Send Media Buttons To Android Auto</string>
+    <string name="media_key_routing_always">Always</string>
+    <string name="media_key_routing_auto">Automatic</string>
+    <string name="media_key_routing_never">Never</string>
+    <string name="media_key_routing_always_hint">Next, previous and play/pause are always sent to Android Auto. Use this unless one press skips two tracks.</string>
+    <string name="media_key_routing_auto_hint">Stops sending them while this headunit has a Bluetooth media connection to the phone, because that connection already performs the action. Choose this if one press skips two tracks and your phone is paired to this headunit.</string>
+    <string name="media_key_routing_never_hint">Never sends them, leaving the buttons to Bluetooth. Choose this if one press skips two tracks and your phone is paired to the car\'s own system rather than to this headunit — Automatic cannot detect that connection.</string>
+    <string name="media_key_routing_hint_common">Only the media buttons are affected. Rotary controllers, D-pad, Back and Enter always reach Android Auto.</string>
+    <string name="playback_focus_mode">Pause Other Audio During Playback</string>
+    <string name="playback_focus_mode_auto">Automatic</string>
+    <string name="playback_focus_mode_always">Always</string>
+    <string name="playback_focus_mode_never">Never</string>
+    <string name="playback_focus_mode_auto_hint">Pauses another player on the headunit (for example the radio) while Android Auto audio plays, but not while a Bluetooth audio link is connected — that link is usually the same phone, and pausing it would stop Android Auto\'s own sound.</string>
+    <string name="playback_focus_mode_always_hint">Always pauses other audio while Android Auto plays. If your music stops after a second or two whenever Bluetooth is on, switch back to Automatic.</string>
+    <string name="playback_focus_mode_never_hint">Never touches system audio focus. Other audio on the headunit may keep playing over Android Auto.</string>
+    <string name="playback_focus_mode_static_hint">With Static Audio Focus on, this applies from the moment the phone connects and lasts the whole session, rather than only while audio is playing.</string>
+    <string name="github_issues_url">https://github.com/shihabal3amri/DiAuto/issues</string>
+    <string name="support_rules_english_title">All posts in English</string>
+    <string name="boot_loop_paused_title">Wireless start-up paused</string>
+    <string name="boot_loop_paused_generic">This device restarted three times in a row shortly after Open Headunit started wireless, so wireless was left off this time. USB still works. Open the app to turn it back on.</string>
+    <string name="boot_loop_paused_native_wifi_direct">This device restarted three times in a row shortly after Open Headunit started wireless, so wireless was left off this time. On some head units the WiFi chipset takes the whole system down when a phone joins a WiFi Direct network. Try switching Android Auto mode to the head unit hotspot. USB still works.</string>
+    <string name="vehicle_make_hint">A real car brand shows that brand\'s logo on the Android Auto exit button, but Android Auto then stops listing apps installed from outside the Play Store. Set it back to \"Google\" to get those apps listed again.</string>
+    <string name="external_bt_nativeaa">Native Wireless cannot work on this head unit</string>
+    <string name="external_bt_nativeaa_desc">This head unit uses its own Bluetooth module (%1$s) instead of the one Android exposes to apps. Your phone pairs with that module, so anything this app sends over Bluetooth never reaches it — the connection will look like it is working and then stall.\n\nThis is a hardware limitation and cannot be worked around from the app. Please use USB, or the \"Wireless Helper\" or \"Auto (Headunit Server)\" mode, which do not need the Bluetooth handshake.</string>
+    <string name="manual_secondary_bt_service_title">Manual Secondary Radio</string>
+    <string name="manual_secondary_bt_service_message">Advanced: force an extra Bluetooth radio, for dual-radio units whose second radio isn\'t found automatically. Find it via \"adb shell service list\" (look for a Bluetooth-sounding entry besides bluetooth_manager) or an engineering menu, then paste either the name before the colon or the interface shown in brackets - both work. Not guaranteed to help on every unit: some head units run a customized Bluetooth stack that this can\'t bridge to no matter what you enter here. Leave blank to disable.</string>
+    <string name="native_ap_transport">Network transport</string>
+    <string name="native_ap_transport_wifi_direct">WiFi Direct</string>
+    <string name="native_ap_transport_hotspot">Hotspot</string>
+    <string name="native_ap_transport_hint">Experimental. The phone joins this device\'s own hotspot instead of a WiFi Direct group. Switch the hotspot on yourself before connecting, and set it to 5 GHz if you can - over 2.4 GHz the phone connects and then drops the session repeatedly without any picture, unless you lower the resolution and frame rate. If the network name cannot be read automatically, enter it below.</string>
+    <string name="hotspot_interface_override">Hotspot network interface</string>
+    <string name="hotspot_interface_override_message">Leave blank to work it out automatically. Set this if the log says more than one interface could be the access point, or picks the wrong one. The name is the one the log reports after &quot;Providing credentials from&quot;, or the entry holding your hotspot\'s address in &quot;ip -brief addr&quot; from a shell. Common names: ap0, wlan0, wlan1, wlan2, softap0, ra0.</string>
+    <string name="hotspot_ssid_override">Hotspot name (manual)</string>
+    <string name="hotspot_ssid_override_message">Leave blank to read the name from this device\'s hotspot settings automatically. Some devices do not let apps read it - if the log says the name could not be read, type it here exactly as it appears in your hotspot settings.</string>
+    <string name="hotspot_password_override">Hotspot password (manual)</string>
+    <string name="hotspot_password_override_message">Leave blank to read the password automatically. Needed on devices that do not let apps read the hotspot configuration. The phone will be given this password to join.</string>
+    <string name="hotspot_config_unreadable_toast">Can\'t read this device\'s hotspot name. Set it manually under Hotspot name/password in Settings.</string>
+    <string name="native_wifi_version_exchange">Modern handshake (version exchange)</string>
+    <string name="native_wifi_version_exchange_description">Opens the Bluetooth handshake by telling the phone which protocol version this head unit speaks, the way factory head units do, instead of going straight to the connection details. Off by default. Worth trying if wireless worked before an Android Auto update and has failed since; if it makes no difference, turn it back off.</string>
+    <string name="su_needed_keymaps_warning">Warning: Your headunit must be either rooted, or have Shizuku installed. If that\'s the case, you must allow SU rights, once prompted. Steering keys likely are not functional until this is fixed.</string>
+</resources>

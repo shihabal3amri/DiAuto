@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-sdk tools:overrideLibrary="
+        com.google.android.gms.nearby, com.google.android.gms.base, com.google.android.gms.tasks, com.google.android.gms.common,
+        rikka.shizuku.provider, rikka.shizuku.api, rikka.shizuku.shared, rikka.shizuku.aidl, com.topjohnwu.superuser" />
+
+    <queries>
+        <package android:name="com.google.android.projection.gearhead" />
+    </queries>
+
+    <uses-feature
+        android:name="android.hardware.usb.host"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.screen.landscape"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location.network"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.microphone"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.bluetooth"
+        android:required="false" />
+
+    <permission
+        android:name="com.andrerinas.openheadunit.permission.NAVIGATION_UPDATE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission
+        android:name="android.permission.NEARBY_WIFI_DEVICES"
+        android:usesPermissionFlags="neverForLocation"
+        tools:targetApi="s" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+
+    <application
+        android:name=".App"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/title"
+        android:largeHeap="true"
+        android:supportsRtl="true"
+        tools:ignore="GoogleAppIndexingWarning">
+
+        <activity
+            android:name=".aap.AapProjectionActivity"
+            android:configChanges="uiMode|orientation|screenSize|screenLayout|smallestScreenSize"
+            android:exported="true"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTask"
+            android:resizeableActivity="true"
+            android:supportsPictureInPicture="true"
+            android:theme="@style/AppTheme">
+
+        </activity>
+
+        <activity
+            android:name=".app.UsbAttachedActivity"
+            android:directBootAware="true"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.Translucent">
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/usb_device_filter" />
+        </activity>
+
+
+        <activity
+            android:name=".main.MainActivity"
+            android:configChanges="keyboardHidden|uiMode"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:theme="@style/SplashTheme">
+
+            <!-- Primary Launcher Filter -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <!-- Navigation Role Registration (allows selecting as default nav app) -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.APP_MAPS" />
+                <category android:name="android.intent.category.APP_NAVIGATION" />
+            </intent-filter>
+
+            <!-- Navigation Intent Filter (handles system navigate actions) -->
+            <intent-filter>
+                <action android:name="android.intent.action.NAVIGATE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+
+            <!-- Navigation Intent Filters & Deep Links -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="headunit" />
+                <data android:host="selfmode" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="geo" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="google.navigation" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="maps.google.com"
+                    android:scheme="http" />
+                <data
+                    android:host="maps.google.com"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".main.SettingsActivity"
+            android:label="@string/settings"
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".main.OnboardingActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/AppTheme" />
+
+        <service
+            android:name=".aap.AapService"
+            android:exported="false"
+            android:foregroundServiceType="connectedDevice|mediaPlayback"
+            android:stopWithTask="false">
+            <!-- MediaButtonReceiver looks for a Service with this intent-filter -->
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </service>
+        <service android:name=".location.GpsLocationService" />
+
+        <!-- AndroidX MediaButtonReceiver: Routes MEDIA_BUTTON intents to AapService
+             on Android 8+ where implicit broadcasts to manifest-registered receivers
+             are restricted. This is the standard Android mechanism used by HUR. -->
+        <receiver
+            android:name="androidx.media.session.MediaButtonReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Handles proprietary headunit command intents (com.android.music.*,
+             com.syu.*, etc). MEDIA_BUTTON is handled by MediaButtonReceiver above. -->
+        <receiver
+            android:name=".app.RemoteControlReceiver"
+            android:exported="true">
+            <intent-filter android:priority="1000">
+                <action android:name="com.android.music.musicservicecommand" />
+                <action android:name="com.android.music.playstatechanged" />
+                <action android:name="com.android.music.metachanged" />
+                <action android:name="com.android.music.playbackcomplete" />
+                <action android:name="com.android.music.queuechanged" />
+                <action android:name="com.syu.ms.action.external_command" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Comprehensive receiver for steering wheel and hardware buttons,
+             covering both standard Android events and proprietary Chinese headunit broadcasts. -->
+        <receiver
+            android:name=".connection.CarKeyReceiver"
+            android:exported="true">
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+                <action android:name="hy.intent.action.MEDIA_BUTTON" />
+                <action android:name="com.nwd.action.ACTION_KEY_VALUE" />
+                <action android:name="com.microntek.irkeyUp" />
+                <action android:name="com.microntek.irkeyDown" />
+                <action android:name="com.winca.service.Setting.KEY_ACTION" />
+                <action android:name="android.intent.action.C3_HARDKEY" />
+                <action android:name="IKeyClick.KEY_CLICK" />
+                <action android:name="com.eryanet.music.prev" />
+                <action android:name="com.eryanet.music.next" />
+                <action android:name="com.eryanet.media.playorpause" />
+                <action android:name="com.eryanet.media.play" />
+                <action android:name="com.eryanet.media.pause" />
+                <action android:name="com.bz.action.phone.pickup" />
+                <action android:name="com.bz.action.phone.hangup" />
+                <action android:name="com.tencent.qqmusiccar.action.MEDIA_BUTTON_INNER_ONKEY" />
+                <action android:name="cn.kuwo.kwmusicauto.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".app.BootCompleteReceiver"
+            android:directBootAware="true"
+            android:exported="true">
+            <intent-filter>
+                <!-- Standard Android boot -->
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_UNLOCKED" />
+                <!-- Generic / OEM quick boot -->
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+                <!-- MediaTek IPO (Instant Power On) -->
+                <action android:name="com.mediatek.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.mediatek.intent.action.BOOT_IPO" />
+                <!-- FYT / GLSX head units (ACC ignition wake) -->
+                <action android:name="com.fyt.boot.ACCON" />
+                <action android:name="com.glsx.boot.ACCON" />
+                <action android:name="android.intent.action.ACTION_MT_COMMAND_SLEEP_OUT" />
+                <!-- Microntek / MTCD / PX3 head units (ACC wake) -->
+                <action android:name="com.cayboy.action.ACC_ON" />
+                <action android:name="com.carboy.action.ACC_ON" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".app.AutoStartReceiver"
+            android:directBootAware="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.bluetooth.device.action.ACL_CONNECTED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".app.WifiAutoStartReceiver"
+            android:directBootAware="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.net.wifi.STATE_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".main.AutomationActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter>
+                <action android:name="com.andrerinas.openheadunit.ACTION_SET_NIGHT_MODE" />
+                <action android:name="com.andrerinas.openheadunit.ACTION_CONNECT" />
+                <action android:name="com.andrerinas.openheadunit.ACTION_DISCONNECT" />
+                <action android:name="com.andrerinas.openheadunit.ACTION_START_SELF_MODE" />
+                <action android:name="com.andrerinas.openheadunit.ACTION_STOP_SERVICE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="connect"
+                    android:scheme="headunit" />
+                <data
+                    android:host="disconnect"
+                    android:scheme="headunit" />
+                <data
+                    android:host="nightmode"
+                    android:scheme="headunit" />
+                <data
+                    android:host="exit"
+                    android:scheme="headunit" />
+            </intent-filter>
+        </activity>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+        <provider
+            android:name="rikka.shizuku.ShizukuProvider"
+            android:authorities="${applicationId}.shizuku"
+            android:enabled="true"
+            android:exported="true"
+            android:multiprocess="false"
+            android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
+    </application>
+</manifest>

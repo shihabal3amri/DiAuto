@@ -1,0 +1,870 @@
+<resources>
+    <string name="app_name">DiAuto</string>
+    <string name="menu">მენიუ</string>
+    <string name="settings">პარამეტრები</string>
+
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="dummy_button">სატესტო ღილაკი</string>
+    <string name="dummy_content">სატესტო\nკონტენტი</string>
+    <string name="allowed">ნებადართული</string>
+    <string name="ignored">იგნორირებული</string>
+    <string name="exit">გასვლა</string>
+    <string name="video">Android Auto</string>
+    <string name="self_mode">ავტონომიური რეჟიმი</string>
+    <string name="to_android_auto">Android Auto-ზე გადასვლა</string>
+    <string name="title">DiAuto</string>
+    <string name="remove">წაშლა</string>
+    <string name="usb">USB</string>
+    <string name="wifi">WiFi</string>
+    <string name="dpi">პიქსელების სიმკვრივე (DPI)</string>
+    <string name="mic_sample_rate">მიკროფონის დისკრეტულობის სიხშირე</string>
+    <string name="keymap">ღილაკების განლაგება</string>
+    <string name="night_mode">ბნელი რეჟიმი (Android Auto)</string>
+    <string name="night_mode_threshold">ბნელი რეჟიმის ზღვარი</string>
+    <string name="enter_threshold_value">შეიყვანეთ ზღვრული მნიშვნელობა</string>
+    <string name="threshold_lux_desc">განათებულობა ლუქსებში (0–10000). ამაზე დაბალი = ღამე.</string>
+    <string name="threshold_brightness_desc">სიკაშკაშის მნიშვნელობა (0–255). ამაზე დაბალი = ღამე.</string>
+    <string name="threshold_light_title">სინათლის მგრძნობელობა</string>
+    <string name="threshold_brightness_title">სიკაშკაშის დონე</string>
+    <string name="threshold_light_hint">ბნელი რეჟიმი აქტიურდება, როდესაც გარემო განათება ამ დონეზე დაბლა იწევს</string>
+    <string name="threshold_brightness_hint">ბნელი რეჟიმი აქტიურდება, როდესაც ეკრანის სიკაშკაშე ამ მნიშვნელობაზე დაბალია. Android სიკაშკაშეს ასახავს 0–255 დიაპაზონში, თუმცა რეალური დიაპაზონი შეიძლება განსხვავდებოდეს მოწყობილობის მიხედვით. შესაძლოა დაგჭირდეთ ექსპერიმენტის ჩატარება თქვენი მოწყობილობისთვის ოპტიმალური ზღვრის საპოვნელად.</string>
+    <string name="current_light_reading">მიმდინარე განათება: %d Lux</string>
+    <string name="current_brightness_reading">მიმდინარე სიკაშკაშე: %d / 255</string>
+    <string name="enable_fine_lux_control">ზუსტი კონტროლი (0–100 Lux)</string>
+    <string name="night_mode_start">ბნელი რეჟიმის დაწყების დრო</string>
+    <string name="night_mode_end">ბნელი რეჟიმის დასრულების დრო</string>
+
+    <string name="app_theme">ბნელი რეჟიმი (აპლიკაცია)</string>
+    <string name="app_theme_description">აპლიკაციის ვიზუალური იერსახის მართვა</string>
+    <string name="change_app_theme">აპლიკაციის თემის შეცვლა</string>
+    <string name="monochrome_icons">მონოქრომული ხატულები</string>
+    <string name="monochrome_icons_description">მთავარ ეკრანზე ნაცრისფერი ხატულების გამოყენება ბნელ ან ექსტრემალურად ბნელ რეჟიმში</string>
+    <string name="use_extreme_dark">ექსტრემალურად ბნელი რეჟიმი</string>
+    <string name="use_extreme_dark_description">სუფთა შავი ფონის გამოყენება ბნელი რეჟიმის გააქტიურებისას</string>
+    <string name="use_gradient_background">გრადიენტული ფონის გამოყენება</string>
+    <string name="use_gradient_background_description_on">აპლიკაცია თავად ხატავს ფონს ცენტრირებული გრადიენტული წრით</string>
+    <string name="use_gradient_background_description_off">გამოიყენება აპლიკაციის კლასიკური ფონი</string>
+    <string name="use_gradient_background_description_on_auto">აპლიკაცია თავად ხატავს ფონს ცენტრირებული გრადიენტული წრით. არ ვრცელდება ექსტრემალურად ბნელ რეჟიმზე</string>
+    <string name="use_gradient_background_description_off_auto">გამოიყენება აპლიკაციის კლასიკური ფონი. არ ვრცელდება ექსტრემალურად ბნელ რეჟიმზე</string>
+    <string name="use_white_background">მთავარ ეკრანზე თეთრი ფონის გამოყენება</string>
+    <string name="category_dark_mode">ბნელი რეჟიმი</string>
+    <string name="category_automation">ავტომატიზაცია</string>
+    <string name="dark_mode_settings">ბნელი რეჟიმის პარამეტრები</string>
+    <string name="app_theme_short">აპლიკაცია</string>
+    <string name="night_mode_short">Android Auto</string>
+    <string name="aa_monochrome">Android Auto-ს გაშავთეთრება</string>
+    <string name="aa_monochrome_description">ამცირებს Android Auto-ს ფერებს ღამით მართვისას. საჭიროებს GLES რეჟიმს. მოქმედებს მხოლოდ მაშინ, როდესაც ბნელი რეჟიმი ჩართულია</string>
+    <string name="aa_desaturation">გაჯერების შემცირება (დესატურაცია)</string>
+    <string name="aa_desaturation_description">მართავს ფერების მოცილების ინტენსივობას. მოქმედებს მხოლოდ ბნელი რეჟიმის ჩართვისას</string>
+    <string name="gles_required_title">საჭიროა GLES</string>
+    <string name="gles_required_message">მონოქრომული რეჟიმისთვის საჭიროა GLES რენდერინგი, რათა ვიდეო გამოსახულებაზე ნაცრისფერი ფილტრი იქნას გამოყენებული. ჩავრთოთ GLES?</string>
+    <string name="enable_gles">GLES-ის ჩართვა</string>
+    <string name="category_navigation">ნავიგაცია</string>
+    <string name="category_wireless">უსადენო კავშირი</string>
+
+    <string name="reconnection_required_title">საჭიროა ხელახალი კავშირი</string>
+    <string name="reconnection_required_message">მოწყობილობა მოლოდინის რეჟიმშია. გთხოვთ გამორთოთ და ხელახლა შეაერთოთ USB კაბელი Android Auto-ს დასაწყებად.</string>
+
+    <string name="bluetooth_address_s">Bluetooth მისამართი</string>
+    <string name="enter_bluetooth_mac">შეიყვანეთ Bluetooth MAC</string>
+    <string name="reset">ჩამოყრა</string>
+    <string name="reset_settings">ნაგულისხმევ პარამეტრებზე დაბრუნება</string>
+    <string name="reset_settings_confirm">დარწმუნებული ხართ, რომ გსურთ ყველა პარამეტრის საწყის მნიშვნელობებზე ჩამოყრა? ეს გადატვირთავს აპლიკაციას.</string>
+    <string name="reset_settings_description">აშლის ყველა კონფიგურაციას, ქეშირებულ მონაცემებსა და ავტო-კავშირის პარამეტრებს. ქარხნული პარამეტრების გამოსაყენებლად აპლიკაცია გადაიტვირთება.</string>
+    <string name="gps_for_navigation">GPS ნავიგაციისთვის</string>
+    <string name="gps_for_navigation_description">GPS-ის გამოყენება ნავიგაციისთვის</string>
+    <string name="enabled">ჩართულია</string>
+    <string name="disabled">გამორთულია</string>
+    <string name="resolution">გაფართოება</string>
+    <string name="change_resolution">გაფართოების შეცვლა</string>
+    <string name="change_dpi">DPI-ს შეცვლა</string>
+    <string name="change_view_mode">ხედვის რეჟიმის შეცვლა</string>
+    <string name="view_mode">ხედვის რეჟიმი</string>
+    <string name="surface_view">SurfaceView</string>
+    <string name="texture_view">TextureView</string>
+    <string name="gles_view">GLES20</string>
+    <string name="auto">ავტო</string>
+    <string name="screen_orientation">ეკრანის ორიენტაცია</string>
+    <string name="change_screen_orientation">ეკრანის ორიენტაციის შეცვლა</string>
+    <string name="orientation_system_default">სისტემური ნაგულისხმევი</string>
+    <string name="orientation_auto_sensor">ავტო (სენსორი)</string>
+    <string name="orientation_landscape">ალბომური (0°)</string>
+    <string name="orientation_landscape_reverse">შებრუნებული ალბომური (180°)</string>
+    <string name="orientation_portrait">პორტრეტული (90°)</string>
+    <string name="orientation_portrait_reverse">შებრუნებული პორტრეტული (270°)</string>
+    <string name="enter_dpi_value">შეიყვანეთ DPI მნიშვნელობა (0 ავტომატურისთვის)</string>
+    <string name="custom_margin">საკუთარი ველები (Margin)</string>
+    <string name="custom_margin_description">ეკრანის საკუთარი ველების დაყენება (0 ავტომატურისთვის)</string>
+    <string name="enter_custom_margins">შეიყვანეთ საკუთარი ველები (0 ავტომატურისთვის)</string>
+    <string name="margin_left">მარცხნივ</string>
+    <string name="margin_top">ზემოთ</string>
+    <string name="margin_right">მარჯვნივ</string>
+    <string name="margin_bottom">ქვემოთ</string>
+
+    <string name="start_in_fullscreen_mode">ეკრანის რეჟიმი</string>
+    <string name="start_in_fullscreen_mode_description">აირჩიეთ, როგორ იმართოს სისტემური ზოლები (სტატუსის და ნავიგაციის).</string>
+    <string name="fullscreen_none">ნორმალური (ყველა ზოლი ჩანს)</string>
+    <string name="fullscreen_immersive">სრული ეკრანი (Notch-ის დაფარვით)</string>
+    <string name="fullscreen_status_only">მხოლოდ სტატუსის ზოლის დამალვა</string>
+    <string name="fullscreen_immersive_avoid_notch">სრული ეკრანი (Notch-ის არიდებით)</string>
+    <string name="fullscreen_immersive_avoid_notch_desc">მალავს ყველა ზოლს და ამატებს დაშორებას (padding), რათა პროექცია არ დაიფაროს ეკრანის ჭრილით (Notch/Cutout).</string>
+
+    <string name="usb_status">USB სტატუსი: %s</string>
+    <string name="projection_status">პროექციის სტატუსი: %s</string>
+    <string name="connected">დაკავშირებულია</string>
+    <string name="disconnected">გათიშულია</string>
+    <string name="running">აქტიურია</string>
+    <string name="not_running">არ არის აქტიური</string>
+    <string name="no_android_auto_device_connected">Android Auto მოწყობილობა არ არის დაკავშირებული. გთხოვთ, შეამოწმოთ USB კავშირი.</string>
+    <string name="no_usb_device_connected">USB მოწყობილობა არ არის შეერთებული.</string>
+    <string name="press_back_again_to_exit">გასასვლელად კვლავ დააჭირეთ უკან დაბრუნების ღილაკს</string>
+    <string name="back">უკან</string>
+    <string name="debug_mode">გამართვის რეჟიმი (Debug)</string>
+    <string name="debug_mode_description">ლოგირების გაძლიერება</string>
+    <string name="log_level">ლოგის დონე</string>
+    <string name="log_level_description">ლოგის დონის ფილტრაცია ექსპორტისას</string>
+    <string name="log_source">ლოგის წყარო</string>
+    <string name="log_source_logcat">Logcat</string>
+    <string name="log_source_applog_file">პირდაპირ ფაილში</string>
+    <string name="log_location">ჟურნალის შენახვის ადგილი</string>
+    <string name="log_location_default">ნაგულისხმევი (აპლიკაციის მეხსიერება)</string>
+    <string name="log_location_downloads">ჩამოტვირთვების საქაღალდე</string>
+    <string name="start_log_capture">ლოგების ჩაწერის დაწყება</string>
+    <string name="start_log_capture_description">გამართვისთვის სრული ლოგების ჩაწერის დაწყება</string>
+    <string name="start_log_capture_in_applog_file">ლოგები იწერება ფაილში მხოლოდ მაშინ, როცა ჩაწერა აქტიურია</string>
+    <string name="start_log_capture_in_silent">ჩაწერის დაწყება შეუძლებელია: არჩეულია ჩუმი (Silent) ლოგირების დონე</string>
+    <string name="stop_log_capture">ლოგების ჩაწერის შეწყვეტა</string>
+    <string name="stop_log_capture_description">მიმდინარეობს ჩაწერა… დააჭირეთ შესაწყვეტად</string>
+    <string name="export_logs">ლოგების ექსპორტი</string>
+    <string name="export_logs_description">ლოგების შენახვა გამართვისთვის</string>
+
+    <string name="not_set">არ არის მითითებული</string>
+    <string name="keymap_description">შეცვალეთ თქვენი მონიტორის (Headunit) ღილაკების ფუნქციები</string>
+
+    <string name="key_soft_left">მარცხენა პროგრამული ღილაკი</string>
+    <string name="key_soft_right">მარჯვენა პროგრამული ღილაკი</string>
+    <string name="key_dpad_up">D-Pad ზემოთ</string>
+    <string name="key_dpad_down">D-Pad ქვემოთ</string>
+    <string name="key_dpad_left">D-Pad მარცხნივ</string>
+    <string name="key_dpad_right">D-Pad მარჯვნივ</string>
+    <string name="key_dpad_center">D-Pad ცენტრი (OK)</string>
+    <string name="key_media_play">მედია: დაკვრა</string>
+    <string name="key_media_pause">მედია: პაუზა</string>
+    <string name="key_media_play_pause">მედია: დაკვრა/პაუზა</string>
+    <string name="key_media_next">შემდეგი ტრეკი</string>
+    <string name="key_media_prev">წინა ტრეკი</string>
+    <string name="key_search">ხმოვანი ბრძანება</string>
+    <string name="key_call">ტელეფონი (პასუხი)</string>
+    <string name="key_endcall">ზარის დასრულება (უარყოფა)</string>
+    <string name="key_music">მუსიკა</string>
+    <string name="key_nav">ნავიგაცია</string>
+    <string name="key_night">ღამის რეჟიმის გადართვა</string>
+    <string name="key_enter">Enter</string>
+    <string name="key_home">Home</string>
+    <string name="key_app_switch">აპების გადამრთველი / ბოლო აპები</string>
+    <string name="key_button_a">ღილაკი A (არჩევა)</string>
+    <string name="key_button_b">ღილაკი B (უკან)</string>
+    <string name="key_back">უკან</string>
+
+    <string name="app_language">აპლიკაციის ენა</string>
+    <string name="system_default">სისტემური ნაგულისხმევი</string>
+    <string name="change_language">ენის შეცვლა</string>
+
+    <string name="category_general">ზოგადი</string>
+    <string name="auto_start_self_mode">Self-Mode ავტო-გაშვება</string>
+    <string name="auto_start_self_mode_description">Self-Mode-ის ავტომატური გაშვება აპლიკაციის გახსნისას.</string>
+    <string name="usb_auto_connect">USB ავტო-კავშირი</string>
+    <string name="usb_auto_connect_description">ცნობილ USB მოწყობილობასთან ავტომატური დაკავშირება აპლიკაციის გახსნისას.</string>
+    <string name="auto_start_bt_label">ავტო-გაშვება Bluetooth-ით</string>
+    <string name="auto_start_bt_description">Open Headunit-ის ავტომატური გახსნა კონკრეტული Bluetooth მოწყობილობის დაკავშირებისას.</string>
+    <string name="listen_for_usb_devices_label">USB მოწყობილობების მონიტორინგი</string>
+    <string name="listen_for_usb_devices_description">USB მოწყობილობის შეერთებისას Android სისტემური მოთხოვნის ჩვენება.</string>
+    <string name="show_toast_messages">Toast შეტყობინებების ჩვენება</string>
+    <string name="show_toast_messages_description">სტატუსის შეტყობინებების ჩვენება დაკავშირების, გათიშვის და რეჟიმის შეცვლისას.</string>
+    <string name="auto_start_usb_label">ავტო-გაშვება USB-ით</string>
+    <string name="auto_start_usb_description">აპლიკაციის ავტომატური გახსნა და დაკავშირების მცდელობა USB მოწყობილობის შეერთებისას</string>
+    <string name="auto_start_settings">ავტო-გაშვების პარამეტრები</string>
+    <string name="auto_start_settings_description">კონფიგურაცია, თუ როდის ჩაირთოს აპლიკაცია ავტომატურად</string>
+    <string name="auto_start_oem_warning">ამ მოწყობილობაზე შესაძლოა საჭირო გახდეს ავტო-გაშვების ნებართვის ჩართვა და ამ აპისთვის ელემენტის ოპტიმიზაციის ან ფონური შეზღუდვების მოხსნა.\n\nსწრაფი ჩატვირთვის (Quick Boot) მქონე მონიტორებზე ავტო-გაშვება შეიძლება საიმედოდ არ იმუშაოს. მოძებნეთ \"DuraSpeed\" სისტემურ პარამეტრებში და ჩართეთ ეს აპი იქ. ზოგიერთ მონიტორზე DuraSpeed დამალულია და მის საპოვნელად შესაძლოა დაგჭირდეთ აპლიკაცია \"Hidden Settings\". თუ DuraSpeed არ გაქვთ, სცადეთ Quick Boot-ის გამორთვა.</string>
+    <string name="auto_start_on_boot_label">გაშვება ჩატვირთვისას (Boot)</string>
+    <string name="auto_start_on_boot_description">აპლიკაციის ავტომატური გახსნა მოწყობილობის ჩართვისას. საჭიროებს \'სხვა აპებზე ჩვენების\' (Display over other apps) ნებართვას Android 10+ ვერსიებზე</string>
+    <string name="auto_start_screen_on_label">გაშვება ეკრანის ჩართვისას</string>
+    <string name="auto_start_screen_on_description">აპლიკაციის გახსნა ეკრანის ყოველ ჩართვაზე. იდეალურია იმ მონიტორებისთვის, რომლებიც არასდროს ითიშება სრულად ან იყენებენ სწრაფი ჩატვირთვის რეჟიმებს, სადაც ავტო-გაშვების სხვა ვარიანტები არ მუშაობს. არ არის რეკომენდებული ტელეფონებისა და ტაბლეტებისთვის.</string>
+    <string name="select_bt_device">აირჩიეთ Bluetooth მოწყობილობა</string>
+    <string name="bt_device_not_set">არ არის მითითებული</string>
+    <string name="auto_start_wifi_label">ავტო-გაშვება WiFi-ით</string>
+    <string name="auto_start_wifi_description">Open Headunit-ის ავტომატური გახსნა კონკრეტულ WiFi SSID-თან დაკავშირებისას.</string>
+    <string name="auto_start_wifi_ssid_label">WiFi SSID</string>
+    <string name="auto_start_wifi_ssid_description">დაკავშირება მხოლოდ ამ WiFi SSID-თან ყოფნისას</string>
+    <string name="auto_start_wifi_warning">მოძველებული ფუნქცია: შესაძლოა საიმედოდ არ იმუშაოს Android 8+ ვერსიებზე ფონური შეზღუდვების გამო. დარწმუნდით, რომ აპლიკაცია ამოღებულია ელემენტის ოპტიმიზაციიდან.</string>
+    <string name="enter_wifi_ssid">შეიყვანეთ WiFi SSID</string>
+    <string name="wifi_ssid_not_set">არ არის მითითებული</string>
+    <string name="bt_permission_denied_title">საჭიროა Bluetooth ნებართვა</string>
+    <string name="bt_permission_denied_message">დაწყვილებული მოწყობილობების ასარჩევად საჭიროა Bluetooth ნებართვა. გთხოვთ, მიანიჭოთ იგი აპლიკაციის პარამეტრებიდან.</string>
+    <string name="overlay_permission_title">ფონური გაშვების ნებართვა</string>
+    <string name="overlay_permission_description">იმისათვის, რომ Open Headunit ავტომატურად გაიხსნას Bluetooth-ის დაკავშირებისას, გთხოვთ, შემდეგ ეკრანზე ჩართოთ ნებართვა \"ჩვენება სხვა აპების ზემოთ\" (Display over other apps).</string>
+    <string name="open_settings">პარამეტრები</string>
+    <string name="right_hand_drive">მარჯვენასაჭიანი მართვა</string>
+    <string name="right_hand_drive_description">ინტერფეისის მორგება მარჯვენა საჭის მქონე ავტომობილებისთვის</string>
+    <string name="wireless_connection_settings">უსადენო კავშირი</string>
+    <string name="category_graphic">გრაფიკა</string>
+    <string name="custom_insets">საკუთარი ჩანართები (Insets / Margins)</string>
+    <string name="inset_top">ზემოთ</string>
+    <string name="inset_bottom">ქვემოთ</string>
+    <string name="inset_left">მარცხნივ</string>
+    <string name="inset_right">მარჯვნივ</string>
+    <string name="category_debug">გამართვა (Debug)</string>
+    <string name="category_input">შეყვანის პარამეტრები (Input)</string>
+    <string name="enable_rotary">ჯოისტიკის/სატრიალებლის (Rotary) მხარდაჭერა</string>
+    <string name="enable_rotary_description">ფიზიკური სატრიალებელი ღილაკების და მართვის ბორბლების მხარდაჭერის გააქტიურება. გამორთეთ ეს ფუნქცია, თუ სენსორული ეკრანი გამართულად არ მუშაობს.</string>
+
+    <string name="category_video">ვიდეო</string>
+    <string name="force_software_decoding">პროგრამული დეკოდირების იძულება</string>
+    <string name="force_software_decoding_description">შეიძლება გამოასწოროს პრობლემები ზოგიერთ მოწყობილობაზე, თუმცა ნაკლებად წარმადია</string>
+    <string name="wireless_mode">უსადენო რეჟიმი</string>
+    <string name="wireless_mode_description">აირჩიეთ, როგორ დაუკავშირდეს აპი უსადენოდ (მექანიკური სია, ტელეფონის ავტო-ძებნა ან Wireless Launcher რეჟიმი)</string>
+    <string-array name="wireless_connection_modes">
+        <item>მექანიკური (სია)</item>
+        <item>ავტო-ძებნა (Headunit Server)</item>
+        <item>Wireless Helper (ტელეფონის მოლოდინი)</item>
+        <item>Native Android Auto (ოფიციალური კავშირი)</item>
+    </string-array>
+    <string name="auto_connect_last_session">ბოლო სესიის ავტო-კავშირი</string>
+    <string name="auto_connect_last_session_description">აპის ჩართვისას ბოლო გამოყენებულ მოწყობილობასთან ავტომატური ხელახალი დაკავშირება</string>
+    <string name="auto_connect_single_usb">USB მოწყობილობის ავტო-კავშირი</string>
+    <string name="auto_connect_single_usb_description">ავტომატური დაკავშირება, როდესაც ხელმისაწვდომია მხოლოდ ერთი თავსებადი მოწყობილობა</string>
+    <string name="auto_connect_settings">ავტო-კავშირის პარამეტრები</string>
+    <string name="auto_connect_settings_description">ავტო-კავშირის მეთოდებისა და მათი პრიორიტეტების კონფიგურაცია</string>
+    <string name="auto_connect_help">ეს მეთოდები ავტომატურად ეშვება აპის გახსნისას. ჩართეთ სასურველი მეთოდები, შემდეგ გადაათრიეთ რიგითობის დასაყენებლად. გამოყენებული იქნება პირველივე ჩართული მეთოდი, რომელიც წარმატებით დაუკავშირდება.</string>
+    <string name="auto_connect_priority">პრიორიტეტი %d</string>
+    <string name="auto_connect_all_disabled">ყველა გამორთულია</string>
+    <string name="drag_to_reorder">გადაათრიეთ რიგის შესაცვლელად</string>
+    <string name="move_up">ზემოთ გადაადგილება</string>
+    <string name="move_down">ქვემოთ გადაადგილება</string>
+    <string name="auto_connecting_single_usb">მიმდინარეობს ავტო-კავშირი USB მოწყობილობასთან…</string>
+    <string name="video_codec">ვიდეო კოდეკი</string>
+    <string name="fps_limit">FPS ლიმიტი</string>
+    <string name="save">შენახვა</string>
+    <string name="save_and_restart">შენახვა (საჭიროებს ხელახალ კავშირს)</string>
+    <string name="add_new">ახლის დამატება</string>
+    <string name="cancel">გაუქმება</string>
+    <string name="enable">ჩართვა</string>
+    <string name="pref_stretch_screen_title">გაწელვა მთელ ეკრანზე</string>
+    <string name="pref_stretch_screen_summary">უგულებელყოფს გვერდების თანაფარდობას მთელი ეკრანის შესავსებად (აქრობს შავ ზოლებს)</string>
+    <string name="forced_scale">იძულებითი მასშტაბირება (Legacy Fix)</string>
+    <string name="forced_scale_description">ასწორებს მასშტაბირების პრობლემებს ზოგიერთ ძველ მოწყობილობაზე SurfaceView-ს გამოყენებისას. გამოიყენეთ მხოლოდ იმ შემთხვევაში, თუ გამოსახულება დამახინჯებულია ან გადაადგილებულია.</string>
+    <string name="hud_mirroring">HUD რეჟიმი (ჰორიზონტალური სარკე)</string>
+    <string name="hud_mirroring_description">ჰორიზონტალურად ასახავს ეკრანს საქარე მინის რეკლამისთვის (Head-Up Display). მოითხოვს TextureView ან GLES20 ხედვის რეჟიმს (არ მუშაობს SurfaceView-თან).</string>
+
+    <string name="category_audio">აუდიო</string>
+    <string name="enable_audio_sink">აუდიო მიმღები (Audio Sink)</string>
+    <string name="enable_audio_sink_description">თუ გამორთულია, მონიტორი არ მიიღებს აუდიოს. ხმა ითამაშებს ტელეფონიდან.</string>
+    <string name="static_audio_focus">სტატიკური აუდიო ფოკუსი</string>
+    <string name="static_audio_focus_description">აიძულებს ტელეფონს ჩათვალოს, რომ აუდიო ფოკუსი ყოველთვის დაკავებულია, რაც თავიდან აცილებს ხმის დაკარგვას არაბრენდირებულ მონიტორებზე. ასევე ახდენს პროგრამულ ჩახშობას (ducking) ნავიგაციის ხმოვანი მითითებების დროს.</string>
+    <string name="separate_audio_streams">აუდიო ნაკადების განცალკევება</string>
+    <string name="separate_audio_streams_description">მუსიკის, ზარებისა და შეტყობინებების აუდიო არხების განცალკევება ერთი მულტიმედიური ნაკადის ნაცვლად (შეიძლება გამართულად არ იმუშაოს ზოგიერთ მოწყობილობაზე).</string>
+    <string name="use_aac_audio">AAC აუდიოს გამოყენება</string>
+    <string name="use_aac_audio_description">AAC კოდეკის გამოყენება აუდიოსთვის გამტარუნარიანობის დასაზოგად (ექსპერიმენტული).</string>
+    <string name="attach_hw_dsp_equalizer">აპარატურული DSP ეკვალაიზერის ტრიგერი</string>
+    <string name="attach_hw_dsp_equalizer_description">ამატებს ფიქტიურ ეკვალაიზერის ეფექტს აუდიო სესიას აპარატურული DSP მარშრუტიზაციის იძულებით ჩართვისთვის. დატოვეთ გამორთული თუ იყენებთ ViPER4Android / ViperFX-ს ან თუ ხმა დახშულია ძველ Android ვერსიებზე.</string>
+    <string name="audio_volume_offset">აუდიო ხმის ოფსეტი (Offset)</string>
+    <string name="media_volume_offset">მედიის ხმის ოფსეტი</string>
+    <string name="assistant_volume_offset">ასისტენტის ხმის ოფსეტი</string>
+    <string name="navigation_volume_offset">ნავიგაციის ხმის ოფსეტი</string>
+    <string name="microphone_settings">მიკროფონის პარამეტრები</string>
+    <string name="microphone_settings_description">მიკროფონის შეყვანისა და აუდიო დამუშავების კონფიგურაცია.</string>
+    <string name="mic_input_source">მიკროფონის შეყვანის წყარო</string>
+    <string name="mic_input_source_description">აირჩიეთ აუდიო წყარო მიკროფონისთვის.</string>
+    <string-array name="mic_input_sources">
+        <item>ნაგულისხმევი (სისტემა წყვეტს)</item>
+        <item>ჩაშენებული მიკროფონი (Raw input)</item>
+        <item>ხმის ამოცნობა (ხმაურის შემცირებით)</item>
+        <item>ხმოვანი კომუნიკაცია (ექოს + ხმაურის ჩახშობით)</item>
+        <item>Bluetooth ყურსასმენი (SCO)</item>
+    </string-array>
+    <string name="mic_echo_canceler">ექოს ჩახშობა (AEC)</string>
+    <string name="mic_echo_canceler_description">ცდილობს მიკროფონიდან ექოს მოცილებას. გამორთეთ, თუ შეამჩნევთ ხმის გაქრობას ან დამახინჯებას.</string>
+    <string name="mic_noise_suppressor">ხმაურის ფილტრაცია (NS)</string>
+    <string name="mic_noise_suppressor_description">ცდილობს ფონური ხმაურის შემცირებას. გამორთეთ, თუ თქვენი ხმა ჩახლეჩილად ჟღერს.</string>
+    <string name="mic_auto_gain_control">ხმის ავტომატური გაძლიერება (AGC)</string>
+    <string name="mic_auto_gain_control_description">ავტომატურად არეგულირებს მიკროფონის ხმას. გამორთეთ, თუ ხმის სიძლიერე არასტაბილურია.</string>
+    <string name="mic_feature_unsupported">ეს ფუნქცია არ არის მხარდაჭერილი თქვენს მოწყობილობაზე.</string>
+
+    <string name="category_info">ინფორმაცია</string>
+    <string name="about">შესახებ &amp; მხარდაჭერა</string>
+    <string name="about_description">მიიღეთ მეტი ინფორმაცია Open Headunit-ის შესახებ</string>
+    <string name="version">ვერსია</string>
+    <string name="about_title">Open Headunit-ის შესახებ</string>
+    <string name="copyright">© 2025-%d André Rinas</string>
+
+    <string name="disclaimer_title">უსაფრთხოება &amp; პასუხისმგებლობა</string>
+    <string name="disclaimer_header">მნიშვნელოვანი გაფრთხილება</string>
+    <string name="disclaimer_accept">ვგებულობ და ვეთანხმები</string>
+    <string name="disclaimer_text"><![CDATA[
+        <b>1. ყურადღება გზაზე</b><br/>
+        მართვის დროს ამ პროგრამის გამოყენებამ შეიძლება გაგიფანტოთ ყურადღება და შექმნას საფრთხე. ყოველთვის მიანიჭეთ უპირატესობა უსაფრთხო მართვას და დაიცავით საგზაო მოძრაობის ყველა ადგილობრივი წესი. გამოიყენეთ ეს აპლიკაცია მხოლოდ მაშინ, როდესაც ეს უსაფრთხოა.<br/><br/>
+        <b>2. პასუხისმგებლობის შეზღუდვა</b><br/>
+        Open Headunit მოწოდებულია "როგორც არის" (as is) ყოველგვარი გარანტიის გარეშე. დეველოპერები არ იღებენ პასუხისმგებლობას რაიმე სახის ავარიაზე, თქვენი ავტომობილის/მოწყობილობის დაზიანებაზე ან სამართლებრივ შედეგებზე, რომლებიც გამოწვეულია ამ პროგრამის გამოყენებით.<br/><br/>
+        <b>3. დამოუკიდებლობა</b><br/>
+        ეს პროექტი არის დამოუკიდებელი ღია კოდის მქონე ინიციატივა და არ არის ასოცირებული, დამტკიცებული ან დაკავშირებული Google LLC-სთან ან Android Auto ბრენდთან.
+    ]]></string>
+
+    <string name="searching">მიმდინარეობს ძებნა…</string>
+    <string name="auto_connecting_to">მიმდინარეობს ავტო-კავშირი მოწყობილობასთან %s…</string>
+    <string name="auto_connecting_usb">მიმდინარეობს ავტო-კავშირი USB მოწყობილობასთან…</string>
+    <string name="already_connected">უკვე დაკავშირებულია</string>
+    <string name="already_scanning">სკანირება უკვე მიმდინარეობს…</string>
+    <string name="searching_headunit_server">მიმდინარეობს Headunit Server-ის ძებნა…</string>
+    <string name="already_searching_phone">ტელეფონის ძებნა უკვე მიმდინარეობს…</string>
+    <string name="searching_phone">მიმდინარეობს ტელეფონის ძებნა…</string>
+    <string name="key_mappings_reset">ღილაკების განლაგება ჩამოყრილია</string>
+    <string name="press_key_to_assign">დააჭირეთ ღილაკს \'%s\' ფუნქციის მისანიჭებლად…</string>
+    <string name="key_assigned">\'%1$s\' მიენიჭა ღილაკს \'%2$s\'</string>
+    <string name="last_key_press">ბოლო დაჭერილი ღილაკი: %1$s (%2$d)</string>
+    <string name="scan">სკანირება</string>
+    <string name="scanning_network">მიმდინარეობს ქსელის სკანირება…</string>
+    <string name="found_connecting">ნაპოვნია %s, მიმდინარეობს დაკავშირება…</string>
+    <string name="no_devices_found">მოწყობილობები ვერ მოიძებნა</string>
+    <string name="unsaved_changes">შეუნახავი ცვლილებები</string>
+    <string name="unsaved_changes_message">თქვენ გაქვთ შეუნახავი ცვლილებები. გსურთ მათი გაუქმება?</string>
+    <string name="discard">გაუქმება</string>
+    <string name="stopping_service">მომსახურების შეჩერება ცვლილებების გამოსაყენებლად…</string>
+    <string name="settings_saved">პარამეტრები შენახულია</string>
+    <string name="category_backup">სარეზერვო ასლი (Backup)</string>
+    <string name="export_settings">პარამეტრების ექსპორტი</string>
+    <string name="export_settings_description">პარამეტრების სარეზერვო ასლის შენახვა JSON ფაილად</string>
+    <string name="export_settings_choose_location">აირჩიეთ შენახვის ადგილი</string>
+    <string name="export_settings_downloads">ჩამოტვირთვებში (Downloads) შენახვა</string>
+    <string name="export_settings_app_folder">აპის სარეზერვო საქაღალდეში შენახვა</string>
+    <string name="import_settings">პარამეტრების იმპორტი</string>
+    <string name="import_settings_description">პარამეტრების აღდგენა Open Headunit-ის სარეზერვო ასლიდან</string>
+    <string name="import_settings_choose_file">აირჩიეთ სარეზერვო ფაილი</string>
+    <string name="import_settings_downloads">იმპორტი ჩამოტვირთვებიდან (Downloads)</string>
+    <string name="import_settings_app_folder">იმპორტი აპის სარეზერვო საქაღალდიდან</string>
+    <string name="settings_exported">პარამეტრების ექსპორტი შესრულებულია</string>
+    <string name="settings_backup_saved_to">პარამეტრების სარეზერვო ასლი შენახულია აქ:\n%1$s</string>
+    <string name="settings_export_failed">პარამეტრების ექსპორტი ჩაიშალა: %1$s</string>
+    <string name="settings_import_failed">პარამეტრების იმპორტი ჩაიშალა: %1$s</string>
+    <string name="settings_imported">პარამეტრების იმპორტი შესრულდა: %1$d გამოყენებულია, %2$d გამოტოვებულია</string>
+    <string name="import_settings_discard_pending">სარეზერვო ასლის იმპორტი გააუქმებს თქვენს შეუნახავ ცვლილებებს. გაგრძელდეს?</string>
+    <string name="reset_settings_confirm_message">ეს ჩამოყრის ყველა პარამეტრს ნაგულისხმევ მნიშვნელობებზე. სარეზერვო ასლები და აპის ფაილები არ წაიშლება. გაგრძელდეს?</string>
+    <string name="reset_settings_discard_pending">პარამეტრების ჩამოყრა გააუქმებს თქვენს შეუნახავ ცვლილებებს. გაგრძელდეს?</string>
+    <string name="settings_reset">პარამეტრები ჩამოყრილია საწყის მნიშვნელობებზე</string>
+    <string name="settings_reset_failed">პარამეტრების ჩამოყრა ჩაიშალა: %1$s</string>
+    <string name="storage_permission_denied_backup">მეხსიერების ნებართვა უარყოფილია. ჩამოტვირთვების საქაღალდის გამოყენება შეუძლებელია.</string>
+    <string name="no_file_picker_title">ფაილების მენეჯერი ვერ მოიძებნა</string>
+    <string name="no_file_picker_message">ამ მოწყობილობას არ აქვს თავსებადი ფაილების მენეჯერი. ამის ნაცვლად შეგიძლიათ გამოიყენოთ ჩამოტვირთვები ან აპის სარეზერვო საქაღალდე.</string>
+    <string name="no_settings_backups_title">სარეზერვო ასლები ვერ მოიძებნა</string>
+    <string name="no_settings_backups_message">აპის სარეზერვო საქაღალდეში Open Headunit-ის ასლები ვერ მოიძებნა. ჯერ გააკეთეთ ექსპორტი ამ საქაღალდეში, შემდეგ კი სცადეთ იმპორტი.</string>
+    <string name="no_settings_backups_downloads_message">ჩამოტვირთვებში Open Headunit-ის სარეზერვო ასლები ვერ მოიძებნა. ჯერ გააკეთეთ ექსპორტი ჩამოტვირთვებში, შემდეგ კი სცადეთ იმპორტი.</string>
+    <string name="share_settings_backup">პარამეტრების სარეზერვო ასლის გაზიარება</string>
+    <string name="logs_exported">ლოგების ექსპორტი შესრულებულია</string>
+    <string name="log_saved_to">ლოგი შენახულია აქ:\n%s</string>
+    <string name="share">გაზიარება</string>
+    <string name="close">დახურვა</string>
+    <string name="failed_export_logs">ლოგების ექსპორტი ჩაიშალა</string>
+    <string name="failed_export_in_silent_logs">ლოგების ექსპორტი შეუძლებელია: არჩეულია ჩუმი (Silent) ლოგირების დონე</string>
+    <string name="switching_to_android_auto">მიმდინარეობს Android Auto-ზე გადართვა…</string>
+    <string name="switch_failed">გადართვა ჩაიშალა</string>
+    <string name="requesting_usb_permission">USB ნებართვის მოთხოვნა…</string>
+    <string name="enter_ip_address">შეიყვანეთ IP მისამართი</string>
+    <string name="switching_usb_accessory_mode">USB მოწყობილობის აქსესუარის რეჟიმში გადართვა: %s</string>
+    <string name="success">წარმატება</string>
+    <string name="failed">ჩაიშალა</string>
+    <string name="failed_start_android_auto">Android Auto-ს გაშვება ჩაიშალა</string>
+    <string name="failed_self_mode_android10">ავტონომიური რეჟიმი (Self-mode) სავარაუდოდ დაბლოკილია Google-ის მიერ Android 10-ზე (AA 16.4+).</string>
+    <string name="android_auto_starting">Android Auto იწყება…</string>
+    <string name="connection_interrupted">კავშირი გაწყდა</string>
+    <string name="connection_interrupted_detail">მიმდინარეობს ხელახალი მცდელობა…</string>
+    <string name="wifi_disconnect_toast">Android Auto გაითიშა: თუ იყენებთ უ線ო კავშირს, გამორთეთ ფუნქციები \"Switch between networks\" ან \"Network acceleration\" ტელეფონის WiFi პარამეტრებიდან</string>
+    <string name="reset_usb_option">USB კავშირის გადატვირთვა</string>
+    <string name="reset_usb_timeout">USB მოწყობილობა ვერ მოიძებნა. გთხოვთ, შეამოწმოთ კავშირი.</string>
+    <string name="notification_service_running">Open Headunit აქტიურია</string>
+    <string name="notification_projection_active">Android Auto პროეცირებულია</string>
+    <string name="shortcut_connect_title">დაკავშირება</string>
+    <string name="shortcut_connect_desc">ავტო-კავშირი ბოლო ტელეფონთან</string>
+    <string name="shortcut_selfmode_title">Self Mode</string>
+    <string name="shortcut_selfmode_desc">Android Auto-ს გაშვება ამ მოწყობილობაზე</string>
+    <string name="shortcut_disconnect_title">გათიშვა</string>
+    <string name="shortcut_disconnect_desc">მიმდინარე სესიის დასრულება</string>
+    <string name="shortcut_exit_title">აპიდან გასვლა</string>
+    <string name="shortcut_exit_desc">ყველა სერვისის შეჩერება და აპის დახურვა</string>
+    <string name="shortcut_night_mode_auto_title">რეჟიმი: ავტო</string>
+    <string name="shortcut_night_mode_auto_desc">ავტომატური ღამის რეჟიმის აღდგენა</string>
+    <string name="shortcut_night_mode_day_title">რეჟიმი: დღე</string>
+    <string name="shortcut_night_mode_day_desc">დღის რეჟიმის იძულება</string>
+    <string name="shortcut_night_mode_night_title">რეჟიმი: ღამე</string>
+    <string name="shortcut_night_mode_night_desc">ღამის რეჟიმის იძულება</string>
+    <string name="setup_welcome_title">სწრაფი გამართვა</string>
+    <string name="setup_welcome_msg">ეს ასისტენტი დაგეხმარებათ შეარჩიოთ საუკეთესო პარამეტრები Android Auto-ს გამართული მუშაობისთვის.\n\nთქვენ ყოველთვის შეძლებთ ამ პარამეტრების შეცვლას ან ასისტენტის ხელახლა გაშვებას აპის პარამეტრებიდან.</string>
+    <string name="setup_start">დაწყება</string>
+    <string name="setup_size_title">ეკრანის ზომა</string>
+    <string name="setup_size_phone">ტელეფონი / მცირე (4-6\")</string>
+    <string name="setup_size_small">მცირე ტაბლეტი (7-8\")</string>
+    <string name="setup_size_standard">სტანდარტული (9-10\")</string>
+    <string name="setup_size_large">დიდი (11\"+)</string>
+    <string name="setup_orientation_title">მოწყობილობის ორიენტაცია</string>
+    <string name="setup_orientation_landscape">ალბომური (ჰორიზონტალური)</string>
+    <string name="setup_orientation_portrait">პორტრეტული (ვერტიკალური)</string>
+    <string name="setup_result_title">ოპტიმიზაცია დასრულდა</string>
+    <string name="setup_apply">გამოყენება</string>
+    <string name="setup_widescreen_detected">აღმოჩენილია ფართოფორმატიანი ეკრანი.</string>
+    <string name="auto_optimize">პარამეტრების ავტო-ოპტიმიზაცია</string>
+    <string name="auto_optimize_desc">სისტემური შემოწმების გაშვება თქვენი მოწყობილობისთვის საუკეთესო პარამეტრების საპოვნელად.</string>
+
+    <string name="show_navigation_notifications">ნავიგაციის შეტყობინებები</string>
+    <string name="show_navigation_notifications_description">შეტყობინებებში მიმართულებების (\"X მეტრში მოუხვიეთ Y-ზე\") და მიმდინარე ქუჩის ჩვენება (გამართვისთვის)</string>
+    <string name="media_session_aa_status_placeholder">დაკავშირებულია</string>
+    <string name="sync_media_session_aa_metadata">AA მუსიკის სინქრონიზაცია მედიასესიასთან</string>
+    <string name="sync_media_session_aa_metadata_description">ტელეფონიდან ტრეკის დასახელების, შემსრულებლის, ხანგრძლივობისა და ალბომის ყდის ჩვენება სისტემურ მედიასესიაში და მედიაშეტყობინებაში</string>
+    <string name="nav_notification_channel_name">ნავიგაცია</string>
+    <string name="nav_notification_channel_description">ნაბიჯ-ნაბიჯ ნავიგაციის განახლებები Android Auto-დან</string>
+    <string name="nav_notification_title_format">%1$d მეტრში — %2$s</string>
+    <string name="nav_notification_street_format">ქუჩა: %1$s</string>
+    <string name="nav_action_unknown">მოქმედება</string>
+    <string name="nav_action_depart">გამგზავრება</string>
+    <string name="nav_action_name_change">ქუჩის სახელის შეცვლა</string>
+    <string name="nav_action_slight_turn">მცირედი მოხვევი</string>
+    <string name="nav_action_turn">მოხვევი</string>
+    <string name="nav_action_sharp_turn">მკვეთრი მოხვევი</string>
+    <string name="nav_action_uturn">მობრუნება (U-turn)</string>
+    <string name="nav_action_on_ramp">გზაზე შესვლა</string>
+    <string name="nav_action_off_ramp">ესტაკადიდან გასვლა</string>
+    <string name="nav_action_merge">ზოლების შეერთება</string>
+    <string name="nav_action_roundabout_enter">წრიულზე შესვლა</string>
+    <string name="nav_action_roundabout_exit">წრიულიდან გასვლა</string>
+    <string name="nav_action_roundabout">წრიული მოძრაობა</string>
+    <string name="nav_action_straight">პირდაპირ</string>
+    <string name="nav_action_ferry">ბორანი</string>
+    <string name="nav_action_ferry_train">ბორანი / მატარებელი</string>
+    <string name="nav_action_destination">დანიშნულების ადგილი</string>
+    <string name="show_fps_counter">FPS მრიცხველის ჩვენება</string>
+    <string name="show_fps_counter_description">პროექციის დროს ზედა მარცხენა კუთხეში რეალური FPS-ის ჩვენება.</string>
+
+    <string name="reopen_on_reconnection_label">ხელახალი კავშირისას გახსნა</string>
+    <string name="reopen_on_reconnection_description">\"გასვლა\" ღილაკზე დაჭერისას აპლიკაცია აგრძელებს მუშაობას ფონურ რეჟიმში და აკონტროლებს USB კავშირებს. მოწყობილობის ხელახალი შეერთებისას აპი ავტომატურად გაიხსნება.</string>
+    <string name="overlay_permission_required">ავტო-გაშვებისთვის საჭიროა \'სხვა აპებზე ჩვენების\' ნებართვა</string>
+    <string name="usb_permission_denied">USB ნებართვა უარყოფილია. გთხოვთ, დაუშვათ USB წვდომა ავტომატური კავშირისთვის.</string>
+    <string name="overlay_permission_denied_auto_start_disabled">ფონური ჩვენების ნებართვა არ არის გაცემული. ავტო-გაშვება გამორთულია.</string>
+
+    <string name="kill_on_disconnect">აპის დახურვა გათიშვისას</string>
+    <string name="kill_on_disconnect_description">Android Auto-ს გათიშვისას აპლიკაციის ავტომატური დახურვა</string>
+    <string name="kill_on_disconnect_warning_title">გაფრთხილება</string>
+    <string name="kill_on_disconnect_warning">ხელახალი კავშირის შემდეგი პარამეტრები კონფლიქტში მოდის გათიშვისას აპის დახურვის ფუნქციასთან:\n\n%1$s\n\nთქვენი საწყისი კავშირის პარამეტრები (ავტო-კავშირი, ავტო-გაშვება) კვლავ იმუშავებს მონიტორის ჩართვისას. თუმცა, პირველივე გათიშვის შემდეგ აპი მაშინვე დაიხურება ხელახალი დაკავშირების მცდელობის ნაცვლად.\n\nშენიშვნა: ზოგიერთი არაქარხნული მონიტორი არასდროს ითიშება სრულად — ისინი გადადიან ძილის (ჰიბერნაციის) რეჟიმში, ისევე როგორც ტელეფონი ეკრანის ბლოკირებისას. ამ ოპციის ჩართვის შემთხვევაში, აპი დაიხურება პირველივე გათიშვისას და შეიძლება ავტომატურად აღარ გაიხსნას მანქანის მომდევნო დაქოქვისას.\n\nგსურთ გამორთოთ ზემოთ ჩამოთვლილი ხელახალი კავშირის პარამეტრები?</string>
+    <string name="kill_on_disconnect_disable_and_enable">გამორთვა და ჩართვა</string>
+    <string name="kill_on_disconnect_enable_anyway">მაინც ჩართვა</string>
+    <string name="kill_on_disconnect_conflicts_disabled">კონფლიქტური პარამეტრები გამორთულია</string>
+    <string name="kill_on_disconnect_boot_warning">თქვენ ჩართული გაქვთ \"გაშვება ჩატვირთვისას\" (Start on boot). თუ აპი იხურება გათიშვისას, ხოლო მოწყობილობა სრული გამორთვის ნაცვლად გადადის ძილის რეჟიმში, აპი ავტომატურად აღარ გაიხსნება მომდევნო დაქოქვისას, რადგან სისტემური ჩატვირთვის (boot) ივენთი არ ფიქსირდება — მოწყობილობა უბრალოდ იღვიძებს ძილიდან.</string>
+    <string name="kill_on_disconnect_screen_on_warning">თქვენ ჩართული გაქვთ \"გაშვება ეკრანის ჩართვისას\". ეს პარამეტრი ხსნის აპს ეკრანის ყოველ ჩართვაზე. გათიშვისას აპის დახურვის ფუნქციასთან ერთად, აპი გათიშვის შემდეგ დაიხურება, მაგრამ ეკრანის ჩართვისთანავე კვლავ გაიხსნება, რაც შექმნის მუდმივ გადატვირთვის ციკლს.</string>
+
+    <string name="wifi_disabled_info">ინფორმაცია: Wi-Fi გამორთულია.</string>
+    <string name="bt_not_enabled">Bluetooth გამორთულია</string>
+    <string name="bt_permission_denied">Bluetooth ნებართვა უარყოფილია. მოწყობილობების ძებნა შეუძლებელია.</string>
+
+    <string name="vehicle_info_settings">ავტომობილის ინფორმაცია</string>
+    <string name="vehicle_info_settings_description">მოახდინეთ თქვენი ავტომობილის იდენტიფიკაციის მორგება ტელეფონისთვის</string>
+    <string name="ui_scale">ინტერფეისის მასშტაბი</string>
+    <string name="ui_scale_home">მთავარი ეკრანი</string>
+    <string name="ui_scale_settings">პარამეტრების ეკრანი</string>
+    <string name="category_vehicle">ავტომობილი</string>
+    <string name="category_head_unit">მონიტორი (Head Unit)</string>
+    <string name="vehicle_display_name_label">სასურველი სახელი</string>
+    <string name="vehicle_display_name_description">სახელი, რომელიც გამოჩნდება თქვენს ტელეფონში ამ ავტომობილისთვის</string>
+    <string name="vehicle_make_label">მარკა</string>
+    <string name="vehicle_make_description">ავტომობილის მწარმოებელი (მაგ. Honda, Toyota, Volkswagen)</string>
+    <string name="vehicle_model_label">მოდელი</string>
+    <string name="vehicle_model_description">ავტომობილის მოდელი (მაგ. Civic, Corolla, ID.4)</string>
+    <string name="vehicle_year_label">წელი</string>
+    <string name="vehicle_year_description">ავტომობილის გამოშვების წელი</string>
+    <string name="vehicle_id_label">ავტომობილის ID</string>
+    <string name="vehicle_id_description">მხოლოდ შიდა იდენტიფიკატორი. ამის შეცვლა აიძულებს ტელეფონს ჩათვალოს ეს სხვა ავტომობილად, რაც ჩამოყრის თქვენს Android Auto-ს პარამეტრებს ამ მანქანისთვის.</string>
+    <string name="head_unit_make_label">მონიტორის მარკა</string>
+    <string name="head_unit_make_description">მონიტორის მწარმოებელი</string>
+    <string name="head_unit_make_hint">თქვენი ტელეფონი ამ სახელს აჩვენებს Android Auto-ს პარამეტრებში.</string>
+    <string name="head_unit_model_label">მონიტორის მოდელი</string>
+    <string name="head_unit_model_description">მონიტორის მოდელი</string>
+    <string name="vehicle_year_error_invalid">შეიყვანეთ ვალიდური წელი</string>
+    <string name="vehicle_year_error_max">წელი არ შეიძლება იყოს %1$d-ზე გვიანდელი</string>
+    <string name="vehicle_info_restart_note">ეს მონაცემები ეგზავნება Android Auto-ს ყოველი დაკავშირებისას.</string>
+
+    <string name="auto_enable_hotspot">ჰოტსპოტის (Hotspot) ავტო-ჩართვა</string>
+    <string name="auto_enable_hotspot_description">ამ მოწყობილობაზე Wi-Fi ჰოტსპოტის ავტომატური გაშვება. (არ იმუშავებს ყველა მოწყობილობაზე)</string>
+    <string name="hotspot_warning_title">ექსპერიმენტული ფუნქცია</string>
+    <string name="hotspot_warning_message">ეს ფუნქცია იყენებს რეფლექსიას და შეიძლება არ იმუშაოს ყველა მოწყობილობაზე. მან ასევე შეიძლება მოითხოვოს \"სისტემური პარამეტრების შეცვლის\" (Modify system settings) ნებართვის მექანიკურად გაცემა.</string>
+    <string name="hotspot_permission_title">საჭიროა ნებართვა</string>
+    <string name="hotspot_permission_message">ჰოტსპოტის ფუნქციისთვის საჭიროა \"სისტემური პარამეტრების შეცვლის\" ნებართვა. გთხოვთ, ჩართოთ იგი მომდევნო ეკრანზე.</string>
+
+    <string name="supported_nativeaa">გაუმჯობესებული უსადენო მხარდაჭერა</string>
+    <string name="supported_nativeaa_desc">შესანიშნავი სიახლე! თქვენს მოწყობილობას აქვს \"Native Wireless\" რეჟიმის მხარდაჭერა, რაც უზრუნველყოფს Android Auto-ს უფრო სტაბილურ მუშაობას. \n\nამის გასააქტიურებლად საჭიროა Bluetooth ქეშის განახლება. გთხოვთ: \n1. წაშალეთ არსებული კავშირი (pairing) ტელეფონში \n2. დააჭირეთ OK-ს Bluetooth-ის გადასატვირთად \n3. ხელახლა დააწყვილეთ ტელეფონი \n\nგსურთ გადახვიდეთ Native AA რეჟიმზე ახლავე?</string>
+    <string name="not_supported_nativeaa">Native Wireless მხარდაჭერა ვერ მოიძებნა</string>
+    <string name="not_supported_nativeaa_desc">თქვენს მოწყობილობას შესაძლოა არ ჰქონდეს Native Wireless-ისთვის საჭირო Bluetooth ან Wi-Fi ფუნქციების მხარდაჭერა. შეგიძლიათ მაინც სცადოთ, მაგრამ თუ არ იმუშავებს, გამოიყენეთ რეჟიმი \"Wireless Helper\" ან \"Auto (Headunit Server)\".</string>
+
+    <string name="wait_for_wifi">WiFi-ს მოლოდინი WiFi Direct-ის წინ</string>
+    <string name="wait_for_wifi_description">ჩატვირთვისას, WiFi-ს დაკავშირების მოლოდინი WiFi Direct-ის გაშვებამდე. ჩართეთ ეს ფუნქცია, თუ თქვენს მონიტორს ჩართვის შემდეგ სჭირდება რამდენიმე წამი WiFi-სთან დასაკავშირებლად.</string>
+    <string name="wait_for_wifi_timeout">WiFi-ს მოლოდინის ტაიმაუტი</string>
+    <string name="wireless_24ghz_warning">შენიშვნა: უსადენო Android Auto 2.4GHz მოწყობილობებზე შეიძლება იწვევდეს დაყოვნებას, კადრების გაჭედვას და გათიშვას. პრობლემების შემთხვევაში, გთხოვთ, შეამოწმოთ კავშირი USB კაბელით, რათა დარწმუნდეთ, არის თუ არა ეს ქსელის შეზღუდვა.</string>
+    <string name="fake_speed_title">ვიდეოს ბლოკირების მოხსნა (Fake Speed)</string>
+    <string name="fake_speed_description">ტელეფონს გადასცემს მუდმივ დაბალ სიჩქარეს (0.5 მ/წმ), რათა თავიდან აიცილოს ვიდეო კონტენტის დაბლოკვა მართვის დროს. გამოიყენეთ სიფრთხილით.</string>
+    <string name="wireless_mode_helper">Wireless Helper</string>
+    <string name="wireless_mode_native">Native</string>
+    <string name="wireless_mode_server">Headunit Server</string>
+    <string name="server_mode_label">სერვერის რეჟიმი</string>
+    <string name="server_mode_manual">მექანიკური</string>
+    <string name="server_mode_auto">ავტო</string>
+
+    <string name="helper_strategy_label">დამხმარე კავშირის სტრატეგია</string>
+    <string-array name="helper_strategies">
+        <item>საერთო Wifi (NSD)</item>
+        <item>WiFi Direct (P2P)</item>
+        <item>Google Nearby (Beta)</item>
+        <item>ტელეფონის ჰოტსპოტი (ჰოსტი)</item>
+        <item>მონიტორის ჰოტსპოტი (პასიური)</item>
+    </string-array>
+
+    <string name="select_nearby_device">აირჩიეთ ახლომდებარე მოწყობილობა</string>
+    <string name="nearby_device_found">ახლომდებარე მოწყობილობა ნაპოვნია</string>
+    <string name="connecting_to_nearby">მიმდინარეობს დაკავშირება მოწყობილობასთან %s…</string>
+
+    <string name="exit_dialog_title">Android Auto-დან გასვლა</string>
+    <string name="exit_dialog_stop">კავშირის შეწყვეტა</string>
+    <string name="exit_dialog_pip">სურათი სურათში (PiP)</string>
+    <string name="exit_dialog_background">ფონურ რეჟიმში გადაყვანა</string>
+    <string name="exit_dialog_settings">სწრაფი პარამეტრები</string>
+    <string name="gesture_hint">რჩევა: გადაუსვით მარცხენა კიდიდან 2 თითით გასვლის მენიუს გასახსნელად.</string>
+    <string name="audio_latency_multiplier">აუდიო დაყოვნების მულტიპლიკატორი</string>
+    <string name="audio_latency_multiplier_description">აუდიო ბუფერის ზომის რეგულირება (დაბალი = ნაკლები დაყოვნება, მაღალი = ნაკლები წყვეტა)</string>
+    <string name="audio_queue_capacity">აუდიო რიგის ტევადობა (Backpressure)</string>
+
+    <string name="loading_screen">ჩატვირთვის ეკრანი</string>
+    <string name="loading_screen_default">ნაგულისხმევი</string>
+    <string name="loading_screen_custom">საკუთარი</string>
+    <string name="loading_screen_dialog_title">საკუთარი ჩატვირთვის ეკრანი</string>
+    <string name="loading_screen_select_file">აირჩიეთ ფაილი</string>
+    <string name="loading_screen_remove">წაშლა</string>
+    <string name="loading_screen_recommendation">რეკომენდებული გაფართოება: %1$dx%2$d</string>
+    <string name="loading_screen_supported_formats">მხარდაჭერილია: სურათები (PNG, JPG, BMP, WEBP, GIF) \u2022 ვიდეო (MP4, MKV, WEBM, 3GP) \u2022 მაქს: 10 MB</string>
+    <string name="loading_screen_no_media">მედია ფაილი არ არის არჩეული</string>
+    <string name="loading_screen_file_too_large">ფაილი ძალიან დიდია (მაქს 10 MB)</string>
+    <string name="loading_screen_unsupported_format">არამხარდაჭერილი ფორმატი. გამოიყენეთ სურათის ან ვიდეო ფაილი</string>
+    <string name="loading_screen_file_error">ვერ მოხერხდა არჩეული ფაილის ჩატვირთვა</string>
+    <string name="loading_screen_show_text">ტექსტის ჩვენება \"Android Auto იწყება\"</string>
+    <string name="loading_screen_tap_preview">დააჭირეთ სრულ ეკრანზე სანახავად</string>
+    <string name="loading_screen_tap_to_close">დააჭირეთ ნებისმიერ ადგილას დასახურად</string>
+    <string name="loading_screen_keep_aspect_ratio">პროპორციების შენარჩუნება</string>
+    <string name="loading_screen_scale">მასშტაბი</string>
+    <string name="loading_screen_recommended_aspect_ratio">რეკომენდებული პროპორცია: %1$d:%2$d</string>
+    <string name="loading_screen_tap_fullscreen_hint">დააჭირეთ ესკიზს სრულ ეკრანზე სანახავად</string>
+    <string name="loading_screen_loop_video">მოკლე ანიმაციების ციკლური დაკვრა (Loop)</string>
+    <string name="media_action_previous">წინა</string>
+    <string name="media_action_play">დაკვრა</string>
+    <string name="media_action_pause">პაუზა</string>
+    <string name="media_action_next">შემდეგი</string>
+    <string name="error_usb_permission_failed">სისტემური შეცდომა: ვერ მოხერხდა USB ნებართვის ფანჯრის მოთხოვნა.</string>
+    <string name="wifi_autostart_title">WiFi ავტო-გაშვება</string>
+    <string name="wifi_autostart_content">დაკავშირებულია %s-თან. დააჭირეთ Android Auto-ს დასაწყებად.</string>
+
+    <string name="bt_devices_selected">მოწყობილობა არჩეულია</string>
+    <string name="bluetooth_adapter_label">Bluetooth ადაპტერი</string>
+    <string name="bluetooth_adapter_description">აირჩიეთ Bluetooth ადაპტერი/კონტროლერი კავშირისთვის. სასარგებლოა ორმაგი Bluetooth სისტემებისთვის.</string>
+    <string name="select_bt_adapter">აირჩიეთ Bluetooth ადაპტერი</string>
+    <string name="share_hotspot_qr_title">Wireless Helper-ის გამართვა</string>
+    <string name="share_hotspot_qr_desc">QR კოდის ჩვენება ტელეფონის ავტომატური კავშირისთვის</string>
+    <string name="hotspot_ssid_hint">ჰოტსპოტის SSID</string>
+    <string name="hotspot_pass_hint">ჰოტსპოტის პაროლი</string>
+    <string name="hotspot_qr_description">Wireless Helper კონფიგურაციის QR კოდი</string>
+    <string name="scan_with_wireless_helper">დაასკანირეთ ეს QR კოდი თქვენი ტელეფონის Wireless Helper აპის QR სკანერით.</string>
+    <string name="share_hotspot_qr_error">ვერ მოხერხდა აქტიური Wi-Fi ჰოტსპოტის მონაცემების მიღება. გთხოვთ, დარწმუნდეთ, რომ ჰოტსპოტი ჩართულია და ლოკაცია (Location) აქტიურია.</string>
+    <!-- Native USB Driver -->
+    <string name="use_libusb">USB-ის ნატივი დრაივერის გამოყენება</string>
+    <string name="use_libusb_description">libusb-ის გამოყენება კავშირისთვის. გამორთეთ Android-ის სტანდარტული USB API-ის გამოსაყენებლად.</string>
+
+    <string name="software_video_decoder">პროგრამული დეკოდერის წყარო</string>
+    <string name="software_video_decoder_bundled">ჩაშენებული FFmpeg</string>
+    <string name="software_video_decoder_device">მოწყობილობის MediaCodec</string>
+
+    <string name="btn_show_qr">QR კოდის ჩვენება</string>
+    <string name="renderer_fallback_surface">ვიდეო მუდმივად იყინებოდა, ამიტომ ამ სესიისთვის ჩვენება გადაერთო SurfaceView-ზე. თუ სტაბილურია, პარამეტრებში დააყენეთ ხედვის რეჟიმი SurfaceView-ზე.</string>
+    <string name="dpi_resolution_over_panel_warning">თქვენ მიერ არჩეული გარჩევადობა (%1$s) თქვენს პანელზე მაღალია. ის შეზღუდულია %2$s-მდე და DPI სწორედ ამისთვის გამოითვლება. თუ ცუდად გამოიყურება, გამოიყენეთ რეკომენდებული გარჩევადობა (%2$s).</string>
+    <string name="renderer_confirm_question">ხედავთ Android Auto-ს ეკრანს?</string>
+    <string name="renderer_confirm_yes">დიახ</string>
+    <string name="renderer_confirm_switch">რენდერერის შეცვლა</string>
+    <string name="renderer_switched_to">რენდერერი: %1$s</string>
+
+    <string name="self_mode_overlay_permission_description">ავტონომიური რეჟიმის ფონურ რეჟიმში საიმედოდ გასაშვებად, გთხოვთ, შემდეგ ეკრანზე ჩართოთ ნებართვა „სხვა აპებზე ჩვენება“.</string>
+
+    <string name="settings_tab_basic">ძირითადი</string>
+    <string name="settings_tab_advanced">დამატებითი</string>
+    <string name="settings_search_hint">პარამეტრების ძებნა</string>
+    <string name="connection_mode">კავშირის რეჟიმი</string>
+    <string name="connection_kind_usb_cable">USB კაბელი (პირდაპირი)</string>
+    <string name="connection_kind_usb_wireless_adapter">USB უსადენო ადაპტერი</string>
+    <string name="connection_kind_wifi">WiFi</string>
+    <string name="connection_kind_unset">არ არის მითითებული</string>
+    <string name="onb_next">შემდეგი</string>
+    <string name="onb_skip">გამოტოვება</string>
+    <string name="onb_ready_finish">დასრულება</string>
+    <string name="onb_welcome_title">კეთილი იყოს თქვენი მობრძანება Open Headunit-ში</string>
+    <string name="onb_welcome_body">ეს სწრაფი გამართვა ასკანირებს თქვენს მოწყობილობას და ირჩევს ვიდეოს, ეკრანისა და ბნელი რეჟიმის საუკეთესო პარამეტრებს. ყველაფრის შეცვლა მოგვიანებით პარამეტრებში შეგიძლიათ.</string>
+    <string name="onb_safety_title">უპირველესად უსაფრთხოება</string>
+    <string name="onb_safety_accept">წავიკითხე და ვეთანხმები პირობებს</string>
+    <string name="onb_connection_title">როგორ უკავშირდებით?</string>
+    <string name="onb_connection_help">აირჩიეთ, როგორ უკავშირდება თქვენი ტელეფონი. ეს პარამეტრების ეკრანს მხოლოდ თქვენთვის რელევანტურ ვარიანტებზე ამახვილებს.</string>
+    <string name="onb_connection_cable_detail">ტელეფონი პირდაპირ მონიტორშია ჩართული USB კაბელით. უსადენო ვარიანტები დამალული რჩება.</string>
+    <string name="onb_connection_adapter_detail">USB დონგლი აკავშირებს კაბელს უსადენო კავშირთან. უსადენო ვარიანტები ნაჩვენებია.</string>
+    <string name="onb_connection_wifi_detail">ტელეფონი უკავშირდება WiFi-ით.</string>
+    <string name="onb_display_title">ეკრანი</string>
+    <string name="onb_display_detected">აღმოჩენილი პანელი: %1$d x %2$d px, %3$d dpi, აპარატურა %4$s.</string>
+    <string name="onb_display_size_label">ეკრანის ზომა</string>
+    <string name="onb_display_orientation_label">ორიენტაცია</string>
+    <string name="onb_display_apply">რეკომენდებული პარამეტრების გამოყენება</string>
+    <string name="onb_display_result">გამოყენებულია: %1$s, %2$d dpi, %3$s, %4$s ხედი.</string>
+    <string name="onb_appearance_title">იერსახე</string>
+    <string name="onb_appearance_theme_label">აპლიკაციის თემა</string>
+    <string name="onb_theme_auto">ავტო</string>
+    <string name="onb_theme_light">ღია</string>
+    <string name="onb_theme_dark">ბნელი</string>
+    <string name="onb_appearance_night_label">ბნელი რეჟიმი (Android Auto)</string>
+    <string name="onb_night_auto">ავტომატური</string>
+    <string name="onb_night_day">დღე</string>
+    <string name="onb_night_night">ღამე</string>
+    <string name="onb_night_light_sensor_available">აღმოჩენილია სინათლის სენსორი, ამიტომ ავტომატურ რეჟიმს შეუძლია გარემო განათებას მიჰყვეს.</string>
+    <string name="onb_night_no_light_sensor">სინათლის სენსორი ვერ მოიძებნა, ამიტომ ავტომატური რეჟიმი მიჰყვება მზის ამოსვლასა და ჩასვლას.</string>
+    <string name="onb_ready_title">ყველაფერი მზადაა</string>
+    <string name="onb_ready_summary">კავშირი: %1$s\nგაფართოება: %2$s\nკოდეკი: %3$s\n\nყველაფრის ზუსტად მორგება პარამეტრებში შეგიძლიათ.</string>
+    <string name="onb_language_help">აირჩიეთ აპლიკაციის ენა.</string>
+    <string name="connection_kind_usb">USB</string>
+    <string name="onb_connection_usb_detail">ტელეფონი USB-ით არის დაკავშირებული: პირდაპირი კაბელით ან USB უსადენო ადაპტერით.</string>
+    <string name="onb_more_appearance">იერსახის დამატებითი პარამეტრები</string>
+    <string name="onb_automation_title">ავტომატიზაცია</string>
+    <string name="onb_automation_help">აირჩიეთ, როგორ გაეშვას და დაუკავშირდეს აპლიკაცია დამოუკიდებლად. ავტო-კავშირის პარამეტრები გახსენით პრიორიტეტული რიგის გადასათრევად.</string>
+    <string name="onb_gps_title">მდებარეობა</string>
+    <string name="onb_gps_help">რომელი GPS გამოიყენოს Android Auto-მ ნავიგაციისთვის?</string>
+    <string name="onb_gps_this_device">ეს მოწყობილობა</string>
+    <string name="onb_gps_phone">დაკავშირებული ტელეფონი</string>
+    <string name="onb_do_it_later">მოგვიანებით</string>
+    <string name="onb_display_dpi_label">Android Auto-ს ზომა</string>
+    <string name="onb_dpi_small">პატარა</string>
+    <string name="onb_dpi_medium">საშუალო</string>
+    <string name="onb_dpi_large">დიდი</string>
+    <string name="onb_appearance_more_hint">მუქი რეჟიმის დამატებით პარამეტრებს პარამეტრებში იპოვით.</string>
+    <string name="onb_automation_more_hint">დამატებით პარამეტრებს ავტომატური დაკავშირებისა და ავტომატური გაშვების პარამეტრებში იპოვით.</string>
+    <string name="onb_dpi_help">მაღალი DPI ზრდის Android Auto-ს ხატულებსა და ტექსტს, ამიტომ ეკრანზე ნაკლები ეტევა. დაბალი DPI ამცირებს მათ და მეტი ეტევა. მოქმედებს Android Auto-ს დაკავშირებისას.</string>
+    <string name="onb_change_later">ამის შეცვლა მოგვიანებით პარამეტრებში შეგიძლიათ.</string>
+    <string name="dpi_automatic">ავტომატური</string>
+    <string name="dpi_automatic_desc">მოწყობილობის სიმკვრივის გამოყენება</string>
+    <string name="onb_conn_usb_label">USB (ან ადაპტერი)</string>
+    <string name="onb_connection_self_detail">ავტონომიური რეჟიმი უშვებს Android Auto-ს ამ მოწყობილობაზე ტელეფონის დაკავშირების გარეშე.</string>
+    <string name="connection_kind_all">ყველა</string>
+    <string name="onb_connection_all_detail">აჩვენებს როგორც USB, ისე WiFi პარამეტრებს.</string>
+    <string name="onb_connection_warning">კავშირის ტიპის არჩევა მალავს შეუსაბამო პარამეტრებს როგორც ძირითად, ისე გაფართოებულ ჩანართში. ისევ სანახავად, მოგვიანებით აირჩიეთ სხვა რეჟიმი კავშირის პარამეტრებში.</string>
+    <string name="resolution_recommended_format">%1$s (რეკომენდებული)</string>
+    <string name="resolution_high_bandwidth_format">%1$s · მაღალი გამტარუნარიანობა</string>
+    <string name="resolution_too_high_title">გარჩევადობა ეკრანზე მაღალია</string>
+    <string name="resolution_too_high_message">ეს თქვენს პანელზე მხარდაჭერილ მაჩვენებელზე მაღალია. გამოსახულება შეზღუდულია იმით, რისი ჩვენებაც თქვენს პანელს შეუძლია (%1$s), ამიტომ უფრო მაღალი გარჩევადობა მხოლოდ მეტ გამტარუნარიანობას ხარჯავს ხარისხის გაუმჯობესების გარეშე.</string>
+    <string name="resolution_high_bandwidth_title">საჭიროა მეტი გამტარუნარიანობა</string>
+    <string name="resolution_high_bandwidth_message">ეს გარჩევადობა გაცილებით მეტ გამტარუნარიანობას ხარჯავს და საჭიროებს მდგრад კავშირს: კარგ 5GHz WiFi-ს ან სტაბილურ USB-ს. თუ შეფერხებას შეამჩნევთ, აირჩიეთ დაბალი გარჩევადობა.</string>
+    <string name="resolution_use_anyway">მაინც გამოყენება</string>
+    <string name="resolution_use_recommended">რეკომენდებულის გამოყენება</string>
+    <string name="dpi_automatic_desc_format">იყენებს მოწყობილობის სიმკვრივეს (%1$d DPI)</string>
+    <string name="dpi_input_hint">DPI</string>
+    <string name="onb_dpi_huge">უზარმაზარი</string>
+    <string name="onb_vehicle_title">თქვენი მანქანა</string>
+    <string name="onb_vehicle_input_hint">მარკა ან სახელი</string>
+    <string name="onb_vehicle_help_aa">ეს სახელი იგზავნება Android Auto-ში. ის ჩანს ტელეფონის კავშირების ისტორიაში და Android Auto-ს მისალმების ეკრანზე.</string>
+    <string name="onb_vehicle_help_advanced">მანქანის დამატებითი დეტალები შეგიძლიათ დააკონფიგუროთ ჩანართში დამატებითი. ჩვენ არ ვიყენებთ ამ მონაცემებს; ისინი იგზავნება მხოლოდ Android Auto-ში, რადგან ის ამას მოითხოვს.</string>
+    <string name="onb_summary_vehicle_format">მანქანა: %1$s</string>
+
+    <string name="support">პრობლემის შეტყობინება</string>
+    <string name="support_description">GitHub-ზე ხარვეზების ძებნა ან შეტყობინება</string>
+    <string name="support_title">პრობლემის შეტყობინება</string>
+    <string name="support_help">თუ წაიქეცით ხარვეზში ან პრობლემაში, გთხოვთ, ჯერ მოძებნოთ იგი GitHub-ის საკითხების სიაში. თუ ჯერ არავის შეუტყობინებია ამის შესახებ, გახსენით ახალი საკითხი და აღწერეთ: რა ხდება, რა მონიტორი გაქვთ და როგორ შეიძლება პრობლემის გამეორება.</string>
+    <string name="support_open_issues">GitHub-ის საკითხების გვერდის გახსნა</string>
+    <string name="support_scan_qr">ან დაასკანირეთ ეს QR კოდი, რათა გახსნათ საკითხების სია სხვა მოწყობილობაზე.</string>
+    <string name="support_github_account_warning">შენიშვნა: საკითხის შესაქმნელად საჭიროა უფასო GitHub ანგარიში.</string>
+    <string name="onb_ready_extras_title">დასრულებამდე შეგიძლიათ ასევე გამართოთ:</string>
+    <string name="onb_extra_loading_desc">სახეობრივი სურათი, რომელიც ჩანს მანქანის დაკავშირების დროს</string>
+
+    <string name="support_rules_button">შეტყობინების წესები</string>
+    <string name="support_rules_english_desc">გთხოვთ, პრობლემა ყოველთვის ინგლისურად აღწეროთ. ეს ის ერთი ენაა, რომელსაც პროექტის შემქმნელი და აქ მომხმარეთა უმეტესობა იზიარებს, ხოლო ნაირენოვანი ძაფი სწრაფად გადაიქცევა ბაბილონის გოდოლად, სადაც ვერავინ ვერ ეხმარება ვერავის. არავინ გასამართლებთ — არც თქვენს ინგლისურს, არც ჩაწერის სტილს, ამიტომ ნუ ინერვიულებთ შეცდომებზე. თუ გამოგადგებათ, მთარგმნელი, Google Translate ან DeepL, ან ხელოვნური ინტელექტი, ChatGPT ან Claude, დაგეხმარებათ ინგლისურად გამართულად ჩამოაყალიბოთ გზავნილი.</string>
+    <string name="support_rules_device_title">აღწერეთ, რომელ მოწყობილობაზე მუშაობს აპი</string>
+    <string name="support_rules_device_desc">Android Auto-ს გამომჩენი მოწყობილობის (თქვენი მონიტორის ან ეკრანის) Android ვერსია, ასევე მწარმოებელი და მოდელი, თუ იცით.</string>
+    <string name="support_rules_connection_title">მიუთითეთ, როგორ უკავშირდებით</string>
+    <string name="support_rules_connection_desc">USB კაბელი, USB უსადენო ადაპტერი, WiFi Direct, WiFi (headunit server) ან Self Mode. თუ კავშირი უსადენოა, დაამატეთ ადაპტერის ან დონგლის მოდელი.</string>
+    <string name="support_rules_appversion_title">მიუთითეთ აპის ვერსია</string>
+    <string name="support_rules_appversion_desc">Open Headunit-ის ვერსია, რომელიც ნაჩვენებია შესახებ ეკრანზე.</string>
+    <string name="support_rules_logs_title">მიამაგრეთ ლოგი — პრობლემის შემდეგ დაუყოვნებლივ</string>
+    <string name="support_rules_logs_desc">გახსენით პარამეტრები, გადადით დამატებითი ჩანართზე, ჩართეთ გამართვის რეჟიმი გამართვა განყოფილებაში, გაიმეორეთ პრობლემა, შემდეგ დაუყოვნებლივ შეეხეთ ლოგების ექსპორტი, რათა ლოგი მოიცავდეს შეცდომის მომენტს და არა მხოლოდ გაშვებას. მიამაგრეთ ეს ფაილი საკითხს.</string>
+    <string name="support_rules_search_title">დუბლიკატები არ გახსნათ</string>
+    <string name="support_rules_search_desc">ჯერ მოძებნეთ არსებულ საკითხებში. თუ ღია საკითხი უკვე აღწერს თქვენს პრობლემას, კომენტარი დაამატეთ იქ ახლის გახსნის ნაცვლად. ახალი გახსენით მხოლოდ იმ შემთხვევაში, თუ არც ერთი არ ემთხვევა.</string>
+    <string name="support_rules_phone_title">ტელეფონიც მნიშვნელოვანია</string>
+    <string name="support_rules_phone_desc">თქვენი ტელეფონის მოდელი, მისი Android ვერსია და ტელეფონზე დაყენებული Android Auto-ს ვერსია. ზოგიერთი პრობლემა კონკრეტული Android Auto-ს გამოშვებით არის გამოწვეული.</string>
+    <string name="support_rules_describe_title">ნათლად აღწერეთ პრობლემა</string>
+    <string name="support_rules_describe_desc">რა გააკეთეთ, რას ელოდეთ და რეალურად რა მოხდა. ეკრანის სურათი ან მოკლე ვიდეო ძალიან გვეხმარება ვიზუალური პრობლემებისთვის.</string>
+    <string name="support_rules_oneissue_title">ერთი საკითხი — ერთი პრობლემა</string>
+    <string name="support_rules_oneissue_desc">ყოველ საკითხს ერთი პრობლემა ეძღვნება, რათა მისი თვალყურის დევნება და გამოსწორება მარტივი იყოს. დაუკავშირებელი პრობლემებისთვის გახსენით ცალკე საკითხები.</string>
+    <string name="support_rules_intro">მხოლოდ ორი რამ არის სავალდებულო. ყველა დანარჩენი სურვილისამებრ, მაგრამ ეს ძალიან აჩქარებს პრობლემის გადაჭრას.</string>
+    <string name="support_rules_section_required">სავალდებულო</string>
+    <string name="support_rules_section_recommend">რეკომენდაციები (სურვილისამებრ)</string>
+    <string name="rename_notice_title">ჩვენი სახელი იცვლება — Open Headunit</string>
+    <string name="rename_notice_message">Headunit Revived თქვენი წყალობით იზრდება და საკუთარ რაღაცად იქცევა: Open Headunit. ახალ სახელს მომდევნო განახლებების განმავლობაში თანდათან შემოვიღებთ, ამიტომ ზოგან ძველ სახელს ჯერ კიდევ დაინახავთ.\n\nიგივე აპი, იგივე ხალხი მის უკან, და ყველა თქვენი პარამეტრი ზუსტად ისე რჩება, როგორც არის.</string>
+    <string name="rename_notice_button">გასაგებია</string>
+
+    <string name="onb_summary_permissions_format">Permissions: %1$d of %2$d granted</string>
+    <string name="onb_ready_loading_intro">One more thing: you can now set a custom loading screen, shown while the car connects.</string>
+    <string name="onb_ready_loading_button">Set up a loading screen</string>
+    <string name="onb_permissions_title">Enable permissions</string>
+    <string name="onb_permissions_help">Turn on the permissions the app needs so everything works without surprise prompts later. You can change these any time.</string>
+    <string name="onb_perms_enable_all">Enable all</string>
+    <string name="perm_allow">Allow</string>
+    <string name="perm_granted">Granted</string>
+    <string name="perm_optional_format">%1$s (optional)</string>
+    <string name="permissions">Permissions</string>
+    <string name="permissions_desc">Review and grant the permissions the app needs</string>
+    <string name="perm_mic_title">Microphone</string>
+    <string name="perm_mic_help">Lets Android Auto use voice commands, the Google Assistant and phone calls.</string>
+    <string name="perm_location_title">Location</string>
+    <string name="perm_location_help">Sends GPS to the phone for navigation, scans for wireless connections and drives location based night mode.</string>
+    <string name="perm_nearby_title">Nearby devices</string>
+    <string name="perm_nearby_help">Needed to connect over Bluetooth and Wi-Fi, route Bluetooth audio and auto start on a paired device.</string>
+    <string name="perm_notifications_title">Notifications</string>
+    <string name="perm_notifications_help">Shows the ongoing notification while Android Auto is running.</string>
+    <string name="perm_overlay_title">Display over other apps</string>
+    <string name="perm_overlay_help">Lets the app open the car screen on top of other apps, including auto start.</string>
+    <string name="perm_write_settings_title">Modify system settings</string>
+    <string name="perm_write_settings_help">Lets the app turn the hotspot on automatically for wireless connections.</string>
+    <string name="perm_storage_title">Storage</string>
+    <string name="perm_storage_help">Needed to back up and restore your settings and to pick a custom loading image.</string>
+    <string name="onb_vehicle_help_sideload">Picking a real car brand also shows that brand\'s logo on the Android Auto exit button, but Android Auto then stops listing apps you installed from outside the Play Store. Keep \"Google\" or \"Open Headunit\" if you use those apps.</string>
+    <string-array name="vehicle_brands">
+        <item>Google</item>
+        <item>Android</item>
+        <item>Audi</item>
+        <item>BMW</item>
+        <item>Chevrolet</item>
+        <item>Chrysler</item>
+        <item>Fiat</item>
+        <item>Ford</item>
+        <item>Honda</item>
+        <item>Hyundai</item>
+        <item>Jeep</item>
+        <item>Kia</item>
+        <item>Mazda</item>
+        <item>Mercedes-Benz</item>
+        <item>Nissan</item>
+        <item>Peugeot</item>
+        <item>Renault</item>
+        <item>Subaru</item>
+        <item>Suzuki</item>
+        <item>Tesla</item>
+        <item>Toyota</item>
+        <item>Volkswagen</item>
+        <item>Volvo</item>
+    </string-array>
+    <string name="dpi_size_s">S</string>
+    <string name="dpi_size_m">M</string>
+    <string name="dpi_size_l">L</string>
+    <string name="dpi_size_xl">XL</string>
+    <string name="onb_dpi_recommended">Recommended for your screen: %1$d dpi</string>
+    <string name="dpi_value_format">%1$d DPI</string>
+    <string name="pixel_aspect_ratio">Pixel aspect ratio</string>
+    <string name="enter_pixel_aspect_ratio_value">Pixel aspect ratio x10000 (10000 = square pixels)</string>
+    <string name="cannot_open_settings">Could not open system settings</string>
+    <string name="static_bssid_title">Static BSSID</string>
+    <string name="static_bssid_enter_value">Enter BSSID (XX:XX:XX:XX:XX:XX)</string>
+    <string name="static_bssid_desc">Manually set the BSSID for the wireless handshake if auto-detection is blocked by system permissions</string>
+    <string name="use_measured_touch_surface">Experimental touch alignment fix</string>
+    <string name="use_measured_touch_surface_description">Normalize touch input against the measured projection overlay. May help when small Android Auto controls feel shifted.</string>
+    <string name="media_key_routing">Send Media Buttons To Android Auto</string>
+    <string name="media_key_routing_always">Always</string>
+    <string name="media_key_routing_auto">Automatic</string>
+    <string name="media_key_routing_never">Never</string>
+    <string name="media_key_routing_always_hint">Next, previous and play/pause are always sent to Android Auto. Use this unless one press skips two tracks.</string>
+    <string name="media_key_routing_auto_hint">Stops sending them while this headunit has a Bluetooth media connection to the phone, because that connection already performs the action. Choose this if one press skips two tracks and your phone is paired to this headunit.</string>
+    <string name="media_key_routing_never_hint">Never sends them, leaving the buttons to Bluetooth. Choose this if one press skips two tracks and your phone is paired to the car\'s own system rather than to this headunit — Automatic cannot detect that connection.</string>
+    <string name="media_key_routing_hint_common">Only the media buttons are affected. Rotary controllers, D-pad, Back and Enter always reach Android Auto.</string>
+    <string name="playback_focus_mode">Pause Other Audio During Playback</string>
+    <string name="playback_focus_mode_auto">Automatic</string>
+    <string name="playback_focus_mode_always">Always</string>
+    <string name="playback_focus_mode_never">Never</string>
+    <string name="playback_focus_mode_auto_hint">Pauses another player on the headunit (for example the radio) while Android Auto audio plays, but not while a Bluetooth audio link is connected — that link is usually the same phone, and pausing it would stop Android Auto\'s own sound.</string>
+    <string name="playback_focus_mode_always_hint">Always pauses other audio while Android Auto plays. If your music stops after a second or two whenever Bluetooth is on, switch back to Automatic.</string>
+    <string name="playback_focus_mode_never_hint">Never touches system audio focus. Other audio on the headunit may keep playing over Android Auto.</string>
+    <string name="playback_focus_mode_static_hint">With Static Audio Focus on, this applies from the moment the phone connects and lasts the whole session, rather than only while audio is playing.</string>
+    <string name="github_issues_url">https://github.com/shihabal3amri/DiAuto/issues</string>
+    <string name="support_rules_english_title">All posts in English</string>
+    <string name="boot_loop_paused_title">Wireless start-up paused</string>
+    <string name="boot_loop_paused_generic">This device restarted three times in a row shortly after Open Headunit started wireless, so wireless was left off this time. USB still works. Open the app to turn it back on.</string>
+    <string name="boot_loop_paused_native_wifi_direct">This device restarted three times in a row shortly after Open Headunit started wireless, so wireless was left off this time. On some head units the WiFi chipset takes the whole system down when a phone joins a WiFi Direct network. Try switching Android Auto mode to the head unit hotspot. USB still works.</string>
+    <string name="vehicle_make_hint">A real car brand shows that brand\'s logo on the Android Auto exit button, but Android Auto then stops listing apps installed from outside the Play Store. Set it back to \"Google\" to get those apps listed again.</string>
+    <string name="external_bt_nativeaa">Native Wireless cannot work on this head unit</string>
+    <string name="external_bt_nativeaa_desc">This head unit uses its own Bluetooth module (%1$s) instead of the one Android exposes to apps. Your phone pairs with that module, so anything this app sends over Bluetooth never reaches it — the connection will look like it is working and then stall.\n\nThis is a hardware limitation and cannot be worked around from the app. Please use USB, or the \"Wireless Helper\" or \"Auto (Headunit Server)\" mode, which do not need the Bluetooth handshake.</string>
+    <string name="manual_secondary_bt_service_title">Manual Secondary Radio</string>
+    <string name="manual_secondary_bt_service_message">Advanced: force an extra Bluetooth radio, for dual-radio units whose second radio isn\'t found automatically. Find it via \"adb shell service list\" (look for a Bluetooth-sounding entry besides bluetooth_manager) or an engineering menu, then paste either the name before the colon or the interface shown in brackets - both work. Not guaranteed to help on every unit: some head units run a customized Bluetooth stack that this can\'t bridge to no matter what you enter here. Leave blank to disable.</string>
+    <string name="native_ap_transport">Network transport</string>
+    <string name="native_ap_transport_wifi_direct">WiFi Direct</string>
+    <string name="native_ap_transport_hotspot">Hotspot</string>
+    <string name="native_ap_transport_hint">Experimental. The phone joins this device\'s own hotspot instead of a WiFi Direct group. Switch the hotspot on yourself before connecting, and set it to 5 GHz if you can - over 2.4 GHz the phone connects and then drops the session repeatedly without any picture, unless you lower the resolution and frame rate. If the network name cannot be read automatically, enter it below.</string>
+    <string name="hotspot_interface_override">Hotspot network interface</string>
+    <string name="hotspot_interface_override_message">Leave blank to work it out automatically. Set this if the log says more than one interface could be the access point, or picks the wrong one. The name is the one the log reports after &quot;Providing credentials from&quot;, or the entry holding your hotspot\'s address in &quot;ip -brief addr&quot; from a shell. Common names: ap0, wlan0, wlan1, wlan2, softap0, ra0.</string>
+    <string name="hotspot_ssid_override">Hotspot name (manual)</string>
+    <string name="hotspot_ssid_override_message">Leave blank to read the name from this device\'s hotspot settings automatically. Some devices do not let apps read it - if the log says the name could not be read, type it here exactly as it appears in your hotspot settings.</string>
+    <string name="hotspot_password_override">Hotspot password (manual)</string>
+    <string name="hotspot_password_override_message">Leave blank to read the password automatically. Needed on devices that do not let apps read the hotspot configuration. The phone will be given this password to join.</string>
+    <string name="hotspot_config_unreadable_toast">Can\'t read this device\'s hotspot name. Set it manually under Hotspot name/password in Settings.</string>
+    <string name="native_wifi_version_exchange">Modern handshake (version exchange)</string>
+    <string name="native_wifi_version_exchange_description">Opens the Bluetooth handshake by telling the phone which protocol version this head unit speaks, the way factory head units do, instead of going straight to the connection details. Off by default. Worth trying if wireless worked before an Android Auto update and has failed since; if it makes no difference, turn it back off.</string>
+    <string name="su_needed_keymaps_warning">Warning: Your headunit must be either rooted, or have Shizuku installed. If that\'s the case, you must allow SU rights, once prompted. Steering keys likely are not functional until this is fixed.</string>
+    <string name="delete">Delete</string>
+    <string name="night_mode_coordinates">Coordinates</string>
+    <string name="geofence_locations_title">Locations</string>
+    <string name="geofence_none">None</string>
+    <string name="geofence_count_summary">%1$d areas</string>
+    <string name="geofence_empty_hint">No locations yet. Add one to force day or night by area, or to restrict auto-start to a zone.</string>
+    <string name="geofence_unnamed">Unnamed location</string>
+    <string name="geofence_add">Add location</string>
+    <string name="geofence_pick_location">Pick location</string>
+    <string name="geofence_name_hint">Name (e.g. Home)</string>
+    <string name="geofence_force_dark">Force dark mode inside this area</string>
+    <string name="geofence_allow_automation">Only auto-start / connect inside this area</string>
+    <string name="geofence_use_gps">Use my current location</string>
+    <string name="geofence_no_location">No location available yet</string>
+    <string name="geofence_saved">Location saved</string>
+    <string name="geofence_delete_title">Delete location?</string>
+    <string name="geofence_delete_message">This location will be removed.</string>
+    <string name="geofence_internet_title">Internet required</string>
+    <string name="geofence_internet_message">The map needs an internet connection to load. Map tiles are only downloaded while you set the location.</string>
+    <string name="geofence_radius_summary">Radius: %1$d m</string>
+    <string name="geofence_mode_dark">Dark</string>
+    <string name="geofence_mode_light">Light</string>
+    <string name="geofence_gate_on">Auto-start gated</string>
+    <string name="location_section">Location</string>
+    <string name="sunrise_location_title">Sunrise/sunset location</string>
+    <string name="sunrise_location_gps">GPS (automatic)</string>
+    <string name="sunrise_location_fixed">Fixed point</string>
+    <string name="geofence_pick_on_map">Pick on map</string>
+    <string name="geofence_overridden_note">A saved place overrides this while you are inside it.</string>
+    <string name="geofence_current_status_label">Currently</string>
+    <string name="geofence_current_status">%1$s (inside %2$s)</string>
+    <string name="geofence_override_theme">Force a theme here</string>
+    <string name="geofence_dark_inside">Dark inside this area</string>
+    <string name="geofence_scope_label">Applies to</string>
+    <string name="geofence_scope_app">App</string>
+    <string name="geofence_scope_aa">Android Auto</string>
+    <string name="geofence_scope_both">Both</string>
+    <string name="geofence_gate_here">Only auto-start / connect here</string>
+    <string name="dont_show_again">Don\'t show again</string>
+    <string name="location_open_entry">Places and sunrise point</string>
+    <string name="sunrise_section">Sunrise / sunset</string>
+    <string name="location_places_hint">Force a light or dark look in an area, and optionally only auto-start there. Uses GPS.</string>
+    <string name="appearance_label">When inside, set appearance</string>
+    <string name="appearance_off">Off</string>
+    <string name="location_manage_places">Saved places</string>
+    <string name="location_outside_label">Outside saved places</string>
+    <string name="location_places_desc">Set a light or dark look in an area while you are inside it. Uses GPS.</string>
+    <string name="coordinates_enter">Enter coordinates</string>
+    <string name="coordinate_latitude">Latitude</string>
+    <string name="coordinate_longitude">Longitude</string>
+    <string name="coordinates_invalid">Invalid coordinates</string>
+    <string name="coordinates_format_help">Decimal degrees, dot or comma. Example: 40.4168, -3.7038</string>
+    <string name="sunrise_reference_help">The reference point used to calculate sunrise and sunset. Pick your location once; it works without GPS.</string>
+</resources>
