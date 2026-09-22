@@ -18,6 +18,7 @@ this is not Apple CarPlay.
 ## Features
 
 - Native wireless Android Auto, with USB data-cable support.
+- Automatic Wi-Fi Direct address recovery on supported DiLink firmware, without ADB setup.
 - Car-friendly home screen, simplified settings and redesigned option dialogs.
 - Music-through-car-Bluetooth mode to avoid competing media audio focus.
 - Automatic preference for the car's existing non-DFS 5 GHz Wi-Fi channel when supported,

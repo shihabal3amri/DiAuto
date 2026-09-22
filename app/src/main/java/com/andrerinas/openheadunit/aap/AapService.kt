@@ -2544,7 +2544,7 @@ class AapService : Service(), UsbReceiver.Listener {
             softApCredentialsProvider?.refresh()
         } else {
             AppLog.i("AapService: WiFi Direct refresh requested.")
-            wifiDirectManager?.startNativeAaQuietHost()
+            wifiDirectManager?.refreshNativeAaCredentials()
         }
     }
 

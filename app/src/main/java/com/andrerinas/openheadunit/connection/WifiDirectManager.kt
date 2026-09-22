@@ -489,7 +489,7 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
                 }
             }
             discoveredInterface = iface
-            val isBssidSet = appSettings.staticBSSID != "0"
+            val isBssidSet = appSettings.staticBSSID != null && appSettings.staticBSSID != "0"
 
             var bssid = if (appSettings.staticBSSID == "0" || appSettings.staticBSSID == null) {
                 getWifiDirectMac(iface)
@@ -503,6 +503,13 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
             }
 
 
+
+            if (!isBssidSet && isOwner && (bssid == "00:00:00:00:00:00" || bssid == "02:00:00:00:00:00")) {
+                P2pInterfaceBssid.read(iface)?.let {
+                    bssid = it
+                    AppLog.i("WifiDirectManager: Resolved active group BSSID from interface IPv6 on $iface")
+                }
+            }
 
             // [FIX] Robust BSSID detection for masked MACs (00:00 or 02:00)
             if (bssid == "00:00:00:00:00:00" || bssid == "02:00:00:00:00:00") {
@@ -642,9 +649,21 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
                 Thread {
                     try {
                         var ip = getWifiDirectIp(iface)
+                        var deliveryBssid = bssid
                         var retries = 0
-                        while (ip == null && retries < 15) {
-                            AppLog.d("WifiDirectManager: Waiting for IP on interface ${iface ?: "any p2p"} (Attempt ${retries + 1}/15)...")
+                        fun needsBssid() = !isBssidSet && isOwner &&
+                            (deliveryBssid == "00:00:00:00:00:00" || deliveryBssid == "02:00:00:00:00:00")
+                        // IPv6 can arrive after group info / IPv4. Wait within the existing
+                        // bounded budget, without recreating an otherwise healthy group.
+                        while ((ip == null || needsBssid()) && retries < 15 && deliveryEpoch == credentialsEpoch) {
+                            if (needsBssid()) {
+                                P2pInterfaceBssid.read(iface)?.let {
+                                    deliveryBssid = it
+                                    AppLog.i("WifiDirectManager: Resolved active group BSSID from interface IPv6 on $iface after IP setup")
+                                }
+                            }
+                            if (ip != null && !needsBssid()) break
+                            AppLog.d("WifiDirectManager: Waiting for IP/BSSID on interface ${iface ?: "any p2p"} (Attempt ${retries + 1}/15)...")
                             Thread.sleep(1000)
                             ip = getWifiDirectIp(iface)
                             retries++
@@ -658,9 +677,16 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
                                     "replaced while this was waiting for an IP, and the phone must not be " +
                                     "sent a network that no longer exists."
                             )
-                        } else if (finalIp != null && bssid != null) {
-                            AppLog.i("WifiDirectManager: SUCCESS - Providing credentials to listener. SSID=$ssid, IP=$finalIp, BSSID=$bssid")
-                            onCredentialsReady?.invoke(ssid, psk, finalIp, bssid)
+                        } else if (finalIp != null && deliveryBssid != null) {
+                            // Deliver on the main handler alongside P2P callbacks, checking the
+                            // epoch again in case the group changed while delivery was queued.
+                            val readyBssid = deliveryBssid!!
+                            handler.post {
+                                if (deliveryEpoch == credentialsEpoch) {
+                                    AppLog.i("WifiDirectManager: SUCCESS - Providing credentials to listener. SSID=$ssid, IP=$finalIp, BSSID=$readyBssid")
+                                    onCredentialsReady?.invoke(ssid, psk, finalIp, readyBssid)
+                                }
+                            }
                         } else {
                             AppLog.e("WifiDirectManager: FAILED to get valid IP for credentials delivery.")
                         }
@@ -1007,6 +1033,27 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
     }
 
     @SuppressLint("MissingPermission")
+    /** Credential refresh must not replace the network a Bluetooth handshake is waiting for. */
+    fun refreshNativeAaCredentials() {
+        val gen = generation
+        handler.post {
+            if (supersededByStop(gen, "credential refresh")) return@post
+            val mgr = manager
+            val ch = channel
+            if (mgr == null || ch == null) {
+                startNativeAaQuietHost()
+            } else {
+                mgr.requestGroupInfo(ch) { group ->
+                    if (!supersededByStop(gen, "credential refresh result")) {
+                        if (group != null) onGroupInfoAvailable(group)
+                        else if (!isGroupCreatingOrCreated) startNativeAaQuietHost()
+                    }
+                }
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
     fun startNativeAaQuietHost() {
         registerReceiverIfNeeded()
         isGroupCreatingOrCreated = true
@@ -1083,6 +1130,7 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
     private fun createQuietGroup(retryCount: Int) {
         val mgr = manager ?: return
         val ch = channel ?: return
+        isGroupCreatingOrCreated = true
 
         // Read once per attempt rather than held in a field: the setting is written between runs on
         // a rig, and a group made after the write must be the one the write asked for.

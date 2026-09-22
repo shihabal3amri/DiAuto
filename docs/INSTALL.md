@@ -1,4 +1,4 @@
-# Install DiAuto 0.3.1
+# Install DiAuto 0.3.2
 
 Install the APK **on the car's Android head unit**, not on your phone.
 Tested: BYD DiLink 5.1, Android 13. Other firmware/head units are not verified.
@@ -7,8 +7,8 @@ Your phone must support Android Auto; no separate DiAuto phone app or dongle is 
 ## Download
 
 Use the [multilingual download page](https://shihabal3amri.github.io/DiAuto/) or the
-[GitHub release](https://github.com/shihabal3amri/DiAuto/releases/tag/v0.3.1).
-Download `DiAuto-v0.3.1.apk`. Checksums are provided alongside the APK.
+[GitHub release](https://github.com/shihabal3amri/DiAuto/releases/tag/v0.3.2).
+Download `DiAuto-v0.3.2.apk`. Checksums are provided alongside the APK.
 
 ## Install and connect
 
@@ -26,7 +26,7 @@ DiLink 5.1 defaults to **Music through car Bluetooth**. Keep the phone paired to
 for media audio. Navigation and assistant audio remain available through Android Auto.
 Changes to this option require reconnecting.
 
-## ADB installation
+## Optional ADB installation
 
 Install Android platform-tools on your computer, enable ADB using your head unit's
 supported method, and connect the computer and car to the same trusted network.
@@ -34,7 +34,7 @@ Replace `CAR_IP` below with the car's current IP address; no fixed address is as
 
 ```sh
 adb connect CAR_IP:5555
-adb -s CAR_IP:5555 install -r DiAuto-v0.3.1.apk
+adb -s CAR_IP:5555 install -r DiAuto-v0.3.2.apk
 ```
 
 Open DiAuto on the car to finish setup. The optional repository helper also grants
@@ -42,22 +42,24 @@ supported runtime permissions, enables location, allows the overlay and exempts 
 from idle/background restrictions:
 
 ```sh
-./scripts/install.sh CAR_IP:5555 /absolute/path/to/DiAuto-v0.3.1.apk
+./scripts/install.sh CAR_IP:5555 /absolute/path/to/DiAuto-v0.3.2.apk
 ```
 
 ## Wireless pairing / Static BSSID
 
-Some DiLink firmware hides the Wi-Fi Direct MAC address from apps. If wireless pairing
-fails, start **Connect phone** so the wireless group exists, then run:
+DiAuto 0.3.2 can recover the Wi-Fi Direct address automatically on supported
+DiLink firmware, even when Android hides the usual MAC address. **ADB, root and
+a phone helper app are not required for this recovery.**
 
-```sh
-adb -s CAR_IP:5555 shell cat /sys/class/net/p2p0/address
-```
+Leave **Static BSSID** set to **Auto**, pair through the car's Bluetooth settings,
+and choose **Connect phone**. If you previously entered an address manually, you
+can select Auto in **Settings → Display and performance → Static BSSID** (or search
+for **Static BSSID**), save, and reconnect. Existing manual overrides remain supported.
 
-Enter the returned address in **Settings → Display and performance → Advanced → Static
-BSSID** (or search for **Static BSSID**), save, and reconnect. The value belongs to your
-car: do not copy another car's address. If that interface is absent or unreadable, include
-the firmware/model details in an issue instead of inventing an address.
+Automatic recovery depends on the firmware exposing a MAC-derived IPv6 address
+on the active Wi-Fi Direct interface. It cannot fix every wireless connection
+failure. If pairing still fails, report the car model/firmware and phone model;
+do not copy another car's address.
 
 ## Updates and private previews
 
@@ -71,6 +73,11 @@ app and install the public APK. Uninstalling removes local settings and may requ
 again. Do not uninstall the official BYD phone app; it is unrelated to DiAuto.
 
 ## Troubleshooting
+
+- If a 2.4 GHz connection repeatedly starts and disconnects before video appears,
+  try lowering resolution and frame rate in Display and performance, then reconnect.
+  This release leaves video preferences under your control; it does not force a
+  lower-resolution profile. This will not resolve every Bluetooth or Wi-Fi join failure.
 
 - If scrolling stutters, compare a USB connection. Wireless conditions and concurrent
   car Wi-Fi connections can affect performance. DiAuto now prefers a supported matching

@@ -23,8 +23,8 @@
       "Pair your Android phone in the car’s Bluetooth settings. Keep Bluetooth and Wi-Fi enabled, then choose Connect phone in DiAuto.",
       "Prefer a cable? Connect your phone with a USB data cable and choose Connect with USB."
     ],
-    "adb": "ADB installation & pairing help",
-    "bssid": "Some DiLink firmware hides the Wi-Fi Direct address. If wireless pairing fails, use the Static BSSID steps in the installation guide.",
+    "adb": "Installation & pairing help",
+    "bssid": "DiAuto 0.3.2 automatically recovers the Wi-Fi Direct address on supported DiLink firmware. Leave Static BSSID on Auto; no ADB setup is needed for this recovery. Some firmware and phone combinations may still have connection issues.",
     "whats": "What’s new",
     "features": [
       "Native wireless Android Auto, plus wired USB support.",
@@ -69,8 +69,8 @@
       "اقرن هاتف أندرويد من إعدادات بلوتوث السيارة. أبقِ البلوتوث والواي فاي مفعّلين، ثم اختر Connect phone في DiAuto.",
       "تفضّل السلك؟ وصّل هاتفك بكابل USB يدعم نقل البيانات واختر Connect with USB."
     ],
-    "adb": "دليل التثبيت عبر ADB والمساعدة في الاقتران",
-    "bssid": "تخفي بعض إصدارات DiLink عنوان Wi-Fi Direct. إذا تعذّر الاقتران اللاسلكي، اتّبع خطوات Static BSSID في دليل التثبيت.",
+    "adb": "دليل التثبيت والمساعدة في الاقتران",
+    "bssid": "يستخرج DiAuto 0.3.2 عنوان Wi-Fi Direct تلقائيًا على إصدارات DiLink المدعومة. اترك Static BSSID على Auto؛ لا تتطلب هذه الميزة إعداد ADB. قد تستمر مشكلات الاتصال مع بعض إصدارات النظام والهواتف.",
     "whats": "الجديد في هذا الإصدار",
     "features": [
       "أندرويد أوتو لاسلكي مع دعم الاتصال السلكي عبر USB.",
@@ -115,8 +115,8 @@
       "Выполните сопряжение Android-телефона в настройках Bluetooth автомобиля. Включите Bluetooth и Wi-Fi, затем нажмите Connect phone в DiAuto.",
       "Предпочитаете кабель? Подключите телефон кабелем USB с передачей данных и выберите Connect with USB."
     ],
-    "adb": "Установка через ADB и помощь с сопряжением",
-    "bssid": "Некоторые версии DiLink скрывают адрес Wi-Fi Direct. Если беспроводное сопряжение не удаётся, выполните шаги Static BSSID из инструкции.",
+    "adb": "Установка и помощь с сопряжением",
+    "bssid": "DiAuto 0.3.2 автоматически определяет адрес Wi-Fi Direct на поддерживаемых прошивках DiLink. Оставьте Static BSSID в режиме Auto; для этого не нужна настройка ADB. На некоторых прошивках и телефонах проблемы подключения могут сохраняться.",
     "whats": "Что нового",
     "features": [
       "Беспроводной Android Auto и подключение по USB.",
@@ -161,8 +161,8 @@
       "Empareja el teléfono Android desde los ajustes Bluetooth del coche. Mantén Bluetooth y Wi-Fi activados y pulsa Connect phone en DiAuto.",
       "¿Prefieres cable? Conecta el teléfono con un cable USB de datos y elige Connect with USB."
     ],
-    "adb": "Instalación por ADB y ayuda de conexión",
-    "bssid": "Algunas versiones de DiLink ocultan la dirección Wi-Fi Direct. Si falla el emparejamiento inalámbrico, sigue los pasos de Static BSSID en la guía.",
+    "adb": "Instalación y ayuda de conexión",
+    "bssid": "DiAuto 0.3.2 recupera automáticamente la dirección Wi-Fi Direct en firmware DiLink compatible. Deja Static BSSID en Auto; esta función no requiere configurar ADB. Algunas combinaciones de firmware y teléfono pueden seguir teniendo problemas de conexión.",
     "whats": "Novedades",
     "features": [
       "Android Auto inalámbrico y conexión por USB.",
@@ -207,8 +207,8 @@
       "在车机蓝牙设置中配对安卓手机。保持蓝牙和 Wi-Fi 开启，然后在 DiAuto 中点击 Connect phone。",
       "想用有线连接？使用支持数据传输的 USB 线连接手机，选择 Connect with USB。"
     ],
-    "adb": "ADB 安装与配对帮助",
-    "bssid": "部分 DiLink 固件会隐藏 Wi-Fi Direct 地址。如果无线配对失败，请按安装指南中的 Static BSSID 步骤操作。",
+    "adb": "安装与配对帮助",
+    "bssid": "DiAuto 0.3.2 可在支持的 DiLink 固件上自动获取 Wi-Fi Direct 地址。请将 Static BSSID 保持为 Auto；此功能无需配置 ADB。部分固件与手机组合仍可能存在连接问题。",
     "whats": "本次更新",
     "features": [
       "原生无线 Android Auto，并支持 USB 有线连接。",
