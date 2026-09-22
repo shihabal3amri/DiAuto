@@ -82,3 +82,6 @@ deploy_old_tablet.sh
 key.properties
 *.keystore
 docs/review/*.png
+
+# Announcements are maintained privately outside the repository.
+docs/TELEGRAM_ANNOUNCEMENTS.md
