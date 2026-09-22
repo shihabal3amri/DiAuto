@@ -13,7 +13,7 @@ Android Auto support. **No additional phone companion app, dongle, external hard
 root or firmware modification is required.** An Android phone is still required;
 this is not Apple CarPlay.
 
-![DiAuto home screen](site/assets/home.png)
+![Android Auto running on DiAuto, showing a public location](site/assets/projection.png)
 
 ## Features
 

@@ -17,12 +17,12 @@ for lang, d in data.items():
     url = BASE + ('' if lang == 'en' else lang + '/')
     nav = ''.join(f'<a href="{prefix}{"" if code == "en" else code + "/"}" lang="{code}" hreflang="{code}" dir="auto"'+(' aria-current="page"' if code == lang else '')+f'>{e(v["name"])}</a>' for code,v in data.items())
     alternates = ''.join(f'<link rel="alternate" hreflang="{code}" href="{BASE}{"" if code == "en" else code + "/"}">' for code in data)
-    pics = ''.join(f'<figure><a href="{prefix}assets/{pic}.png"><img src="{prefix}assets/{pic}.png" width="1920" height="1080" loading="lazy" alt="{e(cap)}"></a><figcaption>{e(cap)}</figcaption></figure>' for pic,cap in zip(['home','settings','options'],d['captions']))
+    pics = ''.join(f'<figure><a href="{prefix}assets/{pic}.png"><img src="{prefix}assets/{pic}.png" width="1920" height="1080" loading="lazy" alt="{e(cap)}"></a><figcaption>{e(cap)}</figcaption></figure>' for pic,cap in zip(['projection','home','settings'],d['captions']))
     (folder/'index.html').write_text(f'''<!doctype html>
 <html lang="{lang}" dir="{d['dir']}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>DiAuto · {e(d['download'])}</title><meta name="description" content="{e(d['intro'])}"><meta name="theme-color" content="#0c121c">
 <link rel="icon" href="{prefix}assets/icon.svg"><link rel="stylesheet" href="{prefix}assets/site.css"><link rel="canonical" href="{url}">{alternates}
-<meta property="og:title" content="DiAuto — Android Auto for BYD"><meta property="og:description" content="{e(d['promise'])}"><meta property="og:image" content="{BASE}assets/home.png"><meta property="og:url" content="{url}"><meta property="og:type" content="website">
+<meta property="og:title" content="DiAuto — Android Auto for BYD"><meta property="og:description" content="{e(d['promise'])}"><meta property="og:image" content="{BASE}assets/projection.png"><meta property="og:url" content="{url}"><meta property="og:type" content="website">
 </head><body><main>
 <header><a class="brand" href="{prefix}"><img src="{prefix}assets/icon.svg" width="56" height="56" alt=""><span><strong>DiAuto</strong><small>{e(d['tag'])}</small></span></a><nav class="languages" aria-label="Language">{nav}</nav></header>
 <section class="hero"><span class="badge">{e(d['badge'])} · <bdi>0.3.1</bdi></span><h1>{e(d['title']).replace(chr(10),'<br>')}</h1><p class="intro">{e(d['intro'])}</p><div class="actions"><a class="button" href="{DOWNLOAD}">{e(d['download'])} <span aria-hidden="true">↓</span></a><a class="button secondary" href="#install">{e(d['install'])}</a></div><p class="promise">{e(d['promise'])}</p><p class="note">{e(d['requires'])}</p></section>
