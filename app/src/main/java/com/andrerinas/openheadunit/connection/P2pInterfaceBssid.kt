@@ -25,6 +25,32 @@ internal object P2pInterfaceBssid {
         }
     }
 
+    /**
+     * Why [read] found nothing, for the log a reporter sends: no interface name, no IPv6
+     * link-local at all, or only opaque (RFC 7217 / privacy) identifiers that carry no MAC.
+     */
+    fun describe(interfaceName: String?): String {
+        if (interfaceName.isNullOrBlank()) return "the group interface could not be named"
+        return try {
+            val network = NetworkInterface.getByName(interfaceName)
+                ?: return "interface $interfaceName is gone"
+            val linkLocal = network.inetAddresses.toList()
+                .filterIsInstance<Inet6Address>()
+                .filter { it.isLinkLocalAddress }
+            describeLinkLocal(interfaceName, linkLocal.map { it.address })
+        } catch (e: Exception) {
+            "interface $interfaceName could not be read (${e.message})"
+        }
+    }
+
+    fun describeLinkLocal(interfaceName: String, linkLocal: List<ByteArray>): String = when {
+        linkLocal.isEmpty() -> "$interfaceName has no IPv6 link-local address"
+        linkLocal.mapNotNull(::decode).distinct().size > 1 ->
+            "$interfaceName has conflicting MAC-derived IPv6 link-local addresses"
+        else -> "$interfaceName has only opaque IPv6 link-local identifiers (no EUI-64 ff:fe), " +
+            "so its MAC cannot be derived"
+    }
+
     fun fromAddresses(addresses: List<ByteArray>): String? =
         addresses.mapNotNull(::decode).distinct().singleOrNull()
 

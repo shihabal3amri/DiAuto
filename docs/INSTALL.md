@@ -61,6 +61,11 @@ on the active Wi-Fi Direct interface. It cannot fix every wireless connection
 failure. If pairing still fails, report the car model/firmware and phone model;
 do not copy another car's address.
 
+If the log says the BSSID could not be recovered, you can still read it without
+ADB: while DiAuto shows it is waiting for the phone, open any Wi-Fi scanner app
+on the phone, find the network named `DIRECT-…` shown by DiAuto, and enter its
+BSSID as **Static BSSID**. That is the address the phone checks when joining.
+
 ## Updates and private previews
 
 The first public release uses a dedicated production signing key. Future public releases

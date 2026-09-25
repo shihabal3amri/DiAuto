@@ -504,9 +504,14 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
 
 
 
+            // Whether bssid was read from this group's own interface. Anything else below
+            // (lastKnownBssid, device address, sysfs scan) may describe another group or
+            // interface, so the wait loop still prefers the interface once it can name it.
+            var bssidFromInterface = false
             if (!isBssidSet && isOwner && (bssid == "00:00:00:00:00:00" || bssid == "02:00:00:00:00:00")) {
                 P2pInterfaceBssid.read(iface)?.let {
                     bssid = it
+                    bssidFromInterface = true
                     AppLog.i("WifiDirectManager: Resolved active group BSSID from interface IPv6 on $iface")
                 }
             }
@@ -648,25 +653,53 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
                 val deliveryEpoch = credentialsEpoch
                 Thread {
                     try {
-                        var ip = getWifiDirectIp(iface)
+                        var groupIface = iface
+                        var ip = getWifiDirectIp(groupIface)
                         var deliveryBssid = bssid
+                        var fromInterface = bssidFromInterface
                         var retries = 0
                         fun needsBssid() = !isBssidSet && isOwner &&
                             (deliveryBssid == "00:00:00:00:00:00" || deliveryBssid == "02:00:00:00:00:00")
                         // IPv6 can arrive after group info / IPv4. Wait within the existing
-                        // bounded budget, without recreating an otherwise healthy group.
-                        while ((ip == null || needsBssid()) && retries < 15 && deliveryEpoch == credentialsEpoch) {
-                            if (needsBssid()) {
-                                P2pInterfaceBssid.read(iface)?.let {
+                        // bounded budget, without recreating an otherwise healthy group. Runs at
+                        // least once, so a name found only now still gets its IPv6 read.
+                        while (retries < 15 && deliveryEpoch == credentialsEpoch) {
+                            // group.interface is hidden on Android 11+, and when group info lands
+                            // before the kernel assigns the GO address the lookup above found
+                            // nothing. Without a name the IPv6 read below can never succeed, so
+                            // look again each pass: only the GO address, never a p2p name guess.
+                            if (groupIface.isNullOrEmpty() && isOwner) {
+                                groupIface = getInterfaceByIp("192.168.49.1")
+                                if (groupIface != null) {
+                                    AppLog.i("WifiDirectManager: Discovered interface name by IP 192.168.49.1 after group info: $groupIface")
+                                    val found = groupIface
+                                    handler.post { if (deliveryEpoch == credentialsEpoch) discoveredInterface = found }
+                                }
+                            }
+                            if (!isBssidSet && isOwner && !fromInterface) {
+                                P2pInterfaceBssid.read(groupIface)?.let {
+                                    if (it != deliveryBssid) {
+                                        AppLog.i("WifiDirectManager: Resolved active group BSSID from interface IPv6 on $groupIface after IP setup: $it (was $deliveryBssid)")
+                                    }
                                     deliveryBssid = it
-                                    AppLog.i("WifiDirectManager: Resolved active group BSSID from interface IPv6 on $iface after IP setup")
+                                    fromInterface = true
+                                    handler.post { if (deliveryEpoch == credentialsEpoch) lastKnownBssid = it }
                                 }
                             }
                             if (ip != null && !needsBssid()) break
-                            AppLog.d("WifiDirectManager: Waiting for IP/BSSID on interface ${iface ?: "any p2p"} (Attempt ${retries + 1}/15)...")
+                            AppLog.d("WifiDirectManager: Waiting for IP/BSSID on interface ${groupIface ?: "any p2p"} (Attempt ${retries + 1}/15)...")
                             Thread.sleep(1000)
-                            ip = getWifiDirectIp(iface)
+                            ip = getWifiDirectIp(groupIface)
                             retries++
+                        }
+                        if (needsBssid() && deliveryEpoch == credentialsEpoch) {
+                            // Named here because the handshake abort that follows can only guess at
+                            // location settings; this says what the interface actually carries.
+                            AppLog.w(
+                                "WifiDirectManager: could not recover this group's BSSID: " +
+                                    "${P2pInterfaceBssid.describe(groupIface)}. " +
+                                    "Set Static BSSID in Advanced settings on this firmware."
+                            )
                         }
 
                         // For Native AA, we almost always expect 192.168.49.1 if we are GO
