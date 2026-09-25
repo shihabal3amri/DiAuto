@@ -3,6 +3,7 @@ package com.andrerinas.openheadunit.connection
 import java.net.InetAddress
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class P2pInterfaceBssidTest {
@@ -41,5 +42,21 @@ class P2pInterfaceBssidTest {
         assertNull(P2pInterfaceBssid.read(null))
         assertNull(P2pInterfaceBssid.read(""))
         assertNull(P2pInterfaceBssid.read("does-not-exist"))
+    }
+
+    // Captured from a HiBy R4 (Android 12, P2P MAC randomization) hosting the group: p2p0
+    // reported link/ether 4a:4d:90:cb:ad:5c, and a phone's scan listed the group at that BSSID.
+    @Test fun decodesAddressCapturedFromARandomizedP2pGroup() {
+        assertEquals("4A:4D:90:CB:AD:5C", P2pInterfaceBssid.decode(bytes("fe80::484d:90ff:fecb:ad5c")))
+    }
+
+    @Test fun describesWhyNothingWasRecovered() {
+        assertTrue(P2pInterfaceBssid.describe(null).contains("could not be named"))
+        assertTrue(P2pInterfaceBssid.describe("does-not-exist").contains("gone"))
+        assertTrue(P2pInterfaceBssid.describeLinkLocal("p2p0", emptyList()).contains("no IPv6 link-local"))
+        assertTrue(P2pInterfaceBssid.describeLinkLocal(
+            "p2p0", listOf(bytes("fe80::1234:5678:abcd:ef01"))).contains("opaque"))
+        assertTrue(P2pInterfaceBssid.describeLinkLocal("p2p0", listOf(
+            bytes("fe80::d812:34ff:fe56:789a"), bytes("fe80::d812:34ff:fe56:789b"))).contains("conflicting"))
     }
 }

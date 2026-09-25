@@ -67,3 +67,30 @@ Samsung S21 Ultra. Do not claim universal wireless compatibility from this test.
 ADB was used to install and inspect the test build; the resolver itself uses only
 ordinary app APIs. Disconnecting the ADB client is not the same test as disabling
 the ADB service in system settings.
+
+## Follow-up: interface name race and a second device (25 September)
+
+- **Race fixed.** `group.interface` is null on Android 11+, and when group info
+  arrived before the kernel assigned `192.168.49.1` the interface lookup failed
+  once and was never repeated, so all 15 waits read IPv6 from no interface and
+  the handshake aborted with a masked BSSID. The wait loop now looks the interface
+  up by the group-owner address on every pass and always reads it at least once.
+- **Current group wins.** When the address came from a fallback that may describe
+  another group or interface (`lastKnownBssid`, device address, sysfs scan), the
+  IPv6 address of the group's own interface replaces it once readable. A Static
+  BSSID is still never overridden.
+- **Readable failure.** If nothing is recovered, the log names the cause: no
+  interface name, no IPv6 link-local, or only opaque identifiers.
+- **Second device.** HiBy R4 (Qualcomm, Android 12, SELinux enforcing, P2P MAC
+  randomization supported) hosting the group with a debug build: `p2p0` link-local
+  `fe80::484d:90ff:fecb:ad5c` decoded to `4A:4D:90:CB:AD:5C`, equal to the kernel's
+  `link/ether`, and a Samsung S25 Ultra (Android 16) scan listed `DIRECT-GH-HeadUnit`
+  at that BSSID. The address stayed the same across group recreation and a Wi-Fi
+  off/on. A full Android Auto session was not run on this device.
+- **How common opaque identifiers are.** Both devices report `addr_gen_mode` 0
+  (EUI-64) for `default`, `p2p0` and `wlan0`, so a newly created P2P interface gets
+  a MAC-derived link-local address. Stable-privacy link-local addresses were not
+  observed; the Limits above still apply to firmware that changes this.
+- **Ruled out.** Reading the MAC from the kernel over nl80211 (generic netlink) is
+  denied by SELinux for both `shell` and the app's domain on a user build, so it
+  cannot serve as a fallback.
