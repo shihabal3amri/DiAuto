@@ -8,6 +8,12 @@ object Messages {
     val versionRequest: ByteArray
         get() = createRawMessage(0, 3, 1, VERSION_REQUEST, VERSION_REQUEST.size)
 
+    /** Version request advertising protocol 1.[minor]. 1.2 is the long-standing default. */
+    fun versionRequest(minor: Int): ByteArray {
+        val payload = byteArrayOf(0, 1, (minor shr 8).toByte(), minor.toByte())
+        return createRawMessage(0, 3, 1, payload, payload.size)
+    }
+
     // byte ac_buf [] = {0, 3, 0, 4, 0, 4, 8, 0};
     val statusOk: ByteArray
         get() = createRawMessage(0, 3, 4, byteArrayOf(8, 0), 2)

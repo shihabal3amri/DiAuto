@@ -82,6 +82,9 @@ class SettingsFragment : Fragment() {
     // Local state to hold changes before saving
     private var pendingUseGps: Boolean? = null
     private var pendingBydNavigationEnabled: Boolean? = null
+    private var pendingBydClusterMapEnabled: Boolean? = null
+    private var pendingBydClusterTurnCardEnabled: Boolean? = null
+    private var pendingBydClusterLayout: Int? = null
     private var pendingShowNavigationNotifications: Boolean? = null
     private var pendingSyncMediaSessionAaMetadata: Boolean? = null
     private var pendingResolution: Int? = null
@@ -208,6 +211,9 @@ class SettingsFragment : Fragment() {
         // Initialize local state with current values
         pendingUseGps = settings.useGpsForNavigation
         pendingBydNavigationEnabled = settings.bydNavigationEnabled
+        pendingBydClusterMapEnabled = settings.bydClusterMapEnabled
+        pendingBydClusterTurnCardEnabled = settings.bydClusterTurnCardEnabled
+        pendingBydClusterLayout = settings.bydClusterLayout
         pendingShowNavigationNotifications = settings.showNavigationNotifications
         pendingSyncMediaSessionAaMetadata = settings.syncMediaSessionWithAaMetadata
         pendingResolution = settings.resolutionId
@@ -323,6 +329,9 @@ class SettingsFragment : Fragment() {
     private fun reloadPendingStateFromSettings() {
         pendingUseGps = settings.useGpsForNavigation
         pendingBydNavigationEnabled = settings.bydNavigationEnabled
+        pendingBydClusterMapEnabled = settings.bydClusterMapEnabled
+        pendingBydClusterTurnCardEnabled = settings.bydClusterTurnCardEnabled
+        pendingBydClusterLayout = settings.bydClusterLayout
         pendingShowNavigationNotifications = settings.showNavigationNotifications
         pendingSyncMediaSessionAaMetadata = settings.syncMediaSessionWithAaMetadata
         pendingResolution = settings.resolutionId
@@ -445,6 +454,9 @@ class SettingsFragment : Fragment() {
 
         pendingUseGps?.let { settings.useGpsForNavigation = it }
         pendingBydNavigationEnabled?.let { settings.bydNavigationEnabled = it }
+        pendingBydClusterMapEnabled?.let { settings.bydClusterMapEnabled = it }
+        pendingBydClusterTurnCardEnabled?.let { settings.bydClusterTurnCardEnabled = it }
+        pendingBydClusterLayout?.let { settings.bydClusterLayout = it }
         pendingShowNavigationNotifications?.let { settings.showNavigationNotifications = it }
         pendingSyncMediaSessionAaMetadata?.let { settings.syncMediaSessionWithAaMetadata = it }
         pendingResolution?.let { settings.resolutionId = it }
@@ -568,6 +580,9 @@ class SettingsFragment : Fragment() {
         // Check for any changes
         val anyChange = pendingUseGps != settings.useGpsForNavigation ||
                         pendingBydNavigationEnabled != settings.bydNavigationEnabled ||
+                        pendingBydClusterMapEnabled != settings.bydClusterMapEnabled ||
+                        pendingBydClusterTurnCardEnabled != settings.bydClusterTurnCardEnabled ||
+                        pendingBydClusterLayout != settings.bydClusterLayout ||
                         pendingShowNavigationNotifications != settings.showNavigationNotifications ||
                         pendingSyncMediaSessionAaMetadata != settings.syncMediaSessionWithAaMetadata ||
                         pendingResolution != settings.resolutionId ||
@@ -1190,6 +1205,54 @@ class SettingsFragment : Fragment() {
                     updateSettingsList()
                 }
             ))
+        }
+
+        // Only offered where a BYD cluster projection display is visible to the app.
+        if (com.andrerinas.openheadunit.cluster.ClusterMapStream.available() &&
+            com.andrerinas.openheadunit.cluster.ClusterLayout.Theme.values().any {
+                com.andrerinas.openheadunit.cluster.ClusterLayout.findDisplay(requireContext(), it) != null
+            }) {
+            items.add(SettingItem.ToggleSettingEntry(
+                stableId = "bydClusterMap",
+                nameResId = R.string.byd_cluster_map_title,
+                descriptionResId = R.string.byd_cluster_map_description,
+                isChecked = pendingBydClusterMapEnabled ?: false,
+                onCheckedChanged = { enabled ->
+                    pendingBydClusterMapEnabled = enabled
+                    checkChanges()
+                    updateSettingsList()
+                }
+            ))
+            if (pendingBydClusterMapEnabled == true) {
+                items.add(SettingItem.ToggleSettingEntry(
+                    stableId = "bydClusterTurnCard",
+                    nameResId = R.string.byd_cluster_turn_card_title,
+                    descriptionResId = R.string.byd_cluster_turn_card_description,
+                    isChecked = pendingBydClusterTurnCardEnabled ?: true,
+                    onCheckedChanged = { enabled ->
+                        pendingBydClusterTurnCardEnabled = enabled
+                        checkChanges()
+                        updateSettingsList()
+                    }
+                ))
+                if (com.andrerinas.openheadunit.cluster.ClusterLayout.supported()) {
+                    items.add(SettingItem.SegmentedButtonSettingEntry(
+                        stableId = "bydClusterLayout",
+                        nameResId = R.string.byd_cluster_layout_title,
+                        options = listOf(
+                            getString(R.string.byd_cluster_layout_scenario),
+                            getString(R.string.byd_cluster_layout_map),
+                            getString(R.string.byd_cluster_layout_simple)
+                        ),
+                        selectedIndex = (pendingBydClusterLayout ?: 0).coerceIn(0, 2),
+                        onOptionSelected = { index ->
+                            pendingBydClusterLayout = index
+                            checkChanges()
+                            updateSettingsList()
+                        }
+                    ))
+                }
+            }
         }
 
         items.add(SettingItem.ToggleSettingEntry(

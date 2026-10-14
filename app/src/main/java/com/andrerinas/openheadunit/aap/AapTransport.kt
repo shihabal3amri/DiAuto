@@ -604,7 +604,16 @@ class AapTransport(
             }
 
             AppLog.d("Handshake: Starting version request. TS: ${SystemClock.elapsedRealtime()}")
-            val version = Messages.versionRequest
+            // The phone sends the modern cluster messages (NavigationState / CurrentPosition: steps,
+            // destination distance and ETA) only from protocol 1.6; at 1.2 it sends the legacy
+            // NextTurn events. Ask for 1.7; a phone that rejects it is asked again for 1.2 below.
+            // Only when this session may offer the dashboard map: a OnePlus 15 restarted its
+            // projection a second after setup when it saw a cluster display on a 1.2 connection,
+            // and at 1.2 the HUD keeps the legacy turn events it was validated on.
+            var protocolMinor = if (com.andrerinas.openheadunit.cluster.ClusterMapStream.wantsCluster(context, settings))
+                REQUESTED_PROTOCOL_MINOR else 2
+            var version = if (protocolMinor == 2) Messages.versionRequest else Messages.versionRequest(protocolMinor)
+            AppLog.i("Handshake: requesting protocol 1.$protocolMinor")
             var ret = -1
             var attempt = 0
             var received = false
@@ -612,6 +621,9 @@ class AapTransport(
             // is worth reporting upwards: it is the one the user can do something about.
             var peerSentBytes = false
             var transportError = false
+            var retryAtFallback = false
+            // What the session runs at; without the phone's status bytes, assume the 1.2 baseline.
+            var negotiatedMinor = 2
             // Outer deadline prevents the loop from running for minutes on an unresponsive device.
             // Each send+recv pair uses 2 s per operation; 3 attempts × 4 s ≈ 12 s worst-case,
             // capped here at HANDSHAKE_TIMEOUT_MS so a stuck device fails fast.
@@ -651,6 +663,20 @@ class AapTransport(
                         && buffer[4] == 0.toByte()
                         && buffer[5] == 2.toByte()) {
                         AppLog.i("Handshake: Version response received (ret=$ret, attempt=$attempt).")
+                        if (ret >= 12) {
+                            val major = ((buffer[6].toInt() and 0xFF) shl 8) or (buffer[7].toInt() and 0xFF)
+                            val minor = ((buffer[8].toInt() and 0xFF) shl 8) or (buffer[9].toInt() and 0xFF)
+                            val status = ((buffer[10].toInt() and 0xFF) shl 8) or (buffer[11].toInt() and 0xFF)
+                            AppLog.i("Handshake: phone protocol $major.$minor, status=$status (0 = match)")
+                            if (status != 0 && protocolMinor != 2) {
+                                AppLog.w("Handshake: phone rejected protocol 1.$protocolMinor; asking again for 1.2")
+                                protocolMinor = 2
+                                version = Messages.versionRequest
+                                retryAtFallback = true
+                                break
+                            }
+                            if (status == 0) negotiatedMinor = minOf(protocolMinor, minor)
+                        }
                         received = true
                         break
                     }
@@ -661,7 +687,15 @@ class AapTransport(
                              "(ch=$ch, type=0x${type.toString(16)}, len=$ret). " +
                              "Waiting for VERSION_RESPONSE.")
                 }
-                if (received) break
+                if (received) {
+                    com.andrerinas.openheadunit.cluster.ClusterMapStream.onProtocolNegotiated(negotiatedMinor)
+                    break
+                }
+                if (retryAtFallback) {
+                    retryAtFallback = false
+                    attempt = 0 // The 1.2 request gets its own attempts; this happens at most once.
+                    continue
+                }
                 AppLog.w("Handshake: No VERSION_RESPONSE within 2s (attempt $attempt), ret=$ret")
                 SystemClock.sleep(200)
             }
@@ -810,6 +844,8 @@ class AapTransport(
         // Maximum wall-clock time allowed for the version-exchange phase of the AAP handshake.
         // Prevents the retry loop from blocking for minutes on an unresponsive USB device.
         private const val HANDSHAKE_TIMEOUT_MS = 10_000L
+        // Minor version advertised in the version request (1.7). Falls back to 1.2 on rejection.
+        private const val REQUESTED_PROTOCOL_MINOR = 7
         private const val SENSOR_DROP_LOG_INTERVAL_MS = 30_000L
     }
 }

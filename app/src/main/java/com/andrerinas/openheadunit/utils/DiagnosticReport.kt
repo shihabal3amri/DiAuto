@@ -40,6 +40,7 @@ object DiagnosticReport {
             appendLine("Hotspot auto-enable=${settings.autoEnableHotspot}; hotspot state=${SoftApStateReader.read(context)}")
             appendLine("Hotspot name saved=${settings.hotspotSsid.isNotBlank()}; password saved=${settings.hotspotPassword.isNotEmpty()}")
             appendLine("Logging level=${settings.exporterLogLevel}; source=${settings.logSource}")
+            runCatching { appendLine(com.andrerinas.openheadunit.cluster.ClusterMapStream.diagnosticLine(context, settings)) }
             appendLine("Saved credentials, network addresses and protocol payloads are omitted.")
             appendLine("--- Recent app logs (up to 6000 lines) ---")
             if (lines.isEmpty()) appendLine("No recent app logs available. Reproduce the issue and save a new report.")

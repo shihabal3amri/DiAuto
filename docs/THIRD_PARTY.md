@@ -10,6 +10,9 @@ AGPL-3.0. See the root LICENSE and COPYRIGHT_MICHAEL_REID_GPLv3AFFERO.txt.
   Upstream source: https://ffmpeg.org/releases/ffmpeg-7.1.1.tar.xz
 - libusb: dynamically linked USB support, LGPL-2.1-or-later.
   Source and license: https://github.com/libusb/libusb
+- Material Symbols (Apache-2.0): the dashboard turn card's maneuver glyphs
+  (`app/src/main/res/drawable/ic_turn_card_*.xml`), as used by DiPlay.
+  Source: https://github.com/google/material-design-icons
 - Kotlin, AndroidX, Material Components, protobuf and other dependencies are declared
   in the Gradle build files. Their original notices and licenses apply.
 - Android Auto name and mark belong to Google. BYD belongs to its respective owner.

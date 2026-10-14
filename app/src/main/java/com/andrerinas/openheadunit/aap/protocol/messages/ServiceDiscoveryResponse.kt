@@ -119,7 +119,41 @@ class ServiceDiscoveryResponse(private val context: Context)
                 }.build()
             }.build()
 
+            // The instrument-cluster display, only with the dashboard map on and a BYD cluster
+            // projection display present. The phone's navigation app draws the map for it.
             services.add(video)
+
+            // Shaped like the cluster sinks aa-proxy-rs adds to a car's discovery response: only
+            // the codec type, one video configuration and the display id and type.
+            com.andrerinas.openheadunit.cluster.ClusterMapStream.prepareSession(context, settings)?.let { profile ->
+                services.add(Control.Service.newBuilder().also { service ->
+                    service.id = Channel.ID_CLUSTER
+                    service.mediaSinkService = Control.Service.MediaSinkService.newBuilder().also { sink ->
+                        sink.availableType = Media.MediaCodecType.MEDIA_CODEC_VIDEO_H264_BP
+                        sink.addVideoConfigs(Control.Service.MediaSinkService.VideoConfiguration.newBuilder().apply {
+                            codecResolution = profile.resolution
+                            frameRate = Control.Service.MediaSinkService.VideoConfiguration.VideoFrameRateType._30
+                            setMarginWidth(0)
+                            setMarginHeight(0)
+                            setDensity(profile.density)
+                            setDecoderAdditionalDepth(0)
+                            setPixelAspectRatioE4(10000)
+                            setVideoCodecType(Media.MediaCodecType.MEDIA_CODEC_VIDEO_H264_BP)
+                            setUnknownFields(com.andrerinas.openheadunit.cluster.ClusterSinkFields.videoExtras(profile))
+                        }.build())
+                        sink.setUnknownFields(com.andrerinas.openheadunit.cluster.ClusterSinkFields.cluster())
+                    }.build()
+                }.build())
+                if (profile.withInput) {
+                    services.add(Control.Service.newBuilder().also { service ->
+                        service.id = Channel.ID_CLUSTER_INPUT
+                        service.inputSourceService = Control.Service.InputSourceService.newBuilder()
+                            .addAllKeycodesSupported(com.andrerinas.openheadunit.cluster.ClusterSinkFields.CLUSTER_KEYCODES)
+                            .setUnknownFields(com.andrerinas.openheadunit.cluster.ClusterSinkFields.clusterInput())
+                            .build()
+                    }.build())
+                }
+            }
 
             val input = Control.Service.newBuilder().also { service ->
                 service.id = Channel.ID_INP

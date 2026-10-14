@@ -71,6 +71,10 @@ class AapProjectionActivity : SurfaceActivity(), IProjectionView.Callbacks, Vide
     private lateinit var projectionView: IProjectionView
     private val videoDecoder: VideoDecoder by lazy { App.provide(this).videoDecoder }
     private val settings: Settings by lazy { Settings(this) }
+    /** The Android Auto map on the BYD dashboard, when the session carries a cluster stream. */
+    private val clusterMapHost by lazy {
+        if (com.andrerinas.openheadunit.cluster.ClusterMapStream.available()) com.andrerinas.openheadunit.cluster.ClusterMapHost(this) else null
+    }
     private val cachedKeyCodes: Map<Int, Int> by lazy { settings.keyCodes }
     private var isSurfaceSet = false
     private var overlayState = OverlayState.STARTING
@@ -755,6 +759,7 @@ class AapProjectionActivity : SurfaceActivity(), IProjectionView.Callbacks, Vide
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        clusterMapHost?.start()
         // [FIX] applyOrientationSettings() must be called AFTER super.onCreate() so that the
         // Activity window is fully initialized before we lock the orientation. Calling it before
         // super.onCreate() caused SCREEN_ORIENTATION_LOCKED to inherit the orientation context
@@ -1775,6 +1780,7 @@ class AapProjectionActivity : SurfaceActivity(), IProjectionView.Callbacks, Vide
     private val bydFullscreen = com.andrerinas.openheadunit.utils.BydFullscreen()
 
     override fun onDestroy() {
+        clusterMapHost?.stop()
         bydFullscreen.release()
         super.onDestroy()
         if (isFinishReceiverRegistered) {

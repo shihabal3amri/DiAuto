@@ -11,19 +11,27 @@ internal class BydStandaloneSession(
     private var recovering = needsRecovery
     private var lastPacket: String? = null
     private var lastSendNs = 0L
+    private var lastStartNs = 0L
 
     fun update(icon: Int, exit: Int, distanceMeters: Int, road: String? = null) {
         if (recovering) clear()
         val packet = BydStandalonePackets.guidance(icon, exit, distanceMeters, road)
         if (packet == null) { clear(); return }
         try {
+            val now = nanoTime()
             if (!showing) {
                 // Commit before publishing a start, so the next app launch can recover a crash.
                 rememberPendingClear(true)
                 showing = true
-                send(BydStandalonePackets.start())
+                sendStart(now)
+            } else if (now - lastStartNs >= START_REFRESH_NS) {
+                // The navigation state is a latch other writers share. The stock map sets it to
+                // "not navigating" when the cluster projection display appears after start-up, when
+                // the driver changes the cluster's navi mode, or when the map app starts, and the
+                // HUD then hides our arrows until the state is 2 again. The stock map re-sends 2
+                // with its guidance at most every 3.5 s, so do the same.
+                sendStart(now)
             }
-            val now = nanoTime()
             if (lastPacket != packet || now - lastSendNs >= 1_000_000_000L) {
                 send(packet)
                 lastPacket = packet
@@ -37,6 +45,11 @@ internal class BydStandaloneSession(
         }
     }
 
+    private fun sendStart(now: Long) {
+        send(BydStandalonePackets.start())
+        lastStartNs = now
+    }
+
     fun clear() {
         if (!showing) return
         recovering = true
@@ -47,5 +60,11 @@ internal class BydStandaloneSession(
         recovering = false
         lastPacket = null
         lastSendNs = 0L
+        lastStartNs = 0L
+    }
+
+    companion object {
+        /** The stock map's SendCacheTool default (3500 ms) for its navigation-state writes. */
+        const val START_REFRESH_NS = 3_500_000_000L
     }
 }

@@ -7,13 +7,18 @@ import com.google.protobuf.Message
 
 
 
-class VideoFocusEvent(gain: Boolean, unsolicited: Boolean)
-    : AapMessage(Channel.ID_VID, Media.MsgType.MEDIA_MESSAGE_VIDEO_FOCUS_NOTIFICATION_VALUE, makeProto(gain, unsolicited)) {
+class VideoFocusEvent(mode: Media.VideoFocusMode, unsolicited: Boolean, channel: Int = Channel.ID_VID)
+    : AapMessage(channel, Media.MsgType.MEDIA_MESSAGE_VIDEO_FOCUS_NOTIFICATION_VALUE, makeProto(mode, unsolicited)) {
+
+    constructor(gain: Boolean, unsolicited: Boolean, channel: Int = Channel.ID_VID) : this(
+        if (gain) Media.VideoFocusMode.VIDEO_FOCUS_PROJECTED else Media.VideoFocusMode.VIDEO_FOCUS_NATIVE,
+        unsolicited, channel
+    )
 
     companion object {
-        private fun makeProto(gain: Boolean, unsolicited: Boolean): Message {
+        private fun makeProto(mode: Media.VideoFocusMode, unsolicited: Boolean): Message {
             return Media.VideoFocusNotification.newBuilder().apply {
-                mode = if (gain) Media.VideoFocusMode.VIDEO_FOCUS_PROJECTED else Media.VideoFocusMode.VIDEO_FOCUS_NATIVE
+                this.mode = mode
                 this.unsolicited = unsolicited
             }.build()
         }

@@ -1156,6 +1156,7 @@ class AapService : Service(), UsbReceiver.Listener {
      */
     private fun onDisconnected(state: CommManager.ConnectionState.Disconnected) {
         com.andrerinas.openheadunit.hud.BydNavigationOutputs.stop()
+        com.andrerinas.openheadunit.cluster.ClusterMapStream.endSession()
         isSwitchingToAccessory.set(false)
         releaseWifiLock()
 

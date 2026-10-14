@@ -115,6 +115,23 @@ class Settings(private val context: Context) {
         get() = prefs.getBoolean("byd-navigation-enabled", false)
         set(value) { prefs.edit().putBoolean("byd-navigation-enabled", value).apply() }
 
+    // Android Auto's instrument-cluster map on the BYD dashboard. Opt-in: it adds a second video
+    // display to the session, which takes effect on the next connection.
+    var bydClusterMapEnabled: Boolean
+        get() = prefs.getBoolean("byd-cluster-map-enabled", false)
+        set(value) { prefs.edit().putBoolean("byd-cluster-map-enabled", value).apply() }
+
+    // DiAuto's own next-turn card drawn on top of the dashboard map.
+    var bydClusterTurnCardEnabled: Boolean
+        get() = prefs.getBoolean("byd-cluster-turn-card", true)
+        set(value) { prefs.edit().putBoolean("byd-cluster-turn-card", value).apply() }
+
+    // The cluster theme chosen in the car (0 Scenario, 1 Map, 2 Simple): where its map window is.
+    // Only the measured DiLink 5.1 firmware has more than one window.
+    var bydClusterLayout: Int
+        get() = prefs.getInt("byd-cluster-layout", 0)
+        set(value) { prefs.edit().putInt("byd-cluster-layout", value).apply() }
+
     var showNavigationNotifications: Boolean
         get() = prefs.getBoolean("show-navigation-notifications", false)
         set(value) {

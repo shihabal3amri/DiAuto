@@ -45,6 +45,34 @@ class BydStandaloneSessionTest {
         assertEquals(4, r.events.size)
     }
 
+    @Test fun navigationStateIsReassertedLikeTheStockMap() {
+        // Another writer (the stock map) can set the latch back to "not navigating" mid-route.
+        val r = Rig()
+        r.session.update(2, 0, 500)
+        r.events.clear()
+        for (step in 1..8) {
+            r.now = step * 500_000_000L
+            r.session.update(2, 0, 500 - step)
+        }
+        // 3.5 s after the start, at the seventh update, the state is written again before the turn.
+        assertEquals(listOf(BydStandalonePackets.guidance(2, 0, 494), BydStandalonePackets.start(),
+            BydStandalonePackets.guidance(2, 0, 493), BydStandalonePackets.guidance(2, 0, 492)), r.events.takeLast(4))
+        assertEquals(1, r.events.count { it == BydStandalonePackets.start() })
+        r.now = 7_000_000_000L
+        r.session.update(2, 0, 400)
+        assertEquals(listOf(BydStandalonePackets.start(), BydStandalonePackets.guidance(2, 0, 400)), r.events.takeLast(2))
+    }
+
+    @Test fun anEndedRouteStartsAgainWithoutWaitingForTheRefresh() {
+        val r = Rig()
+        r.session.update(2, 0, 500)
+        r.session.clear()
+        r.events.clear()
+        r.now = 100_000_000L
+        r.session.update(3, 0, 800)
+        assertEquals(listOf("pending=true", BydStandalonePackets.start(), BydStandalonePackets.guidance(3, 0, 800)), r.events)
+    }
+
     @Test fun unknownManeuverEndsGuidanceInsteadOfInventingStraight() {
         val r = Rig()
         r.session.update(2, 0, 500)

@@ -20,6 +20,7 @@ internal class AapMessageHandlerType(
     private val aapControl: AapControl = AapControlGateway(transport, recorder, aapAudio, settings, context)
     private val mediaPlayback = AapMediaPlayback(onAaMediaMetadata, onAaPlaybackStatus)
     private val aapNavigation = AapNavigation(context, settings)
+    private val clusterVideo = AapClusterVideo()
 
     @Throws(AapMessageHandler.HandleException::class)
     override fun handle(message: AapMessage) {
@@ -42,6 +43,16 @@ internal class AapMessageHandlerType(
                  }
                  return
              }
+        }
+
+        // 1b. The instrument-cluster stream, when the dashboard map declared one.
+        if (message.channel == Channel.ID_CLUSTER) {
+            if (clusterVideo.process(message)) {
+                if (msgType == 0 || msgType == 1) {
+                    transport.sendMediaAck(message.channel)
+                }
+                return
+            }
         }
 
         // 2. Try processing as Audio stream (Speech, System, Media)

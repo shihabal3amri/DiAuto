@@ -46,7 +46,17 @@ internal class AapControlMedia(
             Media.MsgType.MEDIA_MESSAGE_STOP_VALUE -> return mediaSinkStopRequest(message.channel)
             Media.MsgType.MEDIA_MESSAGE_VIDEO_FOCUS_REQUEST_VALUE -> {
                 val focusRequest = message.parse(Media.VideoFocusRequestNotification.newBuilder()).build()
-                AppLog.i("RX: Video Focus Request - mode: %s, reason: %s", focusRequest.mode, focusRequest.reason)
+                AppLog.i("RX: Video Focus Request on %s - mode: %s, reason: %s", Channel.name(message.channel), focusRequest.mode, focusRequest.reason)
+
+                if (message.channel == Channel.ID_CLUSTER) {
+                    // The phone waits for the answer to a cluster focus request; left unanswered it
+                    // restarted its projection about a second later, every session. Grant what it
+                    // asks for, as aa-proxy-rs does for the displays it adds. A NATIVE request here
+                    // is the cluster's own business and never the user leaving Android Auto.
+                    aapTransport.send(VideoFocusEvent(focusRequest.mode, unsolicited = false, channel = Channel.ID_CLUSTER))
+                    com.andrerinas.openheadunit.cluster.ClusterMapStream.onFocus(focusRequest.mode)
+                    return 0
+                }
 
                 if (focusRequest.mode == Media.VideoFocusMode.VIDEO_FOCUS_NATIVE) {
                     AppLog.i("Video Focus NATIVE received. User likely clicked Exit. Stopping transport.")
@@ -74,6 +84,7 @@ internal class AapControlMedia(
         AppLog.i("Media Start Request %s: session=%d, config_index=%d", Channel.name(channel), request.sessionId, request.configurationIndex)
 
         aapTransport.setSessionId(channel, request.sessionId)
+        if (channel == Channel.ID_VID) com.andrerinas.openheadunit.cluster.ClusterMapStream.onMainVideoStarted()
         return 0
     }
 
@@ -93,7 +104,15 @@ internal class AapControlMedia(
         aapTransport.send(msg)
 
         if (channel == Channel.ID_VID) {
+            com.andrerinas.openheadunit.cluster.ClusterMapStream.onMainVideoSetup()
             aapTransport.gainVideoFocus()
+        }
+
+        if (channel == Channel.ID_CLUSTER) {
+            // Focus is granted once the main picture runs, and the phone's own requests are answered above.
+            com.andrerinas.openheadunit.cluster.ClusterMapStream.onSetup { mode ->
+                aapTransport.send(VideoFocusEvent(mode, unsolicited = true, channel = Channel.ID_CLUSTER))
+            }
         }
 
         // Pushing AudioFocusNotification
@@ -110,6 +129,8 @@ internal class AapControlMedia(
     }
 
     private fun maxUnackedFor(channel: Int): Int {
+        // A map changes slowly; a small window keeps the cluster from competing with the main picture.
+        if (channel == Channel.ID_CLUSTER) return 4
         if (channel == Channel.ID_VID) {
             val softwareHevc =
                 aapTransport.settings.videoCodec == VideoDecoder.CodecType.H265.settingsValue &&
@@ -144,6 +165,8 @@ internal class AapControlMedia(
                 return 0
             }
             AppLog.i("Video Sink Stopped -> Normal background/transition behavior")
+        } else if (channel == Channel.ID_CLUSTER) {
+            AppLog.i("ClusterMap: the phone stopped the cluster stream")
         }
         return 0
     }
@@ -436,9 +459,9 @@ internal class AapControlGateway(
 
         when (message.channel) {
             Channel.ID_CTR -> return serviceControl.execute(message)
-            Channel.ID_INP -> return touchControl.execute(message)
+            Channel.ID_INP, Channel.ID_CLUSTER_INPUT -> return touchControl.execute(message)
             Channel.ID_SEN -> return sensorControl.execute(message)
-            Channel.ID_VID, Channel.ID_AUD, Channel.ID_AU1, Channel.ID_AU2, Channel.ID_MIC -> return mediaControl.execute(message)
+            Channel.ID_VID, Channel.ID_CLUSTER, Channel.ID_AUD, Channel.ID_AU1, Channel.ID_AU2, Channel.ID_MIC -> return mediaControl.execute(message)
         }
         return 0
     }
