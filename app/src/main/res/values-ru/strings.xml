@@ -298,6 +298,7 @@
     <string name="no_devices_found">Устройства не найдены</string>
     <string name="unsaved_changes">Несохраненные изменения</string>
     <string name="unsaved_changes_message">У вас есть несохраненные изменения. Хотите отменить их?</string>
+    <string name="unsaved_changes_save_message">Есть несохранённые изменения. Сохранить их перед выходом?</string>
     <string name="discard">Отменить</string>
     <string name="stopping_service">Остановка службы для применения изменений…</string>
     <string name="settings_saved">Настройки сохранены</string>
@@ -365,6 +366,11 @@
     <string name="log_location">Место сохранения логов</string>
     <string name="log_location_default">По умолчанию (Память приложения)</string>
     <string name="log_location_downloads">Папка Загрузки</string>
+    <string name="log_location_custom">Выбрать папку…</string>
+    <string name="log_save_as">Сохранить как…</string>
+    <string name="log_saved_to_selected">Журнал сохранён в выбранное место.</string>
+    <string name="log_publish_failed">Не удалось скопировать журнал в выбранное место. Используйте «Сохранить как…», чтобы выбрать другое.</string>
+    <string name="log_folder_picker_unavailable">На этом головном устройстве нет выбора папок. Используйте папку «Загрузки».</string>
     <string name="start_log_capture">Начать запись лога</string>
     <string name="start_log_capture_description">Начинает запись системных логов в файл.</string>
     <string name="start_log_capture_in_applog_file">Сообщения записываются в файл только во время активной записи</string>
@@ -756,6 +762,8 @@
     <string name="perm_mic_help">Позволяет Android Auto использовать голосовые команды, Google Assistant и телефонные звонки.</string>
     <string name="perm_location_title">Местоположение</string>
     <string name="perm_location_help">Передаёт GPS на телефон для навигации, выполняет поиск беспроводных подключений и управляет ночным режимом по местоположению.</string>
+    <string name="perm_background_location_title">Местоположение всегда</string>
+    <string name="perm_background_location_help">Позволяет DiAuto создавать беспроводное подключение Android Auto при запуске автомобиля, ещё до открытия приложения. Выберите «Разрешить в любом режиме».</string>
     <string name="perm_nearby_title">Устройства поблизости</string>
     <string name="perm_nearby_help">Необходимо для подключения по Bluetooth и Wi-Fi, маршрутизации Bluetooth-аудио и автозапуска при подключении сопряжённого устройства.</string>
     <string name="perm_notifications_title">Уведомления</string>

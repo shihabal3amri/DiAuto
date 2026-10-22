@@ -35,6 +35,7 @@ import java.net.Socket
 class WifiDirectManager(private val context: Context) : WifiP2pManager.ConnectionInfoListener, WifiP2pManager.GroupInfoListener {
 
     private companion object {
+        private const val FOREGROUND_LAUNCH_INTERVAL_MS = 30_000L
         private const val MAX_NATIVE_5GHZ_CREATE_RETRIES = 4
 
         /**
@@ -1435,6 +1436,18 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
                 } else {
                     AppLog.e("WifiDirectManager: createQuietGroup failed completely! Reason: $reasonStr")
                     isGroupCreatingOrCreated = false
+                    if (reason == WifiP2pManager.ERROR) maybeBringAppToForeground()
+                    if (reason == WifiP2pManager.ERROR && channel === ch) {
+                        // A channel initialized while Wi-Fi was off (or before the P2P service came
+                        // up after boot) keeps answering every request with a generic ERROR. Seen on
+                        // a DiLink5.0 cold start: ~100 s of failed attempts until opening the app
+                        // happened to build a fresh one. Drop it so the next attempt re-initializes.
+                        AppLog.w("WifiDirectManager: P2P channel keeps returning ERROR - re-initializing it on the next attempt")
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                            runCatching { ch.close() }
+                        }
+                        channel = null
+                    }
                 }
             }
         })
@@ -1585,6 +1598,40 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
         lastNativeGroupStatusMessage = message
         AppLog.i("WifiDirectManager: $message, SSID=$ssid")
         showToast(message)
+    }
+
+    private var lastForegroundLaunchMs = 0L
+
+    /**
+     * Android 10-12 check location access for Wi-Fi Direct. With only "while in use" location, every
+     * createGroup from the background service fails with a generic ERROR - measured on a DiLink5.0
+     * cold start as minutes of failures, each ended within a second by the user opening the app.
+     * The real fix is "Allow all the time" location; where the firmware offers no way to grant it,
+     * open the app ourselves, which is what the user had to do by hand. Needs "display over other
+     * apps" to be allowed to start an activity from the background, and is rate-limited.
+     */
+    private fun maybeBringAppToForeground() {
+        if (Build.VERSION.SDK_INT !in Build.VERSION_CODES.Q..Build.VERSION_CODES.S_V2) return
+        if (com.andrerinas.openheadunit.utils.AppPermissions.isBackgroundLocationGranted(context)) return
+        val state = android.app.ActivityManager.RunningAppProcessInfo()
+        android.app.ActivityManager.getMyMemoryState(state)
+        if (state.importance <= android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) return
+        val now = android.os.SystemClock.elapsedRealtime()
+        if (now - lastForegroundLaunchMs < FOREGROUND_LAUNCH_INTERVAL_MS) return
+        if (!com.andrerinas.openheadunit.utils.AppPermissions.isOverlayGranted(context)) {
+            AppLog.w("WifiDirectManager: Wi-Fi Direct is refused in the background (no \"Allow all the time\" " +
+                    "location) and \"display over other apps\" is off - open the app or grant either permission")
+            return
+        }
+        val launch = context.packageManager.getLaunchIntentForPackage(context.packageName) ?: return
+        lastForegroundLaunchMs = now
+        AppLog.w("WifiDirectManager: Wi-Fi Direct is refused in the background (no \"Allow all the time\" " +
+                "location) - opening the app so the next attempt runs in the foreground")
+        try {
+            context.startActivity(launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        } catch (e: Exception) {
+            AppLog.w("WifiDirectManager: could not open the app: ${e.message}")
+        }
     }
 
     private fun showToast(message: String) {

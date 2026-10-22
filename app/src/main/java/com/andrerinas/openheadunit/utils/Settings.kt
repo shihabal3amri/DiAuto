@@ -218,8 +218,15 @@ class Settings(private val context: Context) {
 
     enum class LogLocation {
         DEFAULT,
-        DOWNLOADS
+        DOWNLOADS,
+        /** A folder the user picked through the system folder picker; see [logTreeUri]. */
+        CUSTOM
     }
+
+    /** Persisted SAF tree URI for [LogLocation.CUSTOM], or empty when none was picked. */
+    var logTreeUri: String
+        get() = prefs.getString(KEY_LOG_TREE_URI, "") ?: ""
+        set(value) { prefs.edit().putString(KEY_LOG_TREE_URI, value).apply() }
 
     var logSource: LogSource
         get() = LogSource.entries.getOrElse(prefs.getInt(KEY_LOG_SOURCE, LogSource.LOGCAT.ordinal)) { LogSource.LOGCAT }
@@ -1063,6 +1070,7 @@ class Settings(private val context: Context) {
         const val KEY_LOG_LEVEL = "log-level"
         const val KEY_LOG_SOURCE = "log-source"
         const val KEY_LOG_LOCATION = "log-location"
+        const val KEY_LOG_TREE_URI = "log-tree-uri"
         /** Persist whether log capture should be active across restarts. */
         const val KEY_LOG_CAPTURE_ENABLED = "log-capture-enabled"
 

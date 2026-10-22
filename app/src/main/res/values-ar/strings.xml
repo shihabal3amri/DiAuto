@@ -295,6 +295,7 @@
     <string name="no_devices_found">لم يتم العثور على أجهزة</string>
     <string name="unsaved_changes">تغييرات غير محفوظة</string>
     <string name="unsaved_changes_message">لديك تغييرات غير محفوظة. هل تريد تجاهلها؟</string>
+    <string name="unsaved_changes_save_message">لديك تغييرات غير محفوظة. هل تريد حفظها قبل المغادرة؟</string>
     <string name="discard">تجاهل</string>
     <string name="stopping_service">إيقاف الخدمة لتطبيق التغييرات…</string>
     <string name="settings_saved">تم حفظ الإعدادات</string>
@@ -364,6 +365,11 @@
     <string name="log_location">موقع حفظ السجلات</string>
     <string name="log_location_default">الافتراضي (تخزين التطبيق)</string>
     <string name="log_location_downloads">مجلد التنزيلات</string>
+    <string name="log_location_custom">اختيار مجلد…</string>
+    <string name="log_save_as">حفظ باسم…</string>
+    <string name="log_saved_to_selected">تم حفظ السجل في الموقع المحدد.</string>
+    <string name="log_publish_failed">تعذّر نسخ السجل إلى الموقع المحدد. استخدم «حفظ باسم…» لاختيار مكان آخر.</string>
+    <string name="log_folder_picker_unavailable">لا يتوفر منتقي مجلدات في هذه الوحدة. استخدم مجلد التنزيلات.</string>
     <string name="start_log_capture">بدء التقاط السجل</string>
     <string name="start_log_capture_description">يبدأ تسجيل سجلات النظام في ملف.</string>
     <string name="start_log_capture_in_applog_file">تُكتب رسائل Log في ملف فقط أثناء تنشيط الالتقاط</string>
@@ -794,6 +800,8 @@
     <string name="perm_mic_help">يتيح لـ Android Auto استخدام الأوامر الصوتية ومساعد Google والمكالمات الهاتفية.</string>
     <string name="perm_location_title">الموقع</string>
     <string name="perm_location_help">يرسل بيانات GPS للهاتف للملاحة، ويبحث عن الاتصالات اللاسلكية، ويشغّل الوضع الليلي حسب الموقع.</string>
+    <string name="perm_background_location_title">الموقع طوال الوقت</string>
+    <string name="perm_background_location_help">يسمح لـ DiAuto بإنشاء اتصال Android Auto اللاسلكي عند تشغيل السيارة، قبل فتح التطبيق. اختر «السماح طوال الوقت».</string>
     <string name="perm_nearby_title">الأجهزة القريبة</string>
     <string name="perm_nearby_help">مطلوب للاتصال عبر Bluetooth وWi-Fi، وتوجيه صوت Bluetooth، والتشغيل التلقائي عند اتصال جهاز مقترن.</string>
     <string name="perm_notifications_title">الإشعارات</string>

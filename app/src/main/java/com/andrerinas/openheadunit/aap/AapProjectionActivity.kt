@@ -180,6 +180,9 @@ class AapProjectionActivity : SurfaceActivity(), IProjectionView.Callbacks, Vide
                 return
             }
             val gap = SystemClock.elapsedRealtime() - lastFrame
+            if (gap < LIVE_PICTURE_MS) {
+                clearStaleOverlay()
+            }
             val linkQuiet = linkQuietMs()
             val pictureStopped = gap > ProjectionWatchdogPolicy.FRAME_GAP_MS
             if (overlayState == OverlayState.HIDDEN &&
@@ -832,6 +835,13 @@ class AapProjectionActivity : SurfaceActivity(), IProjectionView.Callbacks, Vide
                             // Restart the video watchdog so it can request keyframes for the new session
                             watchdogHandler.removeCallbacks(videoWatchdogRunnable)
                             watchdogHandler.postDelayed(videoWatchdogRunnable, 1000)
+                            // Disconnected cleared every callback on this handler, the mid-session
+                            // watchdog included, and only onResume used to bring it back. A reconnect
+                            // inside the same activity instance therefore ran the rest of the drive
+                            // with nothing watching for a frozen picture or asking for video again,
+                            // and the reconnecting overlay was left to the first-frame listener alone.
+                            watchdogHandler.removeCallbacks(reconnectingWatchdog)
+                            watchdogHandler.postDelayed(reconnectingWatchdog, 5000)
 
                             // Lock the resolution so that orientation changes don't cause re-negotiation
                             HeadUnitScreenConfig.lockResolution()
@@ -881,8 +891,7 @@ class AapProjectionActivity : SurfaceActivity(), IProjectionView.Callbacks, Vide
         container.addView(overlayView)
         overlayView.requestFocus()
         // DiLink (byd-freeform) hides the bottom ~96px of the window from the decor;
-        // claim it back so projection is true fullscreen and bottom-bar touches land.
-        bydFullscreen.expand(this, container, overlayView)
+        // setFullscreen() claims it back only in the immersive modes (see applyBydFullscreen).
         setFullscreen() // Call setFullscreen here as well
 
         val loadingOverlay = findViewById<View>(R.id.loading_overlay)
@@ -984,9 +993,16 @@ class AapProjectionActivity : SurfaceActivity(), IProjectionView.Callbacks, Vide
         super.onResume()
         isForeground = true
         AppLog.i("AapProjectionActivity: onResume")
+        logWindowGeometry("resumed")
         // Show the one-time rename notice even here, on top of an active projection.
         RenameNotice.maybeShow(this, App.provide(this).settings)
         applyStickyOrientation()
+        // Remove before posting: the connection-state collector runs while STARTED, so a reconnect
+        // during a pause (BYD freeform keeps the window visible) can already have armed these, and
+        // each runnable re-posts itself - posting again here would run two loops side by side.
+        watchdogHandler.removeCallbacks(watchdogRunnable)
+        watchdogHandler.removeCallbacks(videoWatchdogRunnable)
+        watchdogHandler.removeCallbacks(reconnectingWatchdog)
         watchdogHandler.postDelayed(watchdogRunnable, 2000)
         watchdogHandler.postDelayed(videoWatchdogRunnable, 3000)
         watchdogHandler.postDelayed(reconnectingWatchdog, 5000)
@@ -1047,6 +1063,10 @@ class AapProjectionActivity : SurfaceActivity(), IProjectionView.Callbacks, Vide
         stopCustomLoadingMedia()
         findViewById<View>(R.id.loading_custom_video)?.visibility = View.GONE
         overlay.setBackgroundColor(Color.parseColor("#CC000000"))
+        // A first-frame fade may still be running; left alone it would finish by hiding the overlay
+        // we are about to show, or leave it drawn at whatever alpha it had reached.
+        overlay.animate().cancel()
+        overlay.alpha = 1f
 
         val title = findViewById<TextView>(R.id.overlay_text)
         val detail = findViewById<TextView>(R.id.overlay_detail)
@@ -1064,7 +1084,9 @@ class AapProjectionActivity : SurfaceActivity(), IProjectionView.Callbacks, Vide
         val overlay = findViewById<View>(R.id.loading_overlay) ?: return
         val detail = findViewById<TextView>(R.id.overlay_detail)
         val button = findViewById<Button>(R.id.disconnect_button)
+        overlay.animate().cancel()
         overlay.visibility = View.GONE
+        overlay.alpha = 1f
         detail?.visibility = View.GONE
         button?.visibility = View.GONE
         stopCustomLoadingMedia()
@@ -1249,6 +1271,33 @@ class AapProjectionActivity : SurfaceActivity(), IProjectionView.Callbacks, Vide
         }
     }
 
+    /**
+     * Frames are reaching the screen right now, yet the loading/reconnecting overlay is still up.
+     *
+     * Whatever the overlay state says, an 80% black layer over a live picture is wrong. It used to
+     * come down only through the decoder's one-shot first-frame listener or a short-lived check
+     * a few seconds after resume, so a listener consumed elsewhere (a relaunch, a reconnect) or an
+     * interrupted fade - a cancelled ViewPropertyAnimator never runs its end action - left the
+     * projection dimmed behind it. On DiLink the giveaway is the bottom strip outside the caption
+     * clamp staying bright: the SurfaceView reaches it, the overlay does not.
+     */
+    private fun clearStaleOverlay() {
+        val overlay = findViewById<View>(R.id.loading_overlay) ?: return
+        if (overlay.visibility != View.VISIBLE) return
+        if (overlayState == OverlayState.RECONNECTING) {
+            hideReconnectingOverlay()
+            return
+        }
+        AppLog.w("AapProjectionActivity: loading overlay still visible (state=$overlayState, " +
+                "alpha=${overlay.alpha}) over a live picture - removing it")
+        overlayState = OverlayState.HIDDEN
+        stopCustomLoadingMedia()
+        overlay.animate().cancel()
+        overlay.visibility = View.GONE
+        overlay.alpha = 1f
+        touchOverlayView?.requestFocus()
+    }
+
     private fun hideLoadingOverlay(loadingOverlay: View?) {
         overlayState = OverlayState.HIDDEN
         AppLog.i("Hiding loading overlay after first video frame")
@@ -1322,6 +1371,7 @@ class AapProjectionActivity : SurfaceActivity(), IProjectionView.Callbacks, Vide
                 ProjectionViewScaler.updateScale(projectionView as View, videoDecoder.videoWidth, videoDecoder.videoHeight)
             }
         }
+        applyBydFullscreen(mode)
 
         // Workaround for API < 19 (Jelly Bean) where Sticky Immersive Mode doesn't exist.
         // If bars appear (e.g. on touch), hide them again after a delay.
@@ -1339,6 +1389,25 @@ class AapProjectionActivity : SurfaceActivity(), IProjectionView.Callbacks, Vide
                     }, 2000)
                 }
             }
+        }
+    }
+
+    /**
+     * DiLink's strip below the caption clamp is where the BYD bottom bar lives. Claim it for the
+     * projection only when the user asked for immersive fullscreen. In the bar-visible modes the
+     * enforcer used to run anyway, so the container stayed full height, the surface never came up
+     * short, Android Auto was never sent margins, and its bottom controls (play/pause, the app
+     * rail) sat hidden under the BYD buttons.
+     */
+    private fun applyBydFullscreen(mode: Settings.FullscreenMode) {
+        val container = findViewById<FrameLayout>(R.id.container) ?: return
+        val touch = touchOverlayView ?: return
+        val immersive = mode == Settings.FullscreenMode.IMMERSIVE ||
+            mode == Settings.FullscreenMode.IMMERSIVE_WITH_NOTCH
+        if (immersive) {
+            if (!bydFullscreen.isExpanded) bydFullscreen.expand(this, container, touch)
+        } else if (bydFullscreen.isExpanded) {
+            bydFullscreen.collapse()
         }
     }
 
@@ -1451,6 +1520,33 @@ class AapProjectionActivity : SurfaceActivity(), IProjectionView.Callbacks, Vide
         startMain.addCategory(Intent.CATEGORY_HOME)
         startMain.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(startMain)
+    }
+
+    override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
+        super.onConfigurationChanged(newConfig)
+        logWindowGeometry("configuration changed")
+    }
+
+    override fun onMultiWindowModeChanged(isInMultiWindowMode: Boolean, newConfig: android.content.res.Configuration) {
+        super.onMultiWindowModeChanged(isInMultiWindowMode, newConfig)
+        logWindowGeometry("multi-window=$isInMultiWindowMode")
+    }
+
+    /**
+     * BYD's 3:7 split screen ("Dishare") was seen pushing the projection left under a side panel
+     * while every view still reported 1920x1080, so the journal held no trace of it. Record what
+     * the window actually is whenever the system says something changed.
+     */
+    private fun logWindowGeometry(reason: String) {
+        val bounds = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            windowManager.currentWindowMetrics.bounds.toShortString()
+        } else "n/a"
+        val container = findViewById<View>(R.id.container)
+        val location = IntArray(2).also { container?.getLocationOnScreen(it) }
+        val multiWindow = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && isInMultiWindowMode
+        AppLog.i("[UI_DEBUG] Window $reason: bounds=$bounds multiWindow=$multiWindow " +
+            "screenDp=${resources.configuration.screenWidthDp}x${resources.configuration.screenHeightDp} " +
+            "container=${container?.width}x${container?.height}@${location[0]},${location[1]}")
     }
 
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: android.content.res.Configuration) {
@@ -1827,6 +1923,9 @@ class AapProjectionActivity : SurfaceActivity(), IProjectionView.Callbacks, Vide
     companion object {
         const val EXTRA_FOCUS = "focus"
         @Volatile var isForeground = false
+
+        /** A frame rendered this recently means the picture is live and nothing may cover it. */
+        private const val LIVE_PICTURE_MS = 2000L
 
         /**
          * Optional one-shot override for the loading-screen status text. Set by

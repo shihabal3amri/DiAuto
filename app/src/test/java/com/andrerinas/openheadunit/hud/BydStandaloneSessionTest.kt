@@ -73,14 +73,22 @@ class BydStandaloneSessionTest {
         assertEquals(listOf("pending=true", BydStandalonePackets.start(), BydStandalonePackets.guidance(3, 0, 800)), r.events)
     }
 
-    @Test fun unknownManeuverEndsGuidanceInsteadOfInventingStraight() {
+    @Test fun unknownManeuverKeepsDistanceWithoutInventingStraight() {
         val r = Rig()
         r.session.update(2, 0, 500)
-        r.session.update(0, 0, 500)
-        assertEquals(listOf(BydStandalonePackets.clear(), "pending=false"), r.events.takeLast(2))
-        val count = r.events.size
+        r.session.update(BydNavigationMapper.NO_ARROW, 0, 400)
+        val noArrow = BydStandalonePackets.guidance(BydNavigationMapper.NO_ARROW, 0, 400)!!
+        assertEquals(noArrow, r.events.last())
+        // Turn code 0 in both turn records, never the straight code (11).
+        assertEquals(listOf("43", "F0", "10", "10", "04", "00", "00", "00", "00"), noArrow.split(',').subList(9, 18))
+        assertNotEquals(BydStandalonePackets.guidance(9, 0, 400), noArrow)
+    }
+
+    @Test fun invalidIconEndsGuidance() {
+        val r = Rig()
+        r.session.update(2, 0, 500)
         r.session.update(999, 0, 500)
-        assertEquals(count, r.events.size)
+        assertEquals(listOf(BydStandalonePackets.clear(), "pending=false"), r.events.takeLast(2))
     }
 
     @Test fun invalidDistanceEndsGuidance() {

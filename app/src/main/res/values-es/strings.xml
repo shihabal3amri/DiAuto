@@ -295,6 +295,7 @@
     <string name="no_devices_found">No se encontraron dispositivos</string>
     <string name="unsaved_changes">Cambios sin guardar</string>
     <string name="unsaved_changes_message">Tiene cambios sin guardar. ¿Desea descartarlos?</string>
+    <string name="unsaved_changes_save_message">Tienes cambios sin guardar. ¿Guardarlos antes de salir?</string>
     <string name="discard">Descartar</string>
     <string name="stopping_service">Deteniendo servicio para aplicar cambios…</string>
     <string name="settings_saved">Configuración guardada</string>
@@ -364,6 +365,11 @@
     <string name="log_location">Ubicación de registros</string>
     <string name="log_location_default">Predeterminado (Almacenamiento de app)</string>
     <string name="log_location_downloads">Carpeta de Descargas</string>
+    <string name="log_location_custom">Elegir carpeta…</string>
+    <string name="log_save_as">Guardar como…</string>
+    <string name="log_saved_to_selected">Registro guardado en la ubicación seleccionada.</string>
+    <string name="log_publish_failed">No se pudo copiar el registro en la ubicación seleccionada. Usa Guardar como… para elegir otro lugar.</string>
+    <string name="log_folder_picker_unavailable">Esta unidad no tiene selector de carpetas. Usa la carpeta de Descargas.</string>
     <string name="start_log_capture">Iniciar captura de log</string>
     <string name="start_log_capture_description">Comienza a registrar los logs del sistema en un archivo.</string>
     <string name="start_log_capture_in_applog_file">Los mensajes de Log se escriben en un archivo solo mientras la captura está activa</string>
@@ -766,6 +772,8 @@
     <string name="perm_mic_help">Permite que Android Auto use comandos de voz, el Google Assistant y llamadas telefónicas.</string>
     <string name="perm_location_title">Ubicación</string>
     <string name="perm_location_help">Envía el GPS al teléfono para la navegación, busca conexiones inalámbricas y activa el modo noche según la ubicación.</string>
+    <string name="perm_background_location_title">Ubicación siempre</string>
+    <string name="perm_background_location_help">Permite que DiAuto cree la conexión inalámbrica de Android Auto al arrancar el coche, antes de abrir la app. Elige «Permitir todo el tiempo».</string>
     <string name="perm_nearby_title">Dispositivos cercanos</string>
     <string name="perm_nearby_help">Necesario para conectarse por Bluetooth y Wi-Fi, enrutar audio Bluetooth e iniciar automáticamente con un dispositivo emparejado.</string>
     <string name="perm_notifications_title">Notificaciones</string>

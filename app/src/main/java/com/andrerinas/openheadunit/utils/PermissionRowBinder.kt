@@ -97,6 +97,28 @@ class PermissionRowBinder(
                     }
                 }
             }
+            AppPermissions.Kind.BACKGROUND_LOCATION -> {
+                val foreground = listOf(
+                    android.Manifest.permission.ACCESS_FINE_LOCATION,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                ).filter { ContextCompat.checkSelfPermission(activity, it) != PackageManager.PERMISSION_GRANTED }
+                val background = android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                when {
+                    // "All the time" can only be granted on top of "while in use".
+                    foreground.isNotEmpty() -> {
+                        attempted.addAll(foreground)
+                        normalLauncher.launch(foreground.toTypedArray())
+                    }
+                    attempted.contains(background) &&
+                        !ActivityCompat.shouldShowRequestPermissionRationale(activity, background) -> openAppSettings()
+                    else -> {
+                        // Alone, as Android 11+ requires; the system answers with its own
+                        // "Allow all the time" page.
+                        attempted.add(background)
+                        normalLauncher.launch(arrayOf(background))
+                    }
+                }
+            }
             AppPermissions.Kind.WRITE_SETTINGS -> {
                 try {
                     specialLauncher.launch(Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS, packageUri()))

@@ -2,7 +2,6 @@ package com.andrerinas.openheadunit.hud
 
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import com.andrerinas.openheadunit.utils.Settings
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -26,7 +25,7 @@ object BydNavigationOutputs {
         runCatching { context.packageManager.getPackageInfo(pkg, 0) }.isSuccess
 
     @Synchronized fun start(context: Context) {
-        Log.i("DiAuto-BYD", "start enabled=${Settings(context).bydNavigationEnabled} cluster=${clusterPackage(context)} hud=${installed(context, "com.ts.car.someip.service")}")
+        HudLog.i("DiAuto-BYD", "start enabled=${Settings(context).bydNavigationEnabled} cluster=${clusterPackage(context)} hud=${installed(context, "com.ts.car.someip.service")}")
         active = true
         if (initialized || !available(context)) return
         initialized = true
@@ -79,7 +78,7 @@ object BydNavigationOutputs {
                         previous = value
                         lastSendNs = now
                     }
-                } catch (error: Exception) { Log.w("DiAuto-BYD", "$name output failed", error) }
+                } catch (error: Exception) { HudLog.w("DiAuto-BYD", "$name output failed", error) }
             }, 0, 500, TimeUnit.MILLISECONDS)
     }
 }

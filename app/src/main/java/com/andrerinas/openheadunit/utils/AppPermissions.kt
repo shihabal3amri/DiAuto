@@ -26,6 +26,11 @@ object AppPermissions {
         OVERLAY,
         /** "Modify system settings" special access, granted via a settings screen. */
         WRITE_SETTINGS,
+        /**
+         * "Allow all the time" location. Must be requested on its own, after foreground location:
+         * Android 11+ ignores a request that bundles it with other permissions.
+         */
+        BACKGROUND_LOCATION,
     }
 
     data class Entry(
@@ -55,6 +60,7 @@ object AppPermissions {
             }
             Kind.OVERLAY -> isOverlayGranted(context)
             Kind.WRITE_SETTINGS -> isWriteSettingsGranted(context)
+            Kind.BACKGROUND_LOCATION -> isBackgroundLocationGranted(context)
         }
     }
 
@@ -75,6 +81,18 @@ object AppPermissions {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
             ),
+        ),
+        Entry(
+            // Android 10-12 gate Wi-Fi Direct on location access. With "while in use" only, a
+            // group created from the background service (car start, app not on screen) fails with
+            // a generic ERROR until the app is opened. Android 13+ uses NEARBY_WIFI_DEVICES instead.
+            id = "background_location",
+            titleRes = R.string.perm_background_location_title,
+            helpRes = R.string.perm_background_location_help,
+            kind = Kind.BACKGROUND_LOCATION,
+            permissions = listOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+            minSdk = Build.VERSION_CODES.Q,
+            maxSdk = Build.VERSION_CODES.S_V2,
         ),
         Entry(
             id = "nearby",
@@ -139,6 +157,12 @@ object AppPermissions {
 
     /** Count of visible entries already granted (for the wizard summary). */
     fun grantedCount(context: Context): Int = visible().count { it.isGranted(context) }
+
+    fun isBackgroundLocationGranted(context: Context): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return true
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_BACKGROUND_LOCATION) ==
+            PackageManager.PERMISSION_GRANTED
+    }
 
     /** Robust check for "Display over other apps" permission. */
     fun isOverlayGranted(context: Context): Boolean {

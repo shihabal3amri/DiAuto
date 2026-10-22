@@ -294,6 +294,7 @@
     <string name="no_devices_found">未发现设备</string>
     <string name="unsaved_changes">未保存的变更</string>
     <string name="unsaved_changes_message">您有未保存的变更。要舍弃吗？</string>
+    <string name="unsaved_changes_save_message">有未保存的更改。离开前要保存吗？</string>
     <string name="discard">舍弃</string>
     <string name="stopping_service">停止服务以套用变更…</string>
     <string name="settings_saved">设置已保存</string>
@@ -361,6 +362,11 @@
     <string name="log_location">日志保存位置</string>
     <string name="log_location_default">缺省 (应用程序保存空间)</string>
     <string name="log_location_downloads">下载文件夹</string>
+    <string name="log_location_custom">选择文件夹…</string>
+    <string name="log_save_as">另存为…</string>
+    <string name="log_saved_to_selected">日志已保存到所选位置。</string>
+    <string name="log_publish_failed">无法将日志复制到所选位置。请使用“另存为…”选择其他位置。</string>
+    <string name="log_folder_picker_unavailable">此车机没有文件夹选择器。请改用下载文件夹。</string>
     <string name="start_log_capture">开始截取日志</string>
     <string name="start_log_capture_description">开始将系统日志记录到文件中。</string>
     <string name="start_log_capture_in_applog_file">Log 消息仅在截取激活时写入文件</string>
@@ -755,6 +761,8 @@
     <string name="perm_mic_help">让 Android Auto 使用语音指令、Google Assistant 及通话功能。</string>
     <string name="perm_location_title">位置</string>
     <string name="perm_location_help">将 GPS 发送至手机以供导航使用、扫描无线连接，并驱动依位置判断的夜间模式。</string>
+    <string name="perm_background_location_title">始终允许位置信息</string>
+    <string name="perm_background_location_help">允许 DiAuto 在车辆启动时、打开应用之前建立无线 Android Auto 连接。请选择“始终允许”。</string>
     <string name="perm_nearby_title">附近设备</string>
     <string name="perm_nearby_help">通过 Bluetooth 和 Wi-Fi 连接、路由 Bluetooth 音频，以及在已配对设备上自动启动所需的权限。</string>
     <string name="perm_notifications_title">通知</string>

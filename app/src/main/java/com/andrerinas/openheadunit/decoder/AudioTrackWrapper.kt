@@ -39,6 +39,17 @@ class AudioTrackWrapper(
     companion object {
         private const val AUDIO_BUFFER_POOL_LIMIT = 16
         private const val MIN_POOLED_AUDIO_BUFFER_SIZE = 4096
+
+        // Audio held back before playback starts, so the track has a cushion to ride out the
+        // wireless link's jitter instead of playing every chunk the moment it lands. Music can
+        // afford more than guidance and speech, which must stay close to the picture and the user.
+        // Measured on a Sealion 06 drive: the phone's media stream paused for 0.6-0.9 s at a time,
+        // and a 200 ms cushion ran dry on every one of those.
+        private const val MEDIA_PREBUFFER_MS = 400
+        private const val SPEECH_PREBUFFER_MS = 80
+
+        // A drained track after a gap this long is the phone having paused, not a glitch.
+        private const val PAUSE_GAP_MS = 1000L
     }
 
     private val audioTrack: AudioTrack?
@@ -98,6 +109,20 @@ class AudioTrackWrapper(
     private var framesWritten: Long = 0
     private val bytesPerFrame: Int = channelCount * (if (bitDepth == 16) 2 else 1)
 
+    // Jitter cushion for the direct AudioTrack path. The track is created with a buffer several
+    // times its minimum, but a buffer only helps when it holds something: started empty, it plays
+    // each chunk as it arrives and the first late one is an audible gap. So playback waits until
+    // [prebufferFrames] are queued, and goes back to waiting whenever the track runs dry, rather
+    // than resuming with no cushion and stuttering on every following hiccup.
+    // Guarded by [trackLock]: PCM is written from this thread, decoded AAC from writeExecutor.
+    private val trackLock = Any()
+    private var trackBufferFrames: Int = 0
+    private var prebufferFrames: Int = 0
+    private var prebuffering = true
+    private var lastTrackWriteMs = 0L
+    private var underruns = 0
+    private val sampleRate = sampleRateInHz
+
     init {
         this.name = "AudioPlaybackThread"
         audioTrack = if (mixer == null) {
@@ -113,7 +138,29 @@ class AudioTrackWrapper(
             setVolume(gain)
             audioTrack?.let { track ->
                 attachHwDspEqualizerQuietly(track.audioSessionId)
-                track.play()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && track.bufferSizeInFrames > 0) {
+                    // The framework may size the track differently from what was asked for.
+                    trackBufferFrames = if (trackBufferFrames > 0) {
+                        minOf(trackBufferFrames, track.bufferSizeInFrames)
+                    } else {
+                        track.bufferSizeInFrames
+                    }
+                }
+                val targetMs = if (stream == AudioManager.STREAM_MUSIC && channelCount == 2) {
+                    MEDIA_PREBUFFER_MS
+                } else {
+                    SPEECH_PREBUFFER_MS
+                }
+                // Never more than half the track buffer: a blocking write into a full track that
+                // has not been started would wait forever.
+                prebufferFrames = minOf(sampleRateInHz * targetMs / 1000, trackBufferFrames / 2)
+                    .coerceAtLeast(0)
+                AppLog.i("AudioTrackWrapper: channel=$channelId prebuffer=${prebufferFrames} frames " +
+                        "(${prebufferFrames * 1000L / sampleRateInHz}ms of ${trackBufferFrames} buffered)")
+                if (prebufferFrames == 0) {
+                    prebuffering = false
+                    track.play()
+                }
             }
         }
 
@@ -224,10 +271,75 @@ class AudioTrackWrapper(
             mixer.feed(channelId, buffer, 0, size)
             framesWritten += size / bytesPerFrame
         } else {
+            val track = audioTrack ?: return
             applyGain(buffer, size)
-            val result = audioTrack?.write(buffer, 0, size) ?: 0
-            if (result > 0) {
-                framesWritten += result / bytesPerFrame
+            synchronized(trackLock) {
+                val now = android.os.SystemClock.elapsedRealtime()
+                rearmIfDrained(track, now)
+                val result = track.write(buffer, 0, size)
+                if (result > 0) {
+                    framesWritten += result / bytesPerFrame
+                }
+                lastTrackWriteMs = now
+                if (prebuffering && pendingFrames(track) >= prebufferFrames) {
+                    startTrack(track, "prebuffer filled")
+                }
+            }
+        }
+    }
+
+    /** Frames handed to the track that it has not played yet. */
+    private fun pendingFrames(track: AudioTrack): Long {
+        // The head position is an unsigned 32-bit frame counter.
+        val played = track.playbackHeadPosition.toLong() and 0xFFFFFFFFL
+        return (framesWritten - played).coerceAtLeast(0L)
+    }
+
+    /**
+     * A playing track that has nothing left to play has underrun. Pause it and collect a fresh
+     * cushion before resuming; resuming straight away would play the next chunk with nothing behind
+     * it, and the link that just stalled tends to stall again.
+     */
+    private fun rearmIfDrained(track: AudioTrack, now: Long) {
+        if (prebuffering || prebufferFrames == 0) return
+        if (track.playState != AudioTrack.PLAYSTATE_PLAYING) return
+        if (pendingFrames(track) > 0) return
+
+        val gapMs = if (lastTrackWriteMs == 0L) 0L else now - lastTrackWriteMs
+        if (gapMs < PAUSE_GAP_MS) {
+            underruns++
+            AppLog.w("AudioTrackWrapper: channel=$channelId ran dry after a ${gapMs}ms gap in incoming audio " +
+                    "(underrun #$underruns) - rebuffering ${prebufferFrames * 1000L / sampleRate}ms")
+        }
+        try {
+            track.pause()
+        } catch (e: IllegalStateException) {
+            AppLog.e("AudioTrackWrapper: pause failed", e)
+            return
+        }
+        prebuffering = true
+    }
+
+    private fun startTrack(track: AudioTrack, reason: String) {
+        try {
+            track.play()
+            prebuffering = false
+            AppLog.d("AudioTrackWrapper: channel=$channelId playback started ($reason, " +
+                    "${pendingFrames(track) * 1000L / sampleRate}ms queued)")
+        } catch (e: IllegalStateException) {
+            AppLog.e("AudioTrackWrapper: play failed", e)
+        }
+    }
+
+    /**
+     * Incoming audio has stopped while the cushion is still filling: a short prompt or the tail of
+     * a stream that will never reach [prebufferFrames]. Play what is there instead of holding it.
+     */
+    private fun flushPrebuffer(reason: String) {
+        val track = audioTrack ?: return
+        synchronized(trackLock) {
+            if (prebuffering && pendingFrames(track) > 0) {
+                startTrack(track, reason)
             }
         }
     }
@@ -240,7 +352,9 @@ class AudioTrackWrapper(
             try {
                 // Use poll to avoid blocking indefinitely if isRunning becomes false
                 val chunk = dataQueue.poll(200, TimeUnit.MILLISECONDS)
-                if (chunk != null) {
+                if (chunk == null) {
+                    flushPrebuffer("incoming audio paused")
+                } else {
                     try {
                         if (isAac && decoder != null) {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -371,7 +485,13 @@ class AudioTrackWrapper(
             if (bitDepth == 16) AudioFormat.ENCODING_PCM_16BIT else AudioFormat.ENCODING_PCM_8BIT
 
         val minBufferSize = AudioTrack.getMinBufferSize(sampleRateInHz, channelConfig, dataFormat)
-        val bufferSize = if (minBufferSize > 0) minBufferSize * multiplier else minBufferSize
+        // Room for twice the media cushion: the cushion is capped at half the track, so a buffer
+        // sized from the minimum alone would silently cut it short.
+        val cushionBytes = if (channelCount == 2 && stream == AudioManager.STREAM_MUSIC) {
+            sampleRateInHz * bytesPerFrame * MEDIA_PREBUFFER_MS * 2 / 1000
+        } else 0
+        val bufferSize = if (minBufferSize > 0) maxOf(minBufferSize * multiplier, cushionBytes) else minBufferSize
+        trackBufferFrames = if (bufferSize > 0) bufferSize / bytesPerFrame else 0
 
         AppLog.i("Audio stream: $stream buffer size: $bufferSize (min: $minBufferSize) sampleRateInHz: $sampleRateInHz channelCount: $channelCount")
 
@@ -467,6 +587,12 @@ class AudioTrackWrapper(
     }
 
     private fun cleanup() {
+        // stopPlayback() interrupts this thread. When the interrupt lands during a blocking track
+        // write rather than in poll(), its flag survives to here and the drain wait below threw on
+        // its first sleep - so a navigation prompt's last few hundred ms were released unplayed
+        // (seen ~10 times a day on a Sealion 06, always right after "Audio Stop"). The thread is
+        // ending anyway; clear the flag so the bounded drain can run.
+        Thread.interrupted()
         drainQueuedAudio()
         audioBufferPool.clear()
 
@@ -493,6 +619,13 @@ class AudioTrackWrapper(
 
         if (mixer != null) {
             mixer.unregisterChannel(channelId)
+        }
+
+        // A cushion still filling when the stream ended has never been heard; play it out like
+        // any other buffered tail.
+        flushPrebuffer("stream ended")
+        if (underruns > 0) {
+            AppLog.i("AudioTrackWrapper: channel=$channelId finished with $underruns underrun(s)")
         }
 
         // 3. Gracefully stop the AudioTrack – stop() plays remaining buffer data

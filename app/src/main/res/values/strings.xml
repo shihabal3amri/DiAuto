@@ -73,6 +73,8 @@
     <string name="perm_mic_help">Lets Android Auto use voice commands, the Google Assistant and phone calls.</string>
     <string name="perm_location_title">Location</string>
     <string name="perm_location_help">Sends GPS to the phone for navigation, scans for wireless connections and drives location based night mode.</string>
+    <string name="perm_background_location_title">Location all the time</string>
+    <string name="perm_background_location_help">Lets DiAuto create the wireless Android Auto connection when the car starts, before the app is opened. Choose “Allow all the time”.</string>
     <string name="perm_nearby_title">Nearby devices</string>
     <string name="perm_nearby_help">Needed to connect over Bluetooth and Wi-Fi, route Bluetooth audio and auto start on a paired device.</string>
     <string name="perm_notifications_title">Notifications</string>
@@ -301,6 +303,11 @@
     <string name="log_location">Log Storage Location</string>
     <string name="log_location_default">Default (App Storage)</string>
     <string name="log_location_downloads">Downloads Folder</string>
+    <string name="log_location_custom">Choose folder…</string>
+    <string name="log_save_as">Save as…</string>
+    <string name="log_saved_to_selected">Log saved to the selected location.</string>
+    <string name="log_publish_failed">Could not copy the log to the selected location. Use Save as… to choose another place.</string>
+    <string name="log_folder_picker_unavailable">No folder picker is available on this head unit. Use Downloads Folder instead.</string>
     <string name="start_log_capture">Start Capturing Logs</string>
     <string name="start_log_capture_description">Begin recording full logs for debugging</string>
     <string name="start_log_capture_in_applog_file">Log messages are written to a file only while capture is active</string>
@@ -566,6 +573,7 @@
     <string name="no_devices_found">No devices found</string>
     <string name="unsaved_changes">Unsaved Changes</string>
     <string name="unsaved_changes_message">You have unsaved changes. Do you want to discard them?</string>
+    <string name="unsaved_changes_save_message">You have unsaved changes. Save them before leaving?</string>
     <string name="discard">Discard</string>
     <string name="stopping_service">Stopping service to apply changes…</string>
     <string name="settings_saved">Settings saved</string>

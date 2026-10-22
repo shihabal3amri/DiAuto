@@ -188,8 +188,12 @@ class DarkModeFragment : Fragment(), SensorEventListener {
         if (hasChanges) {
             MaterialAlertDialogBuilder(requireContext(), R.style.DarkAlertDialog)
                 .setTitle(R.string.unsaved_changes)
-                .setMessage(R.string.unsaved_changes_message)
-                .setPositiveButton(R.string.discard) { _, _ ->
+                .setMessage(R.string.unsaved_changes_save_message)
+                .setPositiveButton(R.string.save) { _, _ ->
+                    saveSettings()
+                    navigateBack()
+                }
+                .setNeutralButton(R.string.discard) { _, _ ->
                     navigateBack()
                 }
                 .setNegativeButton(R.string.cancel, null)

@@ -124,8 +124,12 @@ class AutoStartFragment : Fragment() {
         if (hasChanges) {
             MaterialAlertDialogBuilder(requireContext(), R.style.DarkAlertDialog)
                 .setTitle(R.string.unsaved_changes)
-                .setMessage(R.string.unsaved_changes_message)
-                .setPositiveButton(R.string.discard) { _, _ ->
+                .setMessage(R.string.unsaved_changes_save_message)
+                .setPositiveButton(R.string.save) { _, _ ->
+                    saveSettings()
+                    navigateBack()
+                }
+                .setNeutralButton(R.string.discard) { _, _ ->
                     navigateBack()
                 }
                 .setNegativeButton(R.string.cancel, null)
@@ -213,23 +217,26 @@ class AutoStartFragment : Fragment() {
             pendingAutoStartOnBoot == true || pendingAutoStartOnScreenOn == true ||
             pendingAutoStartOnWifi == true)) {
             if (!AppPermissions.isOverlayGranted(requireContext())) {
-                MaterialAlertDialogBuilder(requireContext(), R.style.DarkAlertDialog)
+                // The activity, not the fragment: Save in the unsaved-changes dialog leaves this
+                // screen right after saving, and this prompt must still work once it has gone.
+                val host = requireActivity()
+                MaterialAlertDialogBuilder(host, R.style.DarkAlertDialog)
                     .setTitle(R.string.overlay_permission_title)
                     .setMessage(R.string.overlay_permission_description)
                     .setPositiveButton(R.string.open_settings) { _, _ ->
                         try {
                             val intent = Intent(
                                 android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                                android.net.Uri.parse("package:${requireContext().packageName}")
+                                android.net.Uri.parse("package:${host.packageName}")
                             )
-                            startActivity(intent)
+                            host.startActivity(intent)
                         } catch (e: Exception) {
                             try {
-                                startActivity(Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION))
+                                host.startActivity(Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION))
                             } catch (e2: Exception) {
                                 try {
-                                    startActivity(Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                        data = android.net.Uri.parse("package:${requireContext().packageName}")
+                                    host.startActivity(Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                        data = android.net.Uri.parse("package:${host.packageName}")
                                     })
                                 } catch (_: Exception) {}
                             }

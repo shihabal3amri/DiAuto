@@ -38,6 +38,7 @@ import com.andrerinas.openheadunit.utils.Settings
 import com.andrerinas.openheadunit.utils.LocaleHelper
 import com.andrerinas.openheadunit.BuildConfig
 import com.andrerinas.openheadunit.utils.LogExporter
+import com.andrerinas.openheadunit.utils.LogPublisher
 import com.andrerinas.openheadunit.utils.SettingsBackupManager
 import com.andrerinas.openheadunit.utils.DialogUtils
 import com.google.android.material.appbar.MaterialToolbar
@@ -185,6 +186,60 @@ class SettingsFragment : Fragment() {
         ActivityResultContracts.CreateDocument(SettingsBackupManager.MIME_TYPE)
     ) { uri ->
         uri?.let { exportSettingsToUri(it) }
+    }
+
+    // Log location "Choose folder…": a persisted SAF tree, so exports can reach a folder (or a USB
+    // stick) the head unit's own file manager can open, unlike the app-private Android/data path.
+    private val logFolderLauncher = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+        if (uri == null || !isAdded) return@registerForActivityResult
+        val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        try {
+            requireContext().contentResolver.takePersistableUriPermission(uri, flags)
+        } catch (e: SecurityException) {
+            AppLog.w("SettingsFragment: folder permission could not be persisted: ${e.message}")
+        }
+        settings.logTreeUri = uri.toString()
+        settings.logLocation = Settings.LogLocation.CUSTOM
+        if (settings.logSource == Settings.LogSource.APPLOG_FILE) {
+            AppLog.init(settings, requireContext().applicationContext)
+        }
+        updateSettingsList()
+    }
+
+    private var pendingSaveAsLog: File? = null
+    private val saveLogAsLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
+        val file = pendingSaveAsLog
+        pendingSaveAsLog = null
+        if (uri == null || file == null || !isAdded) return@registerForActivityResult
+        val appContext = requireContext().applicationContext
+        viewLifecycleOwner.lifecycleScope.launch {
+            val result = withContext(Dispatchers.IO) { runCatching { LogPublisher.copyTo(appContext, uri, file) } }
+            if (!isAdded) return@launch
+            result.onSuccess {
+                Toast.makeText(requireContext(), getString(R.string.log_saved_to_selected), Toast.LENGTH_LONG).show()
+            }.onFailure {
+                AppLog.e("SettingsFragment: Save as failed", it)
+                Toast.makeText(requireContext(), getString(R.string.log_publish_failed), Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun launchLogFolderPicker() {
+        try {
+            logFolderLauncher.launch(settings.logTreeUri.takeIf { it.isNotEmpty() }?.let(Uri::parse))
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(requireContext(), getString(R.string.log_folder_picker_unavailable), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun launchSaveLogAs(file: File) {
+        pendingSaveAsLog = file
+        try {
+            saveLogAsLauncher.launch(file.name)
+        } catch (e: ActivityNotFoundException) {
+            pendingSaveAsLog = null
+            Toast.makeText(requireContext(), getString(R.string.log_folder_picker_unavailable), Toast.LENGTH_LONG).show()
+        }
     }
 
     private val importSettingsLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
@@ -440,8 +495,11 @@ class SettingsFragment : Fragment() {
         if (hasChanges) {
             MaterialAlertDialogBuilder(requireContext(), R.style.DarkAlertDialog)
                 .setTitle(R.string.unsaved_changes)
-                .setMessage(R.string.unsaved_changes_message)
-                .setPositiveButton(R.string.discard) { _, _ ->
+                .setMessage(R.string.unsaved_changes_save_message)
+                .setPositiveButton(R.string.save) { _, _ ->
+                    if (!saveSettings()) navigateBack()
+                }
+                .setNeutralButton(R.string.discard) { _, _ ->
                     navigateBack()
                 }
                 .setNegativeButton(R.string.cancel, null)
@@ -467,7 +525,8 @@ class SettingsFragment : Fragment() {
         saveButton?.text = if (requiresRestart) getString(R.string.save_and_restart) else getString(R.string.save)
     }
 
-    private fun saveSettings() {
+    /** Saves the pending values. Returns true when the activity is being recreated to apply them. */
+    private fun saveSettings(): Boolean {
         val languageChanged = pendingAppLanguage != settings.appLanguage
 
         pendingUseGps?.let { settings.useGpsForNavigation = it }
@@ -597,7 +656,9 @@ class SettingsFragment : Fragment() {
 
         if (languageChanged || hudMirroringChanged) {
             requireActivity().recreate()
+            return true
         }
+        return false
     }
 
     private fun checkChanges() {
@@ -2244,6 +2305,7 @@ class SettingsFragment : Fragment() {
             when (it) {
                 Settings.LogLocation.DEFAULT -> getString(R.string.log_location_default)
                 Settings.LogLocation.DOWNLOADS -> getString(R.string.log_location_downloads)
+                Settings.LogLocation.CUSTOM -> getString(R.string.log_location_custom)
             }
         }.toTypedArray()
         items.add(SettingItem.SettingEntry(
@@ -2252,6 +2314,9 @@ class SettingsFragment : Fragment() {
             value = when (settings.logLocation) {
                 Settings.LogLocation.DEFAULT -> getString(R.string.log_location_default)
                 Settings.LogLocation.DOWNLOADS -> getString(R.string.log_location_downloads)
+                Settings.LogLocation.CUSTOM -> settings.logTreeUri.takeIf { it.isNotEmpty() }
+                    ?.let { LogPublisher.describeTree(Uri.parse(it)) }
+                    ?: getString(R.string.log_location_custom)
             },
             onClick = {
                 val currentIndex = logLocations.indexOf(settings.logLocation)
@@ -2259,6 +2324,12 @@ class SettingsFragment : Fragment() {
                     .setTitle(R.string.log_location)
                     .setSingleChoiceItems(logLocationNames, currentIndex) { dialog, which ->
                         val newLocation = logLocations[which]
+                        if (newLocation == Settings.LogLocation.CUSTOM) {
+                            // Applied only once a folder is actually granted, in logFolderLauncher.
+                            dialog.dismiss()
+                            launchLogFolderPicker()
+                            return@setSingleChoiceItems
+                        }
                         val applyLocation: () -> Unit = {
                             settings.logLocation = newLocation
                             if (settings.logSource == Settings.LogSource.APPLOG_FILE) {
@@ -2337,16 +2408,7 @@ class SettingsFragment : Fragment() {
                 updateSettingsList()
 
                 if (logFile != null) {
-                    MaterialAlertDialogBuilder(context, R.style.DarkAlertDialog)
-                        .setTitle(R.string.logs_exported)
-                        .setMessage(getString(R.string.log_saved_to, logFile.absolutePath))
-                        .setPositiveButton(R.string.share) { _, _ ->
-                            LogExporter.shareLogFile(context, logFile)
-                        }
-                        .setNegativeButton(R.string.close) { dialog, _ ->
-                            dialog.dismiss()
-                        }
-                        .show()
+                    showLogExportedDialog(logFile)
                 } else {
                     Toast.makeText(context, getString(R.string.failed_export_logs), Toast.LENGTH_SHORT).show()
                 }
@@ -2727,6 +2789,41 @@ class SettingsFragment : Fragment() {
     private fun exportSettingsDownloadsWithPermission() {
         runWithDownloadsStoragePermission {
             exportSettingsDownloads()
+        }
+    }
+
+    /**
+     * Publishes a visible copy of [logFile] for the configured location, then reports where it can
+     * actually be found. "Save as…" lets the user put it anywhere the system picker reaches, such
+     * as a USB stick, regardless of the setting.
+     */
+    private fun showLogExportedDialog(logFile: File) {
+        val appContext = requireContext().applicationContext
+        viewLifecycleOwner.lifecycleScope.launch {
+            val published = withContext(Dispatchers.IO) {
+                runCatching { LogPublisher.publish(appContext, settings, logFile) }
+            }
+            if (!isAdded) return@launch
+            val message = published.fold(
+                onSuccess = { visible -> getString(R.string.log_saved_to, visible ?: logFile.absolutePath) },
+                onFailure = {
+                    AppLog.e("SettingsFragment: publishing the exported log failed", it)
+                    getString(R.string.log_saved_to, logFile.absolutePath) + "\n\n" + getString(R.string.log_publish_failed)
+                }
+            )
+            MaterialAlertDialogBuilder(requireContext(), R.style.DarkAlertDialog)
+                .setTitle(R.string.logs_exported)
+                .setMessage(message)
+                .setPositiveButton(R.string.share) { _, _ ->
+                    LogExporter.shareLogFile(requireContext(), logFile)
+                }
+                .setNeutralButton(R.string.log_save_as) { _, _ ->
+                    launchSaveLogAs(logFile)
+                }
+                .setNegativeButton(R.string.close) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
         }
     }
 

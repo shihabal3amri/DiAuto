@@ -7,7 +7,6 @@ import android.content.ServiceConnection
 import android.os.Binder
 import android.os.IBinder
 import android.os.Parcel
-import android.util.Log
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -55,7 +54,7 @@ internal object BydHudBridge {
             FIRST_CALL_TRANSACTION + 1 -> {
                 data.enforceInterface(CALLBACK_TOKEN)
                 val ready = data.readInt() != 0
-                Log.i(TAG, "SOME/IP HAL ready=$ready")
+                HudLog.i(TAG, "SOME/IP HAL ready=$ready")
                 reply?.writeNoException()
                 true
             }
@@ -113,7 +112,7 @@ internal object BydHudBridge {
         val accepted = sendLocked(payload)
         if (accepted && !guidanceSentLogged) {
             guidanceSentLogged = true
-            Log.i(TAG, "HUD experiment B (300ms repeat, fixed field2=2): gateway accepted guidance; rendering unconfirmed")
+            HudLog.i(TAG, "HUD experiment B (300ms repeat, fixed field2=2): gateway accepted guidance; rendering unconfirmed")
         }
         if (accepted) showing = true
     }
@@ -139,7 +138,7 @@ internal object BydHudBridge {
                 val code = name.removePrefix("0x").removeSuffix(".png").toIntOrNull(16) ?: return@mapNotNull null
                 code to assets.open("$ICON_ASSET_DIR/$name").use { it.readBytes() }
             }.toMap()
-        }.onFailure { Log.w(TAG, "HUD icons unavailable", it) }.getOrDefault(emptyMap())
+        }.onFailure { HudLog.w(TAG, "HUD icons unavailable", it) }.getOrDefault(emptyMap())
     }
 
     private fun bindLocked() {
@@ -152,17 +151,17 @@ internal object BydHudBridge {
                 type = appContext.packageName
             }
             binding = appContext.bindService(intent, connection, Context.BIND_AUTO_CREATE)
-            Log.i(TAG, "bindService=$binding")
+            HudLog.i(TAG, "bindService=$binding")
         } catch (error: Throwable) {
             binding = false
-            Log.w(TAG, "cannot bind SOME/IP service", error)
+            HudLog.w(TAG, "cannot bind SOME/IP service", error)
         }
     }
 
     private fun onGatewayCallback(action: () -> Unit) {
         callbacks.execute {
             synchronized(lock) {
-                runCatching(action).onFailure { Log.w(TAG, "gateway callback failed", it) }
+                runCatching(action).onFailure { HudLog.w(TAG, "gateway callback failed", it) }
             }
         }
     }
@@ -175,7 +174,7 @@ internal object BydHudBridge {
             val startResult = if (registered == 0) transactLocked(TX_START_SERVICE) { it.writeLong(SERVICE_ID) } else -1
             // Firmware explicitly treats 13 as an already-started service.
             started = BydHudProtocol.serviceStarted(startResult)
-            Log.i(TAG, "SOME/IP connected, callback=$registered startResult=$startResult started=$started")
+            HudLog.i(TAG, "SOME/IP connected, callback=$registered startResult=$startResult started=$started")
             showing = false
             sendCurrentLocked()
         }
@@ -201,7 +200,7 @@ internal object BydHudBridge {
             reply.readException()
             if (returnsValue) reply.readInt() else 0
         } catch (error: Throwable) {
-            Log.w(TAG, "SOME/IP transaction $code failed", error)
+            HudLog.w(TAG, "SOME/IP transaction $code failed", error)
             -1
         } finally {
             reply.recycle()
@@ -220,7 +219,7 @@ internal object BydHudBridge {
         }
         sendCount++
         if (lastSendResult != result || sendCount <= 5 || sendCount % 100L == 0L) {
-            Log.i(TAG, "HUD fireEvent count=$sendCount result=$result bytes=${payload.size}")
+            HudLog.i(TAG, "HUD fireEvent count=$sendCount result=$result bytes=${payload.size}")
             lastSendResult = result
         }
         if (result != 0) {

@@ -18,6 +18,11 @@ import com.andrerinas.openheadunit.utils.Settings
 import com.andrerinas.openheadunit.utils.AppLog
 import android.widget.Toast
 import com.andrerinas.openheadunit.utils.LogExporter
+import com.andrerinas.openheadunit.utils.LogPublisher
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.appbar.MaterialToolbar
 
@@ -415,16 +420,31 @@ class QuickSettingsFragment : DialogFragment() {
         updateSettingsList()
 
         if (logFile != null) {
-            MaterialAlertDialogBuilder(context, R.style.DarkAlertDialog)
-                .setTitle(R.string.logs_exported)
-                .setMessage(getString(R.string.log_saved_to, logFile.absolutePath))
-                .setPositiveButton(R.string.share) { _, _ ->
-                    LogExporter.shareLogFile(context, logFile)
+            val appContext = context.applicationContext
+            lifecycleScope.launch {
+                // A visible copy, so the head unit's file manager can reach it (see LogPublisher).
+                val published = withContext(Dispatchers.IO) {
+                    runCatching { LogPublisher.publish(appContext, settings, logFile) }
                 }
-                .setNegativeButton(R.string.close) { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .show()
+                if (!isAdded) return@launch
+                val message = published.fold(
+                    onSuccess = { visible -> getString(R.string.log_saved_to, visible ?: logFile.absolutePath) },
+                    onFailure = {
+                        AppLog.e("QuickSettingsFragment: publishing the exported log failed", it)
+                        getString(R.string.log_saved_to, logFile.absolutePath) + "\n\n" + getString(R.string.log_publish_failed)
+                    }
+                )
+                MaterialAlertDialogBuilder(requireContext(), R.style.DarkAlertDialog)
+                    .setTitle(R.string.logs_exported)
+                    .setMessage(message)
+                    .setPositiveButton(R.string.share) { _, _ ->
+                        LogExporter.shareLogFile(requireContext(), logFile)
+                    }
+                    .setNegativeButton(R.string.close) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
         } else {
             Toast.makeText(context, getString(R.string.failed_export_logs), Toast.LENGTH_SHORT).show()
         }

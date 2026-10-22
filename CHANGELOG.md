@@ -1,3 +1,20 @@
+# Unreleased — BYD Sealion 06 (DiLink 5.0 / Android 12)
+
+Field-tested on a 2025 Sealion 06 (DiLink5.0, Android 12) with a Samsung S25 Ultra over native wireless Android Auto.
+
+- Windshield HUD on any BYD firmware whose ClusterDebug receiver is the exact verified version and signature, instead of one DiLink5.1 fingerprint. Confirmed on the road: arrows, distance and street names on the HUD and instrument cluster.
+- HUD guidance stays up through the ~60 s gaps between unchanged legacy next-turn updates (staleness backstop 30 s → 180 s), and a new instruction no longer blinks it off while its distance message is still on the way.
+- A maneuver the phone sends but cannot be drawn (Waze sends some as UNKNOWN) keeps the distance and street on the HUD with no arrow (turn code 0) instead of blanking it.
+- Distances under 20 m, which the HUD shows as Chinese "现在", are sent as 20 m; accented Latin letters (Romanian ă, â, î, ș, ț…) that the HUD font draws as blank gaps are folded to their base letter.
+- Wireless connection at car start on Android 10-12: Wi-Fi Direct is refused to an app in the background unless location is allowed "all the time", so the group only formed once the app was opened. Adds a "Location all the time" permission row; when it is not granted, the app opens itself after a refused attempt (needs "display over other apps"). A P2P channel that keeps returning ERROR is re-initialized.
+- Status-bar-only and normal display modes: the projection stops above the BYD bottom bar (BydFullscreen only expands in immersive modes) and the kept navigation bar is reserved from its stable insets, so a flickering bar no longer resizes the projection or races the margins.
+- The loading/reconnecting overlay is removed whenever frames are reaching the screen, and the mid-session video watchdog is re-armed after a reconnect inside the same projection window.
+- Audio: playback starts after a short cushion (400 ms music, 80 ms speech) and rebuffers after the track runs dry, instead of stuttering on every wireless hiccup; underruns are logged.
+- Navigation voice prompts are no longer cut at the end: stopping a speech track interrupted its thread during a write, and the surviving interrupt aborted the wait for the buffered tail to play.
+- Log export: Downloads publishes a copy to the public Download/DiAuto folder, a "Choose folder…" location writes anywhere the system picker reaches, and the export dialog offers "Save as…". Exported logs append the app's diagnostic journal, because BYD firmware drops third-party app tags from logcat.
+- Diagnostic reports include a BYD navigation section (firmware fingerprint, receiver version/signature match, output in use, navigation output log lines). HUD output, window geometry, system insets and legacy turn details are journaled.
+- The unsaved-changes prompt on every settings screen offers Save as well as Discard / Cancel.
+
 # DiAuto 0.3.12 — 2026-10-17
 
 - Windshield HUD: re-send the instrument navigation state (0x43E0003A = 2) at most every 3.5 s while guidance shows, as the stock map does. The stock map resets it when the cluster display appears, the navi mode changes or the map app starts, which hid the arrows until the route was restarted (#41).

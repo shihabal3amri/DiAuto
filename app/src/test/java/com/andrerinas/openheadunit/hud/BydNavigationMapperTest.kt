@@ -81,6 +81,23 @@ class BydNavigationMapperTest {
             .setRoad("Old road").setNextTurn(N.NextTurnDetail.NextEvent.TURN).setSide(N.NextTurnDetail.Side.LEFT).build(), 0)
         assertNull(BydNavigationMapper.from(value))
     }
+    @Test fun `unknown maneuver keeps distance and street without an arrow`() {
+        val value = AapNavigationHelper.NavigationSnapshot().apply {
+            nextTurnDetail = AapNavigationHelper.TimedMessage(N.NextTurnDetail.newBuilder()
+                .setRoad("Str. Kiev").setNextTurn(N.NextTurnDetail.NextEvent.UNKNOWN)
+                .setSide(N.NextTurnDetail.Side.UNSPECIFIED).build(), 0)
+            nextTurnDistance = AapNavigationHelper.TimedMessage(
+                N.NextTurnDistanceEvent.newBuilder().setDistanceMeters(300).build(), 0)
+        }
+        val frame = BydNavigationMapper.from(value)!!
+        assertEquals(BydNavigationMapper.NO_ARROW, frame.clusterIcon)
+        assertEquals(300, frame.distanceMeters)
+        assertEquals("Str. Kiev", frame.road)
+        assertNotNull(BydStandalonePackets.guidance(frame.clusterIcon, frame.roundaboutExit, 300, frame.road))
+    }
+    @Test fun `no maneuver at all still clears`() {
+        assertNull(BydNavigationMapper.from(AapNavigationHelper.NavigationSnapshot()))
+    }
     @Test fun `inactive unavailable and rerouting clear guidance`() {
         for (status in listOf(N.NavigationClusterStatus.NavigationStatusEnum.INACTIVE,
             N.NavigationClusterStatus.NavigationStatusEnum.UNAVAILABLE, N.NavigationClusterStatus.NavigationStatusEnum.REROUTING)) {

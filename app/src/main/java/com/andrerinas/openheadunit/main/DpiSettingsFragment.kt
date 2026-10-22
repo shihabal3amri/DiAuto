@@ -137,8 +137,12 @@ class DpiSettingsFragment : Fragment() {
         if (currentValue() != initialValue) {
             MaterialAlertDialogBuilder(requireContext(), R.style.DarkAlertDialog)
                 .setTitle(R.string.unsaved_changes)
-                .setMessage(R.string.unsaved_changes_message)
-                .setPositiveButton(R.string.discard) { _, _ -> findNavController().navigateUp() }
+                .setMessage(R.string.unsaved_changes_save_message)
+                .setPositiveButton(R.string.save) { _, _ ->
+                    saveSettings()
+                    findNavController().navigateUp()
+                }
+                .setNeutralButton(R.string.discard) { _, _ -> findNavController().navigateUp() }
                 .setNegativeButton(R.string.cancel, null)
                 .show()
         } else {
