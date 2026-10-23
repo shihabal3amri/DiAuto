@@ -237,6 +237,16 @@
     <string name="enable_audio_sink_description">عند تعطيله، لن تستقبل وحدة السيارة الصوت. سيُشغَّل الصوت من الهاتف.</string>
     <string name="separate_audio_streams">فصل تيارات الصوت</string>
     <string name="separate_audio_streams_description">فصل قنوات الصوت للموسيقى والمكالمات والإشعارات بدلاً من تيار وسائط واحد (قد لا يعمل بشكل صحيح على بعض الأجهزة).</string>
+    <string name="car_volume_groups">استخدام منزلقات الصوت في السيارة</string>
+    <string name="car_volume_groups_description">يشغّل وسائط Android Auto وتوجيهات الملاحة والمساعد على منزلقات الوسائط والملاحة والصوت الخاصة بالسيارة. يُطبَّق عند الاتصال التالي.</string>
+    <string name="car_volume_groups_static_hint">أوقف «تركيز الصوت الثابت» لهذا الخيار: فهو يدمج كل أصوات Android Auto في مسار واحد لا تضعه السيارة إلا على منزلق واحد.</string>
+    <string name="car_navi_stream">مسار منزلق الملاحة</string>
+    <string name="car_voice_stream">مسار المساعد (منزلق الصوت)</string>
+    <string name="car_stream_auto">تلقائي (%1$d)</string>
+    <string name="car_stream_auto_label">تلقائي (تصنيف Android)</string>
+    <string name="car_stream_label_only">تصنيف Android فقط</string>
+    <string name="car_stream_same_as_navi">مثل الملاحة</string>
+    <string name="car_stream_hint">منزلق الملاحة في BYD يتبع المسار 15 في DiLink 5 والمسار 14 في DiLink 3/4. شريط Voice يتبع المسار 17 في DiLink 5. اختيار رقم يشغّل نغمة قصيرة عليه: حرّك منزلقات السيارة لتسمع أيّها يتحكم به، ثم احفظ. يُطبَّق عند الاتصال التالي.</string>
     <string name="use_aac_audio">استخدام ترميز AAC للصوت</string>
     <string name="use_aac_audio_description">استخدام ترميز AAC للصوت لتوفير عرض النطاق الترددي (تجريبي).</string>
     <string name="attach_hw_dsp_equalizer">مشغل معادل الصوت DSP للأجهزة</string>

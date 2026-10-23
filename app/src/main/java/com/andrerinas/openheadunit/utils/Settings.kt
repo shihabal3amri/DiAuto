@@ -688,6 +688,21 @@ class Settings(private val context: Context) {
         get() = prefs.getBoolean("separate-audio-streams", false)
         set(value) { prefs.edit().putBoolean("separate-audio-streams", value).apply() }
 
+    /** Label AA audio for the car's own Media / Navi / Voice volume sliders. See aap/CarVolumeGroups. */
+    var carVolumeGroups: Boolean
+        get() = prefs.getBoolean("car-volume-groups", false)
+        set(value) { prefs.edit().putBoolean("car-volume-groups", value).apply() }
+
+    /** Stream for the car's Navi slider: -1 automatic (BYD DiLink default), 0 Android label only, 1..20. */
+    var carNaviStream: Int
+        get() = prefs.getInt("car-navi-stream", -1)
+        set(value) { prefs.edit().putInt("car-navi-stream", value).apply() }
+
+    /** Stream for the Assistant's voice: -1 same as navigation, 0 Android label only, 1..20. */
+    var carVoiceStream: Int
+        get() = prefs.getInt("car-voice-stream", -1)
+        set(value) { prefs.edit().putInt("car-voice-stream", value).apply() }
+
     var micInputSource: Int
         get() = prefs.getInt("mic-input-source", 0) // Default: DEFAULT
         set(value) { prefs.edit().putInt("mic-input-source", value).apply() }

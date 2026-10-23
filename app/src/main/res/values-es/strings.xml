@@ -237,6 +237,16 @@
     <string name="enable_audio_sink_description">Si está desactivado, el audio se reproducirá en el teléfono conectado.</string>
     <string name="separate_audio_streams">Separar flujos de audio</string>
     <string name="separate_audio_streams_description">Separar los canales de audio para música, llamadas y notificaciones en lugar de un único flujo multimedia (puede no funcionar correctamente en algunos dispositivos).</string>
+    <string name="car_volume_groups">Usar los controles de volumen del coche</string>
+    <string name="car_volume_groups_description">Reproduce los medios, las indicaciones de navegación y el Asistente de Android Auto en los controles Medios, Navegación y Voz del propio coche. Se aplica en la próxima conexión.</string>
+    <string name="car_volume_groups_static_hint">Desactiva el foco de audio estático para esto: mezcla todo el sonido de Android Auto en una sola salida, que el coche solo puede asignar a un control.</string>
+    <string name="car_navi_stream">Flujo del control Navegación</string>
+    <string name="car_voice_stream">Flujo del Asistente (control Voz)</string>
+    <string name="car_stream_auto">Automático (%1$d)</string>
+    <string name="car_stream_auto_label">Automático (etiqueta de Android)</string>
+    <string name="car_stream_label_only">Solo etiqueta de Android</string>
+    <string name="car_stream_same_as_navi">Igual que la navegación</string>
+    <string name="car_stream_hint">El control Navegación de BYD sigue el flujo 15 en DiLink 5 y el 14 en DiLink 3/4. El control Voice sigue el flujo 17 en DiLink 5. Al elegir un número suena un tono corto en él: mueve los controles del coche para oír cuál lo controla y pulsa Guardar. Se aplica en la próxima conexión.</string>
     <string name="use_aac_audio">Usar audio AAC</string>
     <string name="use_aac_audio_description">Usa el códec AAC para audio para ahorrar ancho de banda.</string>
     <string name="attach_hw_dsp_equalizer">Activador de ecualizador DSP por hardware</string>

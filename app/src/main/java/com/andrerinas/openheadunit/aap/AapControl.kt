@@ -367,9 +367,11 @@ internal class AapControlService(
         if (request.status == Control.VoiceSessionNotification.VoiceSessionStatus.VOICE_STATUS_START) {
             AppLog.i("Voice Session Notification: START")
             aapTransport.isAssistantActive = true
+            aapAudio.onVoiceSessionChanged(true)
         } else if (request.status == Control.VoiceSessionNotification.VoiceSessionStatus.VOICE_STATUS_STOP) {
             AppLog.i("Voice Session Notification: STOP")
             aapTransport.isAssistantActive = false
+            aapAudio.onVoiceSessionChanged(false)
         }
         return 0
     }

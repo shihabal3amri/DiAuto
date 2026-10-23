@@ -109,6 +109,9 @@ class SettingsFragment : Fragment() {
     private var pendingStaticAudioFocus: Boolean? = null
     private var pendingPlaybackFocusMode: PlaybackFocusPolicy.Mode? = null
     private var pendingSeparateAudioStreams: Boolean? = null
+    private var pendingCarVolumeGroups: Boolean? = null
+    private var pendingCarNaviStream: Int? = null
+    private var pendingCarVoiceStream: Int? = null
     private var pendingUseAacAudio: Boolean? = null
     private var pendingAttachHwDspEqualizer: Boolean? = null
     private var pendingMicInputSource: Int? = null
@@ -244,6 +247,9 @@ class SettingsFragment : Fragment() {
         pendingStaticAudioFocus = settings.staticAudioFocus
         pendingPlaybackFocusMode = settings.playbackFocusMode
         pendingSeparateAudioStreams = settings.separateAudioStreams
+        pendingCarVolumeGroups = settings.carVolumeGroups
+        pendingCarNaviStream = settings.carNaviStream
+        pendingCarVoiceStream = settings.carVoiceStream
         pendingUseAacAudio = settings.useAacAudio
         pendingAttachHwDspEqualizer = settings.attachHwDspEqualizer
         pendingMicInputSource = settings.micInputSource
@@ -367,6 +373,9 @@ class SettingsFragment : Fragment() {
         pendingStaticAudioFocus = settings.staticAudioFocus
         pendingPlaybackFocusMode = settings.playbackFocusMode
         pendingSeparateAudioStreams = settings.separateAudioStreams
+        pendingCarVolumeGroups = settings.carVolumeGroups
+        pendingCarNaviStream = settings.carNaviStream
+        pendingCarVoiceStream = settings.carVoiceStream
         pendingUseAacAudio = settings.useAacAudio
         pendingAttachHwDspEqualizer = settings.attachHwDspEqualizer
         pendingEnableRotary = settings.enableRotary
@@ -500,6 +509,9 @@ class SettingsFragment : Fragment() {
         pendingStaticAudioFocus?.let { settings.staticAudioFocus = it }
         pendingPlaybackFocusMode?.let { settings.playbackFocusMode = it }
         pendingSeparateAudioStreams?.let { settings.separateAudioStreams = it }
+        pendingCarVolumeGroups?.let { settings.carVolumeGroups = it }
+        pendingCarNaviStream?.let { settings.carNaviStream = it }
+        pendingCarVoiceStream?.let { settings.carVoiceStream = it }
         pendingUseAacAudio?.let { settings.useAacAudio = it }
         pendingAttachHwDspEqualizer?.let { settings.attachHwDspEqualizer = it }
         pendingMicInputSource?.let { settings.micInputSource = it }
@@ -631,6 +643,9 @@ class SettingsFragment : Fragment() {
                         pendingStaticAudioFocus != settings.staticAudioFocus ||
                         pendingPlaybackFocusMode != settings.playbackFocusMode ||
                         pendingSeparateAudioStreams != settings.separateAudioStreams ||
+                        pendingCarVolumeGroups != settings.carVolumeGroups ||
+                        pendingCarNaviStream != settings.carNaviStream ||
+                        pendingCarVoiceStream != settings.carVoiceStream ||
                         pendingUseAacAudio != settings.useAacAudio ||
                         pendingAttachHwDspEqualizer != settings.attachHwDspEqualizer ||
                         pendingMicInputSource != settings.micInputSource ||
@@ -686,6 +701,9 @@ class SettingsFragment : Fragment() {
                           pendingStaticAudioFocus != settings.staticAudioFocus ||
                           pendingPlaybackFocusMode != settings.playbackFocusMode ||
                           pendingSeparateAudioStreams != settings.separateAudioStreams ||
+                          pendingCarVolumeGroups != settings.carVolumeGroups ||
+                          pendingCarNaviStream != settings.carNaviStream ||
+                          pendingCarVoiceStream != settings.carVoiceStream ||
                           pendingUseAacAudio != settings.useAacAudio ||
                           pendingAttachHwDspEqualizer != settings.attachHwDspEqualizer ||
                           pendingAudioLatencyMultiplier != settings.audioLatencyMultiplier ||
@@ -1876,6 +1894,43 @@ class SettingsFragment : Fragment() {
         ))
 
         items.add(SettingItem.ToggleSettingEntry(
+            stableId = "carVolumeGroups",
+            nameResId = R.string.car_volume_groups,
+            descriptionResId = R.string.car_volume_groups_description,
+            isChecked = pendingCarVolumeGroups ?: false,
+            onCheckedChanged = { isChecked ->
+                pendingCarVolumeGroups = isChecked
+                checkChanges()
+                updateSettingsList()
+            }
+        ))
+        if (pendingCarVolumeGroups == true) {
+            val dilink = com.andrerinas.openheadunit.aap.CarVolumeGroups.detectDiLink()
+            items.add(SettingItem.SettingEntry(
+                stableId = "carNaviStream",
+                nameResId = R.string.car_navi_stream,
+                value = carStreamLabel(pendingCarNaviStream ?: -1, dilink, voice = false),
+                onClick = { _ -> showCarStreamDialog(voice = false, dilink = dilink) }
+            ))
+            items.add(SettingItem.SettingEntry(
+                stableId = "carVoiceStream",
+                nameResId = R.string.car_voice_stream,
+                value = carStreamLabel(pendingCarVoiceStream ?: -1, dilink, voice = true),
+                onClick = { _ -> showCarStreamDialog(voice = true, dilink = dilink) }
+            ))
+            items.add(SettingItem.InfoBanner(
+                stableId = "carStreamHint",
+                textResId = R.string.car_stream_hint
+            ))
+        }
+        if (pendingCarVolumeGroups == true && pendingStaticAudioFocus == true) {
+            items.add(SettingItem.InfoBanner(
+                stableId = "carVolumeGroupsStaticHint",
+                textResId = R.string.car_volume_groups_static_hint
+            ))
+        }
+
+        items.add(SettingItem.ToggleSettingEntry(
             stableId = "useAacAudio",
             nameResId = R.string.use_aac_audio,
             descriptionResId = R.string.use_aac_audio_description,
@@ -2444,6 +2499,48 @@ class SettingsFragment : Fragment() {
         settingsAdapter.submitList(filterSettings(fullSettingsList)) {
             scrollState?.let { settingsRecyclerView.layoutManager?.onRestoreInstanceState(it) }
         }
+    }
+
+    private fun carStreamLabel(value: Int, dilink: Int, voice: Boolean): String = when {
+        value == -1 && voice && com.andrerinas.openheadunit.aap.CarVolumeGroups.defaultVoiceStream(dilink) > 0 ->
+            getString(R.string.car_stream_auto, com.andrerinas.openheadunit.aap.CarVolumeGroups.defaultVoiceStream(dilink))
+        value == -1 && voice -> getString(R.string.car_stream_same_as_navi)
+        value == -1 -> {
+            val auto = com.andrerinas.openheadunit.aap.CarVolumeGroups.defaultNaviStream(dilink)
+            if (auto > 0) getString(R.string.car_stream_auto, auto) else getString(R.string.car_stream_auto_label)
+        }
+        value == 0 -> getString(R.string.car_stream_label_only)
+        else -> value.toString()
+    }
+
+    /** Picks a stream; each choice plays a test tone on it so the matching slider can be found. */
+    private fun showCarStreamDialog(voice: Boolean, dilink: Int) {
+        val values = listOf(-1, 0) + com.andrerinas.openheadunit.aap.CarVolumeGroups.STREAMS.toList()
+        val labels = values.map { carStreamLabel(it, dilink, voice) }.toTypedArray()
+        val current = (if (voice) pendingCarVoiceStream else pendingCarNaviStream) ?: -1
+        var selected = values.indexOf(current).coerceAtLeast(0)
+        val preview = com.andrerinas.openheadunit.utils.StreamTonePreview()
+        val usage = if (voice) android.media.AudioAttributes.USAGE_ASSISTANT
+            else android.media.AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE
+        MaterialAlertDialogBuilder(requireContext(), R.style.DarkAlertDialog)
+            .setTitle(if (voice) R.string.car_voice_stream else R.string.car_navi_stream)
+            .setSingleChoiceItems(labels, selected) { _, which ->
+                selected = which
+                val stream = when (val v = values[which]) {
+                    -1 -> if (voice) com.andrerinas.openheadunit.aap.CarVolumeGroups.resolveVoice(-1, pendingCarNaviStream ?: -1, dilink)
+                        else com.andrerinas.openheadunit.aap.CarVolumeGroups.defaultNaviStream(dilink)
+                    else -> v
+                }
+                preview.play(stream, usage)
+            }
+            .setPositiveButton(R.string.save) { _, _ ->
+                if (voice) pendingCarVoiceStream = values[selected] else pendingCarNaviStream = values[selected]
+                checkChanges()
+                updateSettingsList()
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .setOnDismissListener { preview.close() }
+            .show()
     }
 
     private fun openOverlaySettings() {
