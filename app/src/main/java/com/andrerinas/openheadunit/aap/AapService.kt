@@ -1976,7 +1976,9 @@ class AapService : Service(), UsbReceiver.Listener {
                     userExitCooldownUntil = 0L
 
                     val settings = App.provide(this).settings
-                    if (activeWifiMode != 3 || settings.wifiConnectionMode != 3) {
+                    if (activeWifiMode != 3 || settings.wifiConnectionMode != 3 ||
+                        activeNativeTransport != nativeTransport() ||
+                        (nativeTransport() == NativeTransport.WIFI_DIRECT && wifiDirectManager?.isNativeHostStopped() == true)) {
                         AppLog.i("AapService: Initializing Native AA mode before poke...")
                         initWifiMode(force = true)
                     } else if (nativeAaHandshakeManager?.isActive() != true) {

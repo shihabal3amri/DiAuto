@@ -71,6 +71,7 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
     private var tightBurstCount = 0
     private val burstGapMs = 800L
     private val burstTriggerCount = 5
+    private val nativeStartGate = NativeGroupStartGate()
     @Volatile private var isGroupCreatingOrCreated = false
     // Guards against two concurrent checkGroupAndCreate() runs racing on the same teardown
     // (makeVisible() can be invoked twice back to back for one UI action). Cleared by a
@@ -255,6 +256,7 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
                         handler.removeCallbacksAndMessages(null)
                         credentialsEpoch++
                         checkGroupAndCreateInFlight = false
+                        nativeStartGate.reset()
                         isGroupOwner = false
                         isGroupCreatingOrCreated = false
                         isConnected = false
@@ -299,7 +301,11 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
                         isConnected = false
                         isClientConnected = false
                         lastNativeGroupStatusMessage = null
-                        isGroupCreatingOrCreated = false
+                        if (nativeStartGate.pending(generation)) {
+                            AppLog.i("WifiDirectManager: disconnect broadcast during group creation; preserving start guard")
+                        } else {
+                            isGroupCreatingOrCreated = false
+                        }
                         cancelNativeJoinWatchdog()
                     }
                 }
@@ -445,12 +451,22 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
     @SuppressLint("MissingPermission")
     override fun onGroupInfoAvailable(group: android.net.wifi.p2p.WifiP2pGroup?) {
         if (!sessionOwnership.current(generation)) return
+        if (nativeStartGate.pending(generation) && !sessionOwnership.created) {
+            AppLog.i("WifiDirectManager: group observation before create success; keeping teardown/start guard")
+            return
+        }
         if (group != null && group.isGroupOwner) {
             sessionOwnership.observeCreatedGroup(true, group.networkName)
             if (!sessionOwnership.owns(true, group.networkName)) {
+                if (nativeStartGate.pending(generation)) {
+                    AppLog.i("WifiDirectManager: ignoring old group observation during teardown/create")
+                    return
+                }
                 foreignGroupDetected()
                 return
             }
+            nativeStartGate.finish(generation)
+            isGroupCreatingOrCreated = true
             isGroupOwner = true
             isConnected = true
             ownershipPrefs.edit().putString("network_name", group.networkName).apply()
@@ -1113,8 +1129,10 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
         }, 800L)
     }
 
-    @SuppressLint("MissingPermission")
+    fun isNativeHostStopped(): Boolean = !sessionOwnership.requested
+
     /** Credential refresh must not replace the network a Bluetooth handshake is waiting for. */
+    @SuppressLint("MissingPermission")
     fun refreshNativeAaCredentials() {
         val gen = generation
         handler.post {
@@ -1136,9 +1154,13 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
 
     @SuppressLint("MissingPermission")
     fun startNativeAaQuietHost() {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            handler.post { startNativeAaQuietHost() }
+            return
+        }
         sessionOwnership.start()
         registerReceiverIfNeeded()
-        if (!sessionOwnership.enabled || isGroupCreatingOrCreated) return
+        if (!sessionOwnership.enabled || isGroupCreatingOrCreated || nativeStartGate.pending(generation)) return
         isGroupCreatingOrCreated = true
         var mgr = manager
         var ch = channel
@@ -1434,6 +1456,7 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
                     }
                 } else {
                     AppLog.e("WifiDirectManager: createQuietGroup failed completely! Reason: $reasonStr")
+                    nativeStartGate.finish(gen)
                     isGroupCreatingOrCreated = false
                 }
             }
@@ -1478,6 +1501,9 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
     private fun removeGroupAndRetryNative5Ghz() {
         val mgr = manager ?: return
         val ch = channel ?: return
+        if (!nativeStartGate.begin(generation)) return
+        sessionOwnership.beginCreate()
+        isGroupCreatingOrCreated = true
         // The next createGroup() call generates a brand-new GO interface with a new random
         // MAC — a cached BSSID from the group we're tearing down is now stale and must never
         // be delivered for the new one.
@@ -1510,6 +1536,13 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
     private fun recreateNativeGroup(forceStandard: Boolean) {
         val mgr = manager ?: return
         val ch = channel ?: return
+        if (!nativeStartGate.begin(generation)) {
+            AppLog.i("WifiDirectManager: group recreation already pending; coalescing request")
+            return
+        }
+        sessionOwnership.beginCreate()
+        isGroupCreatingOrCreated = true
+        AppLog.i("WifiDirectManager: acquired Native AA group start guard generation=$generation")
         lastKnownBssid = null
         // Let an in-progress credential wait pick up the fresh group's creds, not stale ones.
         credentialsEpoch++
@@ -1691,6 +1724,7 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
     private fun foreignGroupDetected() {
         // Invalidate delayed creates and credential delivery already queued for this attempt.
         sessionOwnership.stop()
+        nativeStartGate.reset()
         credentialsEpoch++
         handler.removeCallbacksAndMessages(null)
         onNativeGroupInvalidated?.invoke()
@@ -1730,6 +1764,7 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
     fun stop() {
         AppLog.i("WifiDirectManager: Stopping and cleaning up...")
         sessionOwnership.stop()
+        nativeStartGate.reset()
         credentialsEpoch++
         isGroupCreatingOrCreated = false
         handler.removeCallbacksAndMessages(null)
