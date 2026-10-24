@@ -13,14 +13,15 @@ internal class P2pSessionOwnership(recordedName: String? = null) {
     var networkName: String? = recordedName
         private set
 
-    fun start() { requested = true }
+    fun start() { if (!requested) generation++; requested = true }
     fun stop() { requested = false; generation++; created = false }
     fun setEnabled(value: Boolean) {
         if (enabled && !value) { generation++; created = false }
         enabled = value
     }
     fun current(token: Int) = requested && enabled && token == generation
-    fun expect(name: String) { networkName = name }
+    fun beginCreate() { created = false }
+    fun expect(name: String) { networkName = name; created = false }
     fun created(token: Int): Boolean {
         if (!current(token)) return false
         created = true
