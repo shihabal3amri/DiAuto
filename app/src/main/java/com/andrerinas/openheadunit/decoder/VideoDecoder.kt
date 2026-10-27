@@ -424,6 +424,13 @@ class VideoDecoder(
      */
     val hasRenderedThisSession: Boolean get() = renderedThisSession
 
+    /**
+     * Whether a keyframe has produced output since the codec last started or took a surface. A
+     * rebuilt codec renders from the first P-frame it is fed, so frames coming out are not a
+     * picture until this is true: until then they are drawn against no reference.
+     */
+    val keyframeDecodedSinceStart: Boolean get() = keyframeRepair.keyframeDecoded
+
     enum class CodecType(val mimeType: String, val displayName: String, val settingsValue: String) {
         H264("video/avc", "H.264/AVC", "H.264"),
         H265("video/hevc", "H.265/HEVC", "H.265")
