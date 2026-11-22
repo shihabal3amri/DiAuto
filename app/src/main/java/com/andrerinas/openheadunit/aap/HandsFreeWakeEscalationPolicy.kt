@@ -12,14 +12,17 @@ package com.andrerinas.openheadunit.aap
  * poke withheld, and no connection ever accepted (#69, #59, #50).
  *
  * The poke is what produces the event, at the measured cost of the phone's hands-free slot, so it
- * is budgeted rather than freed: only for a phone that runs Android Auto on this unit (see
- * [wakeCandidates]), only [MAX_ESCALATED_WAKES] times per arming, never during a call or a
- * session, and only while [NativeAaWakeDamagePolicy] has not measured this unit losing the link
- * for good.
+ * is budgeted rather than freed: by itself only for a phone on the Auto Start list, otherwise only
+ * for the phone Connect was pressed for, only [MAX_ESCALATED_WAKES] times per arming, never during
+ * a call or a session, and only while [NativeAaWakeDamagePolicy] has not measured this unit losing
+ * the link for good.
  *
  * Ported from Open Headunit (`HandsFreeWakeEscalationPolicy`). Three things differ here: a call
- * gate, a shorter wait when the user pressed Connect for that phone, and the Auto Start list as
- * the record of which phones an automatic wake may reach.
+ * gate; the Auto Start list as the record of which phones an automatic wake may reach; and Connect
+ * as a request in its own right, with a shorter wait, for any phone the user picks, including one
+ * that has never run Android Auto on this unit. Upstream never wakes that phone. Here it is the
+ * reported case, the button names the phone, and the worst outcome is the Bluetooth off-and-on
+ * the user would otherwise be asked for.
  */
 object HandsFreeWakeEscalationPolicy {
 
@@ -55,18 +58,20 @@ object HandsFreeWakeEscalationPolicy {
      * @param reason why [BluetoothWakePolicy.wakeDecision] refused. Only TARGET_CONNECTED escalates:
      *   TARGET_UNREADABLE could not tell whose link it is, and a guess is not a reason to drop
      *   somebody's call; TARGET_ABSENT has no link of the target's to raise an event on.
-     * @param phoneHasRunAaHere the phone is one of [wakeCandidates]; a phone paired only for calls
-     *   is never disturbed.
+     * @param onAutoStartList the phone is on the Auto Start list. A phone joins it by connecting
+     *   Android Auto here or by the user choosing it, and the user takes it off there, so nothing
+     *   automatic reaches for a phone paired only for calls or one the user took off.
      * @param callActive a call rides on the link this would take.
      * @param sessionInProgress a session up, handshaking or settling; nothing touches the radio then.
      * @param standDownSinceMs when this phone's stand-down began, or zero if it has not.
      * @param lastEscalationMs when the last escalated wake went out, or zero if none has.
-     * @param userAsked the user pressed Connect for this phone.
+     * @param userAsked the user pressed Connect for this phone. That stands in for the list, and
+     *   shortens the wait; every other gate holds.
      */
     fun shouldEscalate(
         unitAllowsWake: Boolean,
         reason: BluetoothWakePolicy.WakeReason,
-        phoneHasRunAaHere: Boolean,
+        onAutoStartList: Boolean,
         callActive: Boolean,
         sessionInProgress: Boolean,
         standDownSinceMs: Long,
@@ -77,7 +82,7 @@ object HandsFreeWakeEscalationPolicy {
     ): Boolean {
         if (!unitAllowsWake) return false
         if (reason != BluetoothWakePolicy.WakeReason.TARGET_CONNECTED) return false
-        if (!phoneHasRunAaHere) return false
+        if (!onAutoStartList && !userAsked) return false
         if (callActive) return false
         if (sessionInProgress) return false
         if (escalationsUsed >= MAX_ESCALATED_WAKES) return false
@@ -87,32 +92,11 @@ object HandsFreeWakeEscalationPolicy {
         return true
     }
 
-    /**
-     * The phones a wake over a live hands-free link may be spent on.
-     *
-     * By itself, only the Auto Start list: a phone joins it by connecting Android Auto here, or by
-     * the user choosing it, and the user takes it off there. A phone that was taken off is one the
-     * user does not want started automatically, so nothing automatic reaches for it.
-     *
-     * When Connect is pressed for a phone, any record of it having run Android Auto here counts:
-     * the list, a wireless session completed here before ([ranAaStored]), or the Android Auto
-     * channel opened since this process started ([acceptedThisProcess]). The stored halves are what
-     * survive a restart: a radio that connects hands-free at boot stands the wake down before
-     * anything in this process could have seen the phone.
-     */
-    fun wakeCandidates(
-        userAsked: Boolean,
-        autoStartMacs: Collection<String>,
-        ranAaStored: Collection<String>,
-        acceptedThisProcess: Collection<String>,
-    ): Collection<String> =
-        if (userAsked) autoStartMacs + ranAaStored + acceptedThisProcess else autoStartMacs.toList()
-
-    /** Whether [targetMac] is one of [macsThatRanAa], the result of [wakeCandidates]. */
-    fun phoneHasRunAaHere(targetMac: String?, macsThatRanAa: Collection<String>): Boolean {
+    /** Whether [targetMac] is one of [autoStartMacs]. Addresses compare without case or padding. */
+    fun isListed(targetMac: String?, autoStartMacs: Collection<String>): Boolean {
         val target = targetMac?.trim().orEmpty()
         if (target.isEmpty()) return false
-        return macsThatRanAa.any { it.trim().equals(target, ignoreCase = true) }
+        return autoStartMacs.any { it.trim().equals(target, ignoreCase = true) }
     }
 
     /**

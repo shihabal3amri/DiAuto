@@ -15,7 +15,7 @@ class HandsFreeWakeEscalationPolicyTest {
     private fun escalate(
         unitAllowsWake: Boolean = true,
         reason: WakeReason = WakeReason.TARGET_CONNECTED,
-        phoneHasRunAaHere: Boolean = true,
+        onAutoStartList: Boolean = true,
         callActive: Boolean = false,
         sessionInProgress: Boolean = false,
         standDownSinceMs: Long = 1_000L,
@@ -24,12 +24,12 @@ class HandsFreeWakeEscalationPolicyTest {
         now: Long = 1_000L + wait,
         userAsked: Boolean = false,
     ) = HandsFreeWakeEscalationPolicy.shouldEscalate(
-        unitAllowsWake, reason, phoneHasRunAaHere, callActive, sessionInProgress,
+        unitAllowsWake, reason, onAutoStartList, callActive, sessionInProgress,
         standDownSinceMs, lastEscalationMs, escalationsUsed, now, userAsked,
     )
 
     @Test
-    fun `a phone that ran Android Auto here is woken once its stand-down has run its time`() {
+    fun `a phone on the Auto Start list is woken once its stand-down has run its time`() {
         assertTrue(escalate())
     }
 
@@ -38,11 +38,42 @@ class HandsFreeWakeEscalationPolicyTest {
         assertFalse(escalate(now = 1_000L + wait - 1))
     }
 
-    /** #69, #59, #50 are first connections. Nothing automatic is spent on them. */
+    /** A phone joins the list by connecting Android Auto here, and the user takes it off there. */
     @Test
-    fun `a phone paired only for calls is never woken over its link`() {
-        assertFalse(escalate(phoneHasRunAaHere = false))
-        assertFalse(escalate(phoneHasRunAaHere = false, userAsked = true, now = 1_000L + wait))
+    fun `nothing automatic reaches for a phone that is not on the Auto Start list`() {
+        assertFalse(escalate(onAutoStartList = false))
+        assertFalse(escalate(onAutoStartList = false, now = 1_000L + 100 * wait))
+    }
+
+    /**
+     * #69, #59, #50: first connections, the phone already on the car's Bluetooth, Connect pressed
+     * and nothing happening. The button names the phone, so it is woken without being on any list.
+     */
+    @Test
+    fun `Connect wakes the phone it was pressed for even if it has never run Android Auto here`() {
+        assertFalse(escalate(onAutoStartList = false, userAsked = true, now = 1_000L + connectWait - 1))
+        assertTrue(escalate(onAutoStartList = false, userAsked = true, now = 1_000L + connectWait))
+    }
+
+    @Test
+    fun `every other gate holds for a first-time phone picked with Connect`() {
+        fun firstTime(
+            unitAllowsWake: Boolean = true,
+            reason: WakeReason = WakeReason.TARGET_CONNECTED,
+            callActive: Boolean = false,
+            sessionInProgress: Boolean = false,
+            escalationsUsed: Int = 0,
+        ) = escalate(
+            unitAllowsWake = unitAllowsWake, reason = reason, onAutoStartList = false,
+            callActive = callActive, sessionInProgress = sessionInProgress,
+            escalationsUsed = escalationsUsed, userAsked = true,
+        )
+        assertTrue(firstTime())
+        assertFalse(firstTime(callActive = true))
+        assertFalse(firstTime(sessionInProgress = true))
+        assertFalse(firstTime(unitAllowsWake = false))
+        assertFalse(firstTime(reason = WakeReason.TARGET_UNREADABLE))
+        assertFalse(firstTime(escalationsUsed = HandsFreeWakeEscalationPolicy.MAX_ESCALATED_WAKES))
     }
 
     @Test
@@ -112,51 +143,22 @@ class HandsFreeWakeEscalationPolicyTest {
         assertTrue(connectWait < wait)
     }
 
-    // --- which phones count ---
+    // --- which phones are on the list ---
 
     @Test
-    fun `a phone on any of the lists has run Android Auto here`() {
-        val known = listOf("AA:BB:CC:DD:EE:01", "aa:bb:cc:dd:ee:02")
-        assertTrue(HandsFreeWakeEscalationPolicy.phoneHasRunAaHere("AA:BB:CC:DD:EE:01", known))
-        assertTrue(HandsFreeWakeEscalationPolicy.phoneHasRunAaHere("AA:BB:CC:DD:EE:02", known))
-        assertTrue(HandsFreeWakeEscalationPolicy.phoneHasRunAaHere(" aa:bb:cc:dd:ee:01 ", known))
+    fun `addresses on the list match without case or padding`() {
+        val list = listOf("AA:BB:CC:DD:EE:01", "aa:bb:cc:dd:ee:02")
+        assertTrue(HandsFreeWakeEscalationPolicy.isListed("AA:BB:CC:DD:EE:01", list))
+        assertTrue(HandsFreeWakeEscalationPolicy.isListed("AA:BB:CC:DD:EE:02", list))
+        assertTrue(HandsFreeWakeEscalationPolicy.isListed(" aa:bb:cc:dd:ee:01 ", list))
     }
 
     @Test
-    fun `another phone having run it says nothing about this one`() {
-        assertFalse(HandsFreeWakeEscalationPolicy.phoneHasRunAaHere("AA:BB:CC:DD:EE:03", listOf("AA:BB:CC:DD:EE:01")))
-        assertFalse(HandsFreeWakeEscalationPolicy.phoneHasRunAaHere("AA:BB:CC:DD:EE:03", emptyList()))
-        assertFalse(HandsFreeWakeEscalationPolicy.phoneHasRunAaHere(null, listOf("AA:BB:CC:DD:EE:01")))
-        assertFalse(HandsFreeWakeEscalationPolicy.phoneHasRunAaHere("", listOf("")))
-    }
-
-    private val onList = "AA:BB:CC:DD:EE:01"
-    private val takenOffList = "AA:BB:CC:DD:EE:02"
-    private val seenThisProcess = "AA:BB:CC:DD:EE:03"
-
-    private fun candidates(userAsked: Boolean) = HandsFreeWakeEscalationPolicy.wakeCandidates(
-        userAsked = userAsked,
-        autoStartMacs = setOf(onList),
-        ranAaStored = setOf(onList, takenOffList),
-        acceptedThisProcess = listOf(seenThisProcess),
-    )
-
-    /** Taking a phone off the Auto Start list is how the user says "do not start this one for me". */
-    @Test
-    fun `nothing automatic reaches for a phone the user took off the Auto Start list`() {
-        val automatic = candidates(userAsked = false)
-        assertTrue(HandsFreeWakeEscalationPolicy.phoneHasRunAaHere(onList, automatic))
-        assertFalse(HandsFreeWakeEscalationPolicy.phoneHasRunAaHere(takenOffList, automatic))
-        assertFalse(HandsFreeWakeEscalationPolicy.phoneHasRunAaHere(seenThisProcess, automatic))
-    }
-
-    @Test
-    fun `pressing Connect counts any record of the phone having run Android Auto here`() {
-        val asked = candidates(userAsked = true)
-        assertTrue(HandsFreeWakeEscalationPolicy.phoneHasRunAaHere(onList, asked))
-        assertTrue(HandsFreeWakeEscalationPolicy.phoneHasRunAaHere(takenOffList, asked))
-        assertTrue(HandsFreeWakeEscalationPolicy.phoneHasRunAaHere(seenThisProcess, asked))
-        assertFalse(HandsFreeWakeEscalationPolicy.phoneHasRunAaHere("AA:BB:CC:DD:EE:04", asked))
+    fun `another phone being listed says nothing about this one`() {
+        assertFalse(HandsFreeWakeEscalationPolicy.isListed("AA:BB:CC:DD:EE:03", listOf("AA:BB:CC:DD:EE:01")))
+        assertFalse(HandsFreeWakeEscalationPolicy.isListed("AA:BB:CC:DD:EE:03", emptyList()))
+        assertFalse(HandsFreeWakeEscalationPolicy.isListed(null, listOf("AA:BB:CC:DD:EE:01")))
+        assertFalse(HandsFreeWakeEscalationPolicy.isListed("", listOf("")))
     }
 
     // --- calls ---

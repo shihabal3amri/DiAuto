@@ -225,8 +225,6 @@ class NativeAaHandshakeManager(
     @Volatile private var acceptedAaConnectionThisArming = false
     // Counts Android Auto connections accepted, so a caller can tell "the phone arrived since".
     @Volatile private var aaAcceptCount = 0
-    // Phones that opened the Android Auto channel since this process started.
-    private val phonesAcceptedThisProcess = java.util.Collections.synchronizedSet(mutableSetOf<String>())
     // [BUG_FIX] Handshakes that timed out waiting for Type 2, back to back. Where close() does not
     // interrupt a pending read each one strands a Dispatchers.IO thread forever, so this bounds
     // how many we are willing to strand. See NativeHandoffPolicy.shouldServeHandshake.
@@ -617,15 +615,6 @@ class NativeAaHandshakeManager(
         }
     }
 
-    /** The phones a wake over a live link may be spent on; see [HandsFreeWakeEscalationPolicy.wakeCandidates]. */
-    private fun wakeCandidates(userAsked: Boolean): Collection<String> =
-        HandsFreeWakeEscalationPolicy.wakeCandidates(
-            userAsked = userAsked,
-            autoStartMacs = settings.autoStartBluetoothDeviceMacs,
-            ranAaStored = settings.nativeAaPhonesThatRanAa,
-            acceptedThisProcess = synchronized(phonesAcceptedThisProcess) { phonesAcceptedThisProcess.toList() },
-        )
-
     /** The audio mode is the read of a call that needs no permission; null when it cannot be read. */
     private fun currentAudioMode(): Int? = try {
         (context.getSystemService(Context.AUDIO_SERVICE) as android.media.AudioManager).mode
@@ -654,7 +643,9 @@ class NativeAaHandshakeManager(
                 verdict, settings.nativeAaWakeArmingsWithoutSession
             ),
             reason = reason,
-            phoneHasRunAaHere = HandsFreeWakeEscalationPolicy.phoneHasRunAaHere(device.address, wakeCandidates(userAsked)),
+            onAutoStartList = HandsFreeWakeEscalationPolicy.isListed(
+                device.address, settings.autoStartBluetoothDeviceMacs
+            ),
             callActive = HandsFreeWakeEscalationPolicy.callMayBeActive(currentAudioMode()),
             sessionInProgress = commManager.isConnected || isHandshakeInFlight() || isHandoffSettling(),
             standDownSinceMs = standDownSince,
@@ -1141,11 +1132,9 @@ class NativeAaHandshakeManager(
         // primary and the secondary-radio loops are covered by one statement.
         everAcceptedAaConnection = true
         pokesSinceLastAccept = 0
-        // The phone opened the Android Auto channel: no stand-down is waiting on it any more, and
-        // it is from now on a phone that runs Android Auto here.
+        // The phone opened the Android Auto channel: no stand-down is waiting on it any more.
         aaAcceptCount++
         acceptedAaConnectionThisArming = true
-        try { socket.remoteDevice?.address } catch (e: Exception) { null }?.let { phonesAcceptedThisProcess.add(it) }
         handsFreeStandDownSince.clear()
         if (settings.nativeAaWakeArmingsWithoutSession != 0) settings.nativeAaWakeArmingsWithoutSession = 0
 
@@ -1306,14 +1295,6 @@ class NativeAaHandshakeManager(
                     }
                     WppAction.CompleteSuccess -> {
                         AppLog.i("NativeAA: WiFi session landed. Handshake session ending, releasing Bluetooth connection.")
-                        // Durable, unlike the in-process record: a unit that connects hands-free at
-                        // boot stands the wake down before this process has seen any phone.
-                        try { socket.remoteDevice?.address } catch (e: Exception) { null }?.let { mac ->
-                            val known = settings.nativeAaPhonesThatRanAa
-                            if (known.none { it.equals(mac, ignoreCase = true) }) {
-                                settings.nativeAaPhonesThatRanAa = known + mac
-                            }
-                        }
                         ifOwner(socket) {
                             handoffSettlingSince = 0L
                             // Stop accepting new AA_UUID connections too, not just this socket —
