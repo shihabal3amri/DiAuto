@@ -281,6 +281,11 @@ internal class ClusterMapScreen(
                 AppLog.w("ClusterMap: no BYD dashboard display among ${describeDisplays(context)}")
                 return
             }
+            if (!ClusterMapConfig.measured(Build.FINGERPRINT)) {
+                // The layer is a guess here, and a map on a layer the cluster never shows looks
+                // exactly like a working one in the log (#64). Say which layers there were.
+                AppLog.i("ClusterMap: no measured layout for this firmware; using ${display.name} of ${describeDisplays(context)}")
+            }
             val profile = ClusterDisplayServices.profile(context, settings)
             val app = context.applicationContext
             val owners = buildList {
