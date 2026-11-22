@@ -5,7 +5,10 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothServerSocket
 import android.bluetooth.BluetoothSocket
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import com.andrerinas.openheadunit.aap.AapService
 import com.andrerinas.openheadunit.aap.BluetoothWakePolicy
 import com.andrerinas.openheadunit.aap.NativeCredentialsPolicy
@@ -139,6 +142,36 @@ class NativeAaHandshakeManager(
     // Set by closeAaListeners() so the AA accept loops can tell "we closed this on purpose
     // after a successful handoff" apart from a real socket error, for logging only.
     @Volatile private var aaListenersClosedForSession = false
+    // Set when an accept loop died under us rather than being closed: the car's Bluetooth bounced,
+    // or its stack dropped the listeners when a phone was unpaired (#77). Separate from the flag
+    // above because the two need opposite repairs and the manager is still running through both.
+    @Volatile private var aaListenerLost = false
+    @Volatile private var hfpListenerLost = false
+    private var listenerReopenJob: Job? = null
+    @Volatile private var listenerReopenAttempts = 0
+    // Bumped by start() and stop(). An accept loop from before either must not report its closed
+    // socket as a loss: initWifiMode() stops and starts this same manager back to back, and the
+    // old loop's exception can arrive after the new listeners are already open.
+    @Volatile private var listenerGeneration = 0
+    private val listenerLock = Any()
+
+    /**
+     * The radio coming back is the event lost listeners are really waiting for once the reopen
+     * attempts are spent, and nothing else in the app watches for it.
+     */
+    private val btStateReceiver = object : BroadcastReceiver() {
+        override fun onReceive(receiverContext: Context?, intent: Intent?) {
+            if (intent?.action != BluetoothAdapter.ACTION_STATE_CHANGED) return
+            if (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1) != BluetoothAdapter.STATE_ON) return
+            val adapter = BluetoothHelper.getBluetoothAdapter(context) ?: return
+            synchronized(listenerLock) {
+                if (!isRunning || !(aaListenerLost || hfpListenerLost)) return
+                listenerReopenAttempts = 0
+                reopenLostListeners(adapter, "now this unit's Bluetooth is back on")
+            }
+        }
+    }
+    private var btStateReceiverRegistered = false
     // Whether the "already have a hands-free link, not poking" line has been said at info level for
     // the current run of skips. Cleared as soon as a poke does go ahead, so a later skip says so
     // again rather than hiding behind a line from minutes earlier.
@@ -246,7 +279,9 @@ class NativeAaHandshakeManager(
     // not just whether the manager was start()ed. See the "Re-arm on Bluetooth reconnect" fix
     // this restores the invariant for: isActive() must mean "genuinely able to accept," not
     // "believed to be running."
-    fun isActive(): Boolean = isRunning && !aaListenersClosedForSession
+    // A listener that died is the third way to be running and unable to accept (#77).
+    fun isActive(): Boolean =
+        AaListenerRecoveryPolicy.canAccept(isRunning, aaListenersClosedForSession, aaListenerLost)
 
     fun isHandshakeInFlight(): Boolean =
         NativeHandoffPolicy.isHandshaking(handshakeStartedAt, SystemClock.elapsedRealtime())
@@ -302,8 +337,17 @@ class NativeAaHandshakeManager(
             return
         }
 
-        isRunning = true
-        aaListenersClosedForSession = false
+        synchronized(listenerLock) {
+            isRunning = true
+            aaListenersClosedForSession = false
+            aaListenerLost = false
+            hfpListenerLost = false
+            listenerReopenAttempts = 0
+            listenerGeneration++
+            listenerReopenJob?.cancel()
+            listenerReopenJob = null
+        }
+        registerBtStateReceiver()
         // Local Bluetooth radio name; logged on every accept so a dual-radio head unit's logs
         // show which radio the phone actually reached (compare with the HU name in the phone's
         // log). Uses adapter.name, not adapter.address: getAddress() returns the fixed masked
@@ -313,53 +357,10 @@ class NativeAaHandshakeManager(
         AppLog.i("NativeAA: Starting Bluetooth Handshake Servers (primary radio [$localRadioName])...")
 
         // Start AA RFCOMM Server
-        scope.launch(Dispatchers.IO + CoroutineName("NativeAa-RfcommServer")) {
-            try {
-                aaServerSocket = adapter.listenUsingRfcommWithServiceRecord("AA BT Listener", AA_UUID)
-                AppLog.i("NativeAA: ACTIVELY LISTENING on Android Auto UUID ($AA_UUID) on radio [$localRadioName]... Waiting for phone to connect back!")
-                while (isRunning && isActive) {
-                    val socket = aaServerSocket?.accept()
-                    if (socket != null) {
-                        AppLog.i("NativeAA: Connection accepted from ${socket.remoteDevice.name} (${socket.remoteDevice.address}) on local radio [$localRadioName]")
-                        if (refuseWhileBackedOff(socket)) continue
-                        // [FIX] Launch handshake in a separate coroutine so the server can accept the next connection!
-                        scope.launch(Dispatchers.IO + CoroutineName("NativeAa-Handshake-${socket.remoteDevice.address}")) {
-                            handleHandshake(socket, localRadioName)
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                if (aaListenersClosedForSession) {
-                    AppLog.d("NativeAA: AA Server socket closed after successful handoff.")
-                } else if (isRunning) {
-                    AppLog.e("NativeAA: AA Server socket error: ${e.message}", e)
-                } else {
-                    AppLog.d("NativeAA: AA Server socket closed cleanly.")
-                }
-            }
-        }
+        launchAaAcceptLoop(adapter)
 
         // Start HFP RFCOMM Server (Required by some phones to detect HU)
-        scope.launch(Dispatchers.IO + CoroutineName("NativeAa-HfpServer")) {
-            try {
-                hfpServerSocket = adapter.listenUsingRfcommWithServiceRecord("Hands-Free Unit", HFP_UUID)
-                while (isRunning && isActive) {
-                    val socket = hfpServerSocket?.accept()
-                    if (socket != null) {
-                        logHfpAccept(socket, localRadioName)
-                        scope.launch(Dispatchers.IO + CoroutineName("NativeAa-HfpResponder-${socket.remoteDevice.address}")) {
-                            handleHfp(socket)
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                if (isRunning) {
-                    AppLog.e("NativeAA: HFP Server socket error: ${e.message}", e)
-                } else {
-                    AppLog.d("NativeAA: HFP Server socket closed cleanly.")
-                }
-            }
-        }
+        launchHfpAcceptLoop(adapter)
 
         // Some head units have two Bluetooth radios (e.g. "K706" and "CAR8032"). The phone may
         // be bonded to whichever one isn't the primary, so it never reaches the listener above.
@@ -396,6 +397,201 @@ class NativeAaHandshakeManager(
             AppLog.i("NativeAA: Opening AA listeners on ${secondaries.size} secondary Bluetooth radio(s) for dual-radio head units: ${secondaries.joinToString { it.serviceName }}")
             secondaries.forEach { launchExtraServers(it.serviceName, it.adapter) }
         }
+    }
+
+    /** Opens the Android Auto listener on the primary radio and serves it until the socket closes. */
+    @SuppressLint("MissingPermission")
+    private fun launchAaAcceptLoop(adapter: BluetoothAdapter) {
+        val generation = listenerGeneration
+        scope.launch(Dispatchers.IO + CoroutineName("NativeAa-RfcommServer")) {
+            var server: BluetoothServerSocket? = null
+            try {
+                server = adapter.listenUsingRfcommWithServiceRecord("AA BT Listener", AA_UUID)
+                if (generation != listenerGeneration) {
+                    // Stopped or restarted while the listener was opening: not ours to serve.
+                    try { server?.close() } catch (e: Exception) {}
+                    return@launch
+                }
+                aaServerSocket = server
+                AppLog.i("NativeAA: ACTIVELY LISTENING on Android Auto UUID ($AA_UUID) on radio [$localRadioName]... Waiting for phone to connect back!")
+                while (isRunning && isActive) {
+                    val socket = server?.accept()
+                    if (socket != null) {
+                        // A phone getting through proves the listener works, so a later loss gets
+                        // the whole reopen budget again.
+                        listenerReopenAttempts = 0
+                        AppLog.i("NativeAA: Connection accepted from ${socket.remoteDevice.name} (${socket.remoteDevice.address}) on local radio [$localRadioName]")
+                        if (refuseWhileBackedOff(socket)) continue
+                        // [FIX] Launch handshake in a separate coroutine so the server can accept the next connection!
+                        scope.launch(Dispatchers.IO + CoroutineName("NativeAa-Handshake-${socket.remoteDevice.address}")) {
+                            handleHandshake(socket, localRadioName)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                val current = generation == listenerGeneration
+                when (AaListenerRecoveryPolicy.exitKind(aaListenersClosedForSession, isRunning && current)) {
+                    AaListenerRecoveryPolicy.Exit.HANDOFF ->
+                        AppLog.d("NativeAA: AA Server socket closed after successful handoff.")
+                    AaListenerRecoveryPolicy.Exit.STOPPED ->
+                        AppLog.d("NativeAA: AA Server socket closed cleanly.")
+                    AaListenerRecoveryPolicy.Exit.FAILED -> {
+                        AppLog.e("NativeAA: AA Server socket error: ${e.message}", e)
+                        onListenerLost(server, androidAuto = true)
+                    }
+                }
+            }
+        }
+    }
+
+    /** The same for the hands-free listener, which stays open through a session. */
+    @SuppressLint("MissingPermission")
+    private fun launchHfpAcceptLoop(adapter: BluetoothAdapter) {
+        val generation = listenerGeneration
+        scope.launch(Dispatchers.IO + CoroutineName("NativeAa-HfpServer")) {
+            var server: BluetoothServerSocket? = null
+            try {
+                server = adapter.listenUsingRfcommWithServiceRecord("Hands-Free Unit", HFP_UUID)
+                if (generation != listenerGeneration) {
+                    try { server?.close() } catch (e: Exception) {}
+                    return@launch
+                }
+                hfpServerSocket = server
+                while (isRunning && isActive) {
+                    val socket = server?.accept()
+                    if (socket != null) {
+                        logHfpAccept(socket, localRadioName)
+                        scope.launch(Dispatchers.IO + CoroutineName("NativeAa-HfpResponder-${socket.remoteDevice.address}")) {
+                            handleHfp(socket)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                val current = generation == listenerGeneration
+                when (AaListenerRecoveryPolicy.exitKind(closedForSession = false, running = isRunning && current)) {
+                    AaListenerRecoveryPolicy.Exit.FAILED -> {
+                        AppLog.e("NativeAA: HFP Server socket error: ${e.message}", e)
+                        onListenerLost(server, androidAuto = false)
+                    }
+                    else -> AppLog.d("NativeAA: HFP Server socket closed cleanly.")
+                }
+            }
+        }
+    }
+
+    /**
+     * A primary listener died with the manager still running. Says so, stops reporting the unit as
+     * able to accept (so Connect and the Bluetooth auto-start re-arm it as they already do for a
+     * stopped manager), and reopens it as soon as there is a radio to reopen it on.
+     */
+    private fun onListenerLost(server: BluetoothServerSocket?, androidAuto: Boolean) {
+        // The dead socket still holds its channel and service record until it is closed.
+        try { server?.close() } catch (e: Exception) {}
+        synchronized(listenerLock) {
+            if (androidAuto) {
+                if (aaListenerLost) return
+                aaListenerLost = true
+                if (aaServerSocket === server) aaServerSocket = null
+                AppLog.w(
+                    "NativeAA: the Android Auto listener is down, so nothing can answer the phone. " +
+                        "Reopening it as soon as this unit's Bluetooth allows."
+                )
+            } else {
+                if (hfpListenerLost) return
+                hfpListenerLost = true
+                if (hfpServerSocket === server) hfpServerSocket = null
+                AppLog.w("NativeAA: the hands-free listener is down. Reopening it as soon as this unit's Bluetooth allows.")
+            }
+            scheduleListenerReopen()
+        }
+    }
+
+    /**
+     * Reopens lost listeners, bounded, and leaves it to the radio's own return once spent. One
+     * worker at a time: it gives up its slot under [listenerLock], in the same step as finding
+     * nothing left to do, so a loss reported while it runs is never left without one.
+     */
+    private fun scheduleListenerReopen() {
+        synchronized(listenerLock) {
+            if (listenerReopenJob != null) return
+            val generation = listenerGeneration
+            listenerReopenJob = scope.launch(Dispatchers.IO + CoroutineName("NativeAa-ListenerReopen")) {
+                while (true) {
+                    delay(AaListenerRecoveryPolicy.REOPEN_DELAY_MS)
+                    val adapter = BluetoothHelper.getBluetoothAdapter(context)
+                    val enabled = try { adapter != null && adapter.isEnabled } catch (e: Exception) { false }
+                    synchronized(listenerLock) {
+                        if (generation != listenerGeneration) return@launch // stop() owns the slot now
+                        if (!isRunning || !(aaListenerLost || hfpListenerLost)) {
+                            listenerReopenJob = null
+                            return@launch
+                        }
+                        if (enabled && !AaListenerRecoveryPolicy.mayReopen(true, listenerReopenAttempts)) {
+                            AppLog.w(
+                                "NativeAA: the Bluetooth listeners would not stay open after " +
+                                    "$listenerReopenAttempts attempts; waiting for this unit's Bluetooth to come " +
+                                    "back, or for Connect."
+                            )
+                            listenerReopenJob = null
+                            return@launch
+                        }
+                        if (enabled) {
+                            listenerReopenAttempts++
+                            reopenLostListeners(adapter!!, "after it was lost (attempt $listenerReopenAttempts)")
+                        } else if (btStateReceiverRegistered) {
+                            // A radio that is off spends no attempts. Its return is announced, and
+                            // the receiver reopens the listeners then.
+                            AppLog.i("NativeAA: this unit's Bluetooth is off; the listeners reopen when it is back on.")
+                            listenerReopenJob = null
+                            return@launch
+                        }
+                        // Off and nothing to announce its return: look again on the next turn.
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Opens the lost primary listeners again. A reopen that fails comes back through
+     * [onListenerLost], which the reopen worker picks up on its next turn.
+     */
+    private fun reopenLostListeners(adapter: BluetoothAdapter, why: String) {
+        synchronized(listenerLock) {
+            if (!isRunning) return
+            // After a handoff the Android Auto listener is meant to be closed; the next start() opens it.
+            if (aaListenerLost && !aaListenersClosedForSession) {
+                aaListenerLost = false
+                AppLog.i("NativeAA: reopening the Android Auto listener $why.")
+                launchAaAcceptLoop(adapter)
+            }
+            if (hfpListenerLost) {
+                hfpListenerLost = false
+                AppLog.i("NativeAA: reopening the hands-free listener $why.")
+                launchHfpAcceptLoop(adapter)
+            }
+        }
+    }
+
+    private fun registerBtStateReceiver() {
+        if (btStateReceiverRegistered) return
+        try {
+            ContextCompat.registerReceiver(
+                context,
+                btStateReceiver,
+                IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED),
+                ContextCompat.RECEIVER_NOT_EXPORTED
+            )
+            btStateReceiverRegistered = true
+        } catch (e: Exception) {
+            AppLog.w("NativeAA: cannot watch this unit's Bluetooth state: ${e.message}")
+        }
+    }
+
+    private fun unregisterBtStateReceiver() {
+        if (!btStateReceiverRegistered) return
+        btStateReceiverRegistered = false
+        try { context.unregisterReceiver(btStateReceiver) } catch (e: Exception) {}
     }
 
     /**
@@ -459,6 +655,9 @@ class NativeAaHandshakeManager(
      */
     private fun closeAaListeners() {
         aaListenersClosedForSession = true
+        // A session is up, so a primary listener lost earlier (the phone came in on a secondary
+        // radio) is no longer waited for: the next start() opens it with everything else.
+        aaListenerLost = false
         try { aaServerSocket?.close() } catch (e: Exception) {}
         synchronized(extraAaServerSockets) {
             extraAaServerSockets.forEach { try { it.close() } catch (e: Exception) {} }
@@ -1427,7 +1626,16 @@ class NativeAaHandshakeManager(
     data class ProtobufMessage(val type: Int, val payload: ByteArray)
 
     fun stop() {
-        isRunning = false
+        synchronized(listenerLock) {
+            isRunning = false
+            listenerGeneration++
+            listenerReopenJob?.cancel()
+            listenerReopenJob = null
+            aaListenerLost = false
+            hfpListenerLost = false
+            listenerReopenAttempts = 0
+        }
+        unregisterBtStateReceiver()
         try { aaServerSocket?.close() } catch (e: Exception) {}
         try { hfpServerSocket?.close() } catch (e: Exception) {}
         synchronized(extraAaServerSockets) {
