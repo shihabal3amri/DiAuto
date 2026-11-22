@@ -183,9 +183,21 @@ class AapNavigation(
         com.andrerinas.openheadunit.hud.DashboardGuidance.latest = if (turnCard) mapped else null
         AppLog.i("BYD nav input event=$navEventType enabled=${settings.bydNavigationEnabled} " +
             "status=${snapshot.clusterStatus?.payload?.status} steps=${snapshot.navigationState?.payload?.stepsCount} " +
-            "legacy=${snapshot.nextTurnDetail?.payload?.nextTurn} position=${snapshot.currentPosition != null} " +
+            "legacy=${snapshot.nextTurnDetail?.payload?.nextTurn} " +
+            "side=${snapshot.nextTurnDetail?.payload?.takeIf { it.hasSide() }?.side} " +
+            "turnNumber=${snapshot.nextTurnDetail?.payload?.takeIf { it.hasTurnNumber() }?.turnNumber} " +
+            "angle=${snapshot.nextTurnDetail?.payload?.takeIf { it.hasTurnAngle() }?.turnAngle} " +
+            "image=${snapshot.nextTurnDetail?.payload?.takeIf { it.hasImage() }?.image?.size()} " +
+            "position=${snapshot.currentPosition != null} " +
             "distance=${bydFrame?.distanceMeters} icon=${bydFrame?.clusterIcon}")
-        com.andrerinas.openheadunit.hud.BydNavigationOutputs.update(bydFrame)
+        // Legacy phones send the next-turn instruction and its distance as two messages ~10 ms apart.
+        // Between them the frame has no distance and maps to null, which the outputs treat as "clear",
+        // so every new instruction blinked the HUD off. Keep the previous frame until the distance
+        // lands; status changes and route end still clear through their own paths.
+        val awaitingDistance = bydFrame == null &&
+            snapshot.clusterStatus?.payload?.status == NavigationStatus.NavigationClusterStatus.NavigationStatusEnum.ACTIVE &&
+            snapshot.nextTurnDetail != null && snapshot.nextTurnDistance == null && snapshot.currentPosition == null
+        if (!awaitingDistance) com.andrerinas.openheadunit.hud.BydNavigationOutputs.update(bydFrame)
         pendingNavEventType = navEventType
         if (isBroadcastScheduled) return
         isBroadcastScheduled = true

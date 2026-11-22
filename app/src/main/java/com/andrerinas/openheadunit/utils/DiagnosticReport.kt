@@ -2,6 +2,7 @@ package com.andrerinas.openheadunit.utils
 
 import android.content.Context
 import android.os.Build
+import com.andrerinas.openheadunit.hud.BydNavigationDiagnostics
 import java.util.ArrayDeque
 
 /** Small, shareable report. Never exports saved credentials or raw protocol payloads. */
@@ -32,6 +33,27 @@ object DiagnosticReport {
                 check(process.waitFor() == 0) { "Could not read the app logs" }
             } finally { process.destroy() }
         }
+        // The BYD navigation outputs log through android.util.Log under their own tags, which neither
+        // the journal nor the OPENHU filter above ever sees.
+        val navigationLines = ArrayDeque<String>()
+        runCatching {
+            val filter = BydNavigationDiagnostics.LOG_TAGS.map { "$it:V" } + "*:S"
+            val process = ProcessBuilder(listOf("logcat", "-d", "-v", "threadtime") + filter)
+                .redirectErrorStream(true).start()
+            try {
+                process.inputStream.bufferedReader().useLines { seq ->
+                    seq.forEach { line ->
+                        DiagnosticReportRedactor.redact(line, ssid, password)?.let {
+                            if (navigationLines.size == 300) navigationLines.removeFirst()
+                            navigationLines.addLast(it)
+                        }
+                    }
+                }
+                process.waitFor()
+            } finally { process.destroy() }
+        }
+        val navigation = runCatching { BydNavigationDiagnostics.describe(context) }
+            .getOrElse { listOf("BYD navigation probe failed: ${it.javaClass.simpleName}: ${it.message}") }
         return buildString {
             appendLine("DiAuto ${context.packageManager.getPackageInfo(context.packageName, 0).versionName} · diagnostic report")
             appendLine("Android=${Build.VERSION.RELEASE}; API=${Build.VERSION.SDK_INT}")
@@ -43,6 +65,10 @@ object DiagnosticReport {
             appendLine("Saved credentials, network addresses and protocol payloads are omitted.")
             appendLine("--- Hotspot and network interfaces at report time (read-only) ---")
             HotspotNetworkProbe.report(context).forEach { appendLine(it) }
+            appendLine("--- BYD navigation (HUD / instrument cluster) ---")
+            navigation.forEach { appendLine(it) }
+            if (navigationLines.isEmpty()) appendLine("No BYD navigation output log lines.")
+            else navigationLines.forEach { appendLine(it) }
             appendLine("--- Recent app logs (up to 6000 lines) ---")
             if (lines.isEmpty()) appendLine("No recent app logs available. Reproduce the issue and save a new report.")
             lines.forEach { appendLine(it) }

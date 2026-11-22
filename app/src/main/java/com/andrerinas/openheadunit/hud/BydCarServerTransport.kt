@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
 import android.os.Parcelable
-import android.util.Log
 import com.byd.spi.ipc.cursor.BinderCursor
 import dalvik.system.PathClassLoader
 import java.lang.reflect.Array as ReflectArray
@@ -65,7 +64,7 @@ internal object BydCarServerTransport {
         val code = result.javaClass.getField("code").getInt(result)
         if (code != 0) {
             val description = result.javaClass.getField("description").get(result)
-            Log.w("BYD-CarServer-Navi", "Property write rejected key=$key code=$code: $description")
+            HudLog.w("BYD-CarServer-Navi", "Property write rejected key=$key code=$code: $description")
         }
         return code
     }

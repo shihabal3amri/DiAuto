@@ -1,7 +1,6 @@
 package com.andrerinas.openheadunit.hud
 
 import android.content.Context
-import android.util.Log
 
 /**
  * Test-only property-service experiment. This firmware rejects the app's writes with
@@ -27,13 +26,13 @@ internal class BydCarServerNavigationOutput(private val context: Context) {
             require(BydCarServerTransport.write(context, DISTANCE_KEY, distance) == 0) { "distance write rejected" }
             require(BydCarServerTransport.write(context, TURN_ROAD_AHEAD_KEY, turn) == 0) { "turn write rejected" }
             if (!logged) {
-                Log.i(TAG, "Car-server navigation writes completed turn=$turn distance=$distance (rendering unverified)")
+                HudLog.i(TAG, "Car-server navigation writes completed turn=$turn distance=$distance (rendering unverified)")
                 logged = true
             }
         } catch (error: Exception) {
             clear()
             disabled = true
-            Log.w(TAG, "Car-server navigation disabled: ${error.javaClass.simpleName}: ${error.message}")
+            HudLog.w(TAG, "Car-server navigation disabled: ${error.javaClass.simpleName}: ${error.message}")
         }
     }
 
@@ -45,10 +44,10 @@ internal class BydCarServerNavigationOutput(private val context: Context) {
             require(BydCarServerTransport.write(context, STATE_USAGE_KEY, 1) == 0) { "clear state rejected" }
             require(BydCarServerTransport.write(context, DISTANCE_KEY, 0) == 0) { "clear distance rejected" }
             require(BydCarServerTransport.write(context, TURN_ROAD_AHEAD_KEY, 11) == 0) { "clear turn rejected" }
-            Log.i(TAG, "Car-server navigation clear writes completed")
+            HudLog.i(TAG, "Car-server navigation clear writes completed")
         } catch (error: Exception) {
             disabled = true
-            Log.w(TAG, "Car-server navigation cleanup failed: ${error.message}")
+            HudLog.w(TAG, "Car-server navigation cleanup failed: ${error.message}")
         }
     }
 

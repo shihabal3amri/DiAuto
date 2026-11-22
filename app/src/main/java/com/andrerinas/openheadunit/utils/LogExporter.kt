@@ -183,11 +183,27 @@ object LogExporter {
                 process.inputStream.copyTo(out)
             }
             process.waitFor()
+            appendJournal(logFile)
             logFile
         } catch (e: Exception) {
             AppLog.e("Failed to save logs", e)
             null
         }
+    }
+
+    /**
+     * BYD firmware keeps framework lines in logcat but drops third-party app tags, so a logcat dump
+     * from the car holds none of the app's own messages. The diagnostic journal records them
+     * independently of logcat; append it so an exported log is useful on those units too.
+     */
+    private fun appendJournal(logFile: File) {
+        runCatching {
+            val history = DiagnosticJournal.snapshot()
+            FileOutputStream(logFile, true).bufferedWriter(Charsets.UTF_8).use { out ->
+                out.write("\n--- DiAuto app journal (${history.size} lines, timestamps in epoch ms) ---\n")
+                history.forEach { out.write(it); out.write("\n") }
+            }
+        }.onFailure { AppLog.w("LogExporter: could not append the app journal: ${it.message}") }
     }
 
     fun shareLogFile(context: Context, file: File) {

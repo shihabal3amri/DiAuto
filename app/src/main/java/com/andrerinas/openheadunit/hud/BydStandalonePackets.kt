@@ -6,7 +6,9 @@ object BydStandalonePackets {
     fun start(): String = "43,E0,00,3A,01,02"
     fun clear(): String = "43,E0,00,3A,01,01"
     fun guidance(icon: Int, exit: Int, distanceMeters: Int, road: String? = null): String? {
-        val turn = BydFactoryTurnCode.map(icon, exit) ?: return null
+        // NO_ARROW sends turn code 0 - the factory table's own value for "no icon" - so the HUD keeps
+        // the distance and street without drawing a direction we do not know.
+        val turn = if (icon == BydNavigationMapper.NO_ARROW) 0 else BydFactoryTurnCode.map(icon, exit) ?: return null
         if (distanceMeters !in 0..MAX_DISTANCE_METERS) return null
         return (record(0x43F01018, distanceMeters) + record(0x43F01010, turn) +
             record(0x43F01030, turn)).toHex() + (road?.let { "," + streetName(it) } ?: "")

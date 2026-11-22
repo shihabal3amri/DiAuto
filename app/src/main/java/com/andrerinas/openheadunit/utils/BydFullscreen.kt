@@ -138,12 +138,35 @@ class BydFullscreen {
         }
     }
 
+    val isExpanded: Boolean get() = layoutListener != null
+
     fun release() {
         val observer = ownerContainer?.viewTreeObserver
         layoutListener?.let { if (observer?.isAlive == true) observer.removeOnGlobalLayoutListener(it) }
         ownerContainer = null
         layoutListener = null
         removeStrip()
+    }
+
+    /**
+     * Gives the strip back to the system: stop enforcing and let the container fit the
+     * caption-clamped area again.
+     *
+     * Used when the user keeps the BYD bottom bar visible. Expanding then draws Android Auto's own
+     * bottom controls underneath that bar, where they can be neither seen nor tapped. Left at the
+     * clamped height, the surface comes up shorter than negotiated and the activity's surface
+     * mismatch path sends Android Auto margins, so it lays its UI out inside the visible area.
+     */
+    fun collapse() {
+        val container = ownerContainer
+        release()
+        container?.layoutParams?.let { lp ->
+            if (lp.height != ViewGroup.LayoutParams.MATCH_PARENT) {
+                lp.height = ViewGroup.LayoutParams.MATCH_PARENT
+                container.layoutParams = lp
+                AppLog.i("BydFullscreen: collapsed - projection fits the visible area above the bottom bar")
+            }
+        }
     }
 
     private fun removeStrip() {

@@ -18,8 +18,12 @@ internal object BydNavigationMapper {
         val modern = step?.takeIf { it.hasManeuver() && it.maneuver.hasType() }?.maneuver
         val type = modern?.type?.number ?: legacy?.takeIf { it.hasNextTurn() }?.let {
             legacyType(it.nextTurn.number, if (it.hasSide()) it.side.number else 3, it.turnNumber, leftHandTraffic)
-        } ?: return null
-        val codes = codes(type, modern?.roundaboutExitNumber ?: legacy?.turnNumber ?: 0) ?: return null
+        }
+        // A maneuver the phone sent but we cannot draw (Waze's UNKNOWN, a turn with no side...) still
+        // shows its distance and street, with no arrow, rather than blanking the HUD - which read as
+        // a lost connection. Only a snapshot with no maneuver at all clears it.
+        if (type == null && modern == null && legacy?.hasNextTurn() != true) return null
+        val codes = type?.let { codes(it, modern?.roundaboutExitNumber ?: legacy?.turnNumber ?: 0) } ?: NO_ARROW_CODES
         val position = snapshot.currentPosition?.payload
         val distance = position?.takeIf { it.hasStepDistance() && it.stepDistance.hasDistance() && it.stepDistance.distance.hasMeters() }
             ?.stepDistance?.distance?.meters
@@ -36,6 +40,10 @@ internal object BydNavigationMapper {
     }
 
     data class Codes(val cluster: Int, val gaode: Int, val arrow: Int, val exit: Int = 0)
+
+    /** Cluster icon meaning "no arrow": the factory table maps it to turn code 0. */
+    const val NO_ARROW = 0
+    private val NO_ARROW_CODES = Codes(NO_ARROW, NO_ARROW, NO_ARROW)
 
     fun codes(type: Int, exit: Int = 0): Codes? = when (type) {
         7, 15, 23 -> Codes(2, 1, 1)

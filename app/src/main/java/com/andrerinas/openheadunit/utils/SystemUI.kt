@@ -182,12 +182,35 @@ object SystemUI {
             // content shrinks while the IME is up (0 when the keyboard is hidden).
             typeMask = typeMask or WindowInsetsCompat.Type.ime()
 
-            val bars = if (typeMask != 0) {
+            val bars = if (mode == Settings.FullscreenMode.STATUS_ONLY) {
+                // The navigation bar is meant to stay up in this mode, so reserve its space whether
+                // or not it is momentarily visible. DiLink 5.0 reports it flickering between 90 and
+                // 0 px, and following that resized the projection back and forth and raced the
+                // margins handed to the phone. getInsetsIgnoringVisibility cannot take the IME.
+                val stableMask = typeMask and WindowInsetsCompat.Type.ime().inv()
+                androidx.core.graphics.Insets.max(
+                    insetsCompat.getInsetsIgnoringVisibility(stableMask),
+                    insetsCompat.getInsets(WindowInsetsCompat.Type.ime())
+                )
+            } else if (typeMask != 0) {
                 insetsCompat.getInsets(typeMask)
             } else {
                 androidx.core.graphics.Insets.NONE
             }
 
+            // BYD's 3:7 split screen (the steering-wheel phone button opens the dialer as a side
+            // panel over the projection) adjusts the window through a patched ViewRootImpl without
+            // any size change the app can see. Record every inset type and the visible frame so a
+            // report shows which one it uses.
+            val visibleFrame = android.graphics.Rect().also { window.decorView.getWindowVisibleDisplayFrame(it) }
+            val location = IntArray(2).also { v.getLocationOnScreen(it) }
+            AppLog.i("[UI_DEBUG] SystemUI insets mode=$mode " +
+                "systemBars=${insetsCompat.getInsets(WindowInsetsCompat.Type.systemBars())} " +
+                "cutout=${insetsCompat.getInsets(WindowInsetsCompat.Type.displayCutout())} " +
+                "tappable=${insetsCompat.getInsets(WindowInsetsCompat.Type.tappableElement())} " +
+                "gestures=${insetsCompat.getInsets(WindowInsetsCompat.Type.systemGestures())} " +
+                "applied=$bars view=${v.width}x${v.height}@${location[0]},${location[1]} " +
+                "visibleFrame=${visibleFrame.toShortString()}")
             v.setPadding(bars.left + manualL, bars.top + manualT, bars.right + manualR, bars.bottom + manualB)
             HeadUnitScreenConfig.updateInsets(bars.left + manualL, bars.top + manualT, bars.right + manualR, bars.bottom + manualB)
 
