@@ -803,6 +803,9 @@ class AapService : Service(), UsbReceiver.Listener {
                 nativeAaHandshakeManager?.isHandoffSettling() == true
         }
         wifiDirectManager?.setNativeSessionConnectedProvider { commManager.isConnected }
+        wifiDirectManager?.setNativeCredentialsDeliveredProvider {
+            nativeAaHandshakeManager?.lastCredentialsDeliveredAtMs() ?: 0L
+        }
         wifiDirectManager?.setNativeGroupInvalidatedListener { nativeAaHandshakeManager?.invalidateCredentials() }
         softApCredentialsProvider?.setCredentialsListener { ssid, psk, ip, bssid ->
             onNativeCredentials(ssid, psk, ip, bssid)

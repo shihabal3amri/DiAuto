@@ -191,10 +191,37 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
             // A handshake is exchanging credentials right now, or the phone is still joining on
             // credentials we just handed it; recreating here would hand out a new SSID mid-flight.
             AppLog.i("WifiDirectManager: Native AA join watchdog fired but a Bluetooth handshake or handoff is in flight — deferring recovery.")
-            armNativeJoinWatchdog()
+            // The same watch goes on: a phone given credentials before this point still counts.
+            keepWatchingNativeJoin()
+            return@Runnable
+        }
+        val deliveredAt = nativeCredentialsDeliveredAt?.invoke()
+        if (deliveredAt != null && !NativeJoinWatchdogPolicy.groupWasOfferedToAPhone(deliveredAt, nativeJoinWatchStartedAt)) {
+            // Nobody joined because nobody was told about this group, so there is nothing wrong
+            // with it to repair. Recreating it here changed the network name and password every
+            // minute for a phone that had not arrived yet, and after two rounds dropped the group
+            // to 2.4 GHz for the rest of the run (#59).
+            if (!nativeJoinWaitLogged) {
+                nativeJoinWaitLogged = true
+                AppLog.i("WifiDirectManager: Native AA join watchdog fired, but no phone has been given this group's credentials yet — keeping the group and waiting.")
+            }
+            keepWatchingNativeJoin()
             return@Runnable
         }
         recoverNativeGroup("no phone joined within ${NATIVE_JOIN_TIMEOUT_MS / 1000}s")
+    }
+    // elapsedRealtime() when the current wait for a join began; see NativeJoinWatchdogPolicy.
+    private var nativeJoinWatchStartedAt = 0L
+    private var nativeJoinWaitLogged = false
+    // Set by AapService: elapsedRealtime() of the last credentials handed to a phone, 0 if none.
+    private var nativeCredentialsDeliveredAt: (() -> Long)? = null
+
+    /** Checks again in a while without starting a new wait, so the start time stays as it is. */
+    private fun keepWatchingNativeJoin() {
+        handler.removeCallbacks(nativeJoinWatchdog)
+        if (isNativeAaMode() && isGroupOwner && !isClientConnected && isNativeSessionConnected?.invoke() != true) {
+            handler.postDelayed(nativeJoinWatchdog, NATIVE_JOIN_TIMEOUT_MS)
+        }
     }
 
     private var onCredentialsReady: ((ssid: String, psk: String, ip: String, bssid: String) -> Unit)? = null
@@ -219,6 +246,10 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
 
     fun setNativeSessionConnectedProvider(provider: () -> Boolean) {
         this.isNativeSessionConnected = provider
+    }
+
+    fun setNativeCredentialsDeliveredProvider(provider: () -> Long) {
+        this.nativeCredentialsDeliveredAt = provider
     }
 
     fun setNativeGroupInvalidatedListener(callback: () -> Unit) {
@@ -1568,6 +1599,9 @@ class WifiDirectManager(private val context: Context) : WifiP2pManager.Connectio
         if (groupSsid != null && groupSsid == nativeJoinWatchdogSsid) return
         nativeJoinWatchdogSsid = groupSsid
         handler.removeCallbacks(nativeJoinWatchdog)
+        // A new wait: a new group, a client that left, or WiFi coming back.
+        nativeJoinWatchStartedAt = android.os.SystemClock.elapsedRealtime()
+        nativeJoinWaitLogged = false
         if (isNativeAaMode() && isGroupOwner && !isClientConnected && isNativeSessionConnected?.invoke() != true) {
             handler.postDelayed(nativeJoinWatchdog, NATIVE_JOIN_TIMEOUT_MS)
         }
