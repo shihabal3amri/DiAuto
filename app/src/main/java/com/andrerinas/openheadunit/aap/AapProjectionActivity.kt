@@ -836,6 +836,16 @@ class AapProjectionActivity : SurfaceActivity(), IProjectionView.Callbacks, Vide
                             // Lock the resolution so that orientation changes don't cause re-negotiation
                             HeadUnitScreenConfig.lockResolution()
 
+                            // The session that just ended closed the dashboard map, and onStart() is
+                            // the only other place that opens it. A reconnect under this screen never
+                            // passes through onStart(), so the phone streamed the dashboard picture to
+                            // a decoder with no surface, and the map and turn card stayed away until
+                            // the driver left DiAuto and came back (#58). No-op while it is showing.
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
+                                lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.STARTED)) {
+                                com.andrerinas.openheadunit.hud.ClusterMapScreen.show(this@AapProjectionActivity)
+                            }
+
                             // Handshake done. If the surface is already ready (e.g. reconnect
                             // while the activity is in the foreground), start reading immediately.
                             // If not, onSurfaceChanged() will call startReading() when the surface
