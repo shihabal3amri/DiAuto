@@ -548,6 +548,9 @@ class CommManager(
         // _transport, so a user's exit from the phone (VIDEO_FOCUS_NATIVE) was always published
         // as isUserExit=false and the service reconnected 1.5 s later (#35).
         _connectionState.value = ConnectionState.Disconnected(isClean, isUserExit = wasUserExit)
+        // The lock stays, as it always has on this path, but the session's hold on its resolution
+        // ends with it: the next one is announced for the window as it is by then.
+        HeadUnitScreenConfig.endSession()
         // Transport already quit on its own — no ByeByeRequest needed (connection is dead).
         _disconnectJob = _scope.launch { doDisconnect(sendByeBye = false) }
         if (settings.killOnDisconnect) {
