@@ -11,6 +11,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import com.andrerinas.openheadunit.aap.AapService
 import com.andrerinas.openheadunit.aap.BluetoothWakePolicy
+import com.andrerinas.openheadunit.aap.HandsFreeWakeEscalationPolicy
+import com.andrerinas.openheadunit.aap.NativeAaWakeDamagePolicy
 import com.andrerinas.openheadunit.aap.NativeCredentialsPolicy
 import com.andrerinas.openheadunit.aap.NativeHandoffPolicy
 import com.andrerinas.openheadunit.aap.NativeTransport
@@ -246,6 +248,21 @@ class NativeAaHandshakeManager(
     // same service record. See NativeHandoffPolicy.shouldWarnPhoneNeverCallsBack.
     @Volatile private var pokesSinceLastAccept = 0
     @Volatile private var everAcceptedAaConnection = false
+    // --- Waking a phone that already holds this unit's hands-free link. The rules are in
+    // HandsFreeWakeEscalationPolicy and NativeAaWakeDamagePolicy; this is their bookkeeping. ---
+    // When each phone's stand-down began. Outlives an escalated wake on purpose: it dates the
+    // stand-down, so a second wake is spaced by the cooldown rather than by a fresh wait.
+    private val handsFreeStandDownSince = java.util.concurrent.ConcurrentHashMap<String, Long>()
+    @Volatile private var escalatedWakes = 0
+    @Volatile private var lastEscalatedWakeAt = 0L
+    // Until when each phone is left unpoked after an escalated wake, so the link it took can return.
+    private val escalationProbeUntil = java.util.concurrent.ConcurrentHashMap<String, Long>()
+    private var wakeProbeJob: Job? = null
+    @Volatile private var escalationSpentLogged = false
+    @Volatile private var standDownReachedThisArming = false
+    @Volatile private var acceptedAaConnectionThisArming = false
+    // Counts Android Auto connections accepted, so a caller can tell "the phone arrived since".
+    @Volatile private var aaAcceptCount = 0
     // [BUG_FIX] Handshakes that timed out waiting for Type 2, back to back. Where close() does not
     // interrupt a pending read each one strands a Dispatchers.IO thread forever, so this bounds
     // how many we are willing to strand. See NativeHandoffPolicy.shouldServeHandshake.
@@ -783,10 +800,20 @@ class NativeAaHandshakeManager(
      * at the default level, then debug: the retry loop asks again every ~30 s, and a line per
      * half-minute for a whole session buries everything around it.
      */
-    private fun noteHandsFreePokeSkip(device: BluetoothDevice) {
-        val message = "NativeAA: Not poking ${device.name ?: "unnamed"} (${device.address}) — this " +
-                "head unit already holds a Bluetooth hands-free link, which a poke would take over " +
-                "and leave disconnected. That link is itself the connection a poke exists to create."
+    private fun noteHandsFreePokeSkip(device: BluetoothDevice, reason: BluetoothWakePolicy.WakeReason) {
+        val why = when (reason) {
+            BluetoothWakePolicy.WakeReason.TARGET_ABSENT ->
+                "another device holds this head unit's Bluetooth hands-free link and this phone is " +
+                    "not connected to the unit. It is woken when Connect is pressed for it."
+            BluetoothWakePolicy.WakeReason.TARGET_UNREADABLE ->
+                "this head unit holds a Bluetooth hands-free link and could not read whether it is " +
+                    "this phone's, so a poke might take over somebody else's call."
+            else ->
+                "this head unit already holds a Bluetooth hands-free link, which a poke would take " +
+                    "over and leave disconnected. That link is itself the connection a poke exists " +
+                    "to create; waiting for the phone to start Android Auto itself."
+        }
+        val message = "NativeAA: Not poking ${device.name ?: "unnamed"} (${device.address}) — $why"
         if (!handsFreeSkipLogged) {
             handsFreeSkipLogged = true
             AppLog.i(message)
@@ -795,19 +822,142 @@ class NativeAaHandshakeManager(
         }
     }
 
+    /** The audio mode is the read of a call that needs no permission; null when it cannot be read. */
+    private fun currentAudioMode(): Int? = try {
+        (context.getSystemService(Context.AUDIO_SERVICE) as android.media.AudioManager).mode
+    } catch (e: Exception) {
+        null
+    }
+
+    /**
+     * Whether to wake a phone the hands-free guard stood down, and say so when it happens.
+     *
+     * Android Auto starts on a Bluetooth connection event, not on a connected state, so a phone
+     * that was on this unit's Bluetooth before the listener existed, or that stays on it past the
+     * end of a session, is never given one. The poke raises that event, at the cost of the phone's
+     * hands-free slot.
+     */
+    private fun escalateHandsFreeWake(
+        device: BluetoothDevice,
+        reason: BluetoothWakePolicy.WakeReason,
+        standDownSince: Long,
+        now: Long,
+        userAsked: Boolean,
+    ): Boolean {
+        val verdict = NativeAaWakeDamagePolicy.Verdict.of(settings.nativeAaWakeDamageVerdict)
+        val escalate = HandsFreeWakeEscalationPolicy.shouldEscalate(
+            unitAllowsWake = NativeAaWakeDamagePolicy.allowsEscalation(
+                verdict, settings.nativeAaWakeArmingsWithoutSession
+            ),
+            reason = reason,
+            onAutoStartList = HandsFreeWakeEscalationPolicy.isListed(
+                device.address, settings.autoStartBluetoothDeviceMacs
+            ),
+            callActive = HandsFreeWakeEscalationPolicy.callMayBeActive(currentAudioMode()),
+            sessionInProgress = commManager.isConnected || isHandshakeInFlight() || isHandoffSettling(),
+            standDownSinceMs = standDownSince,
+            lastEscalationMs = lastEscalatedWakeAt,
+            escalationsUsed = escalatedWakes,
+            now = now,
+            userAsked = userAsked,
+        )
+        if (!escalate) return false
+        escalatedWakes++
+        lastEscalatedWakeAt = now
+        AppLog.i(
+            "NativeAA: waking ${device.name ?: "unnamed"} (${device.address}) despite the hands-free " +
+                "link — it has not started Android Auto in ${(now - standDownSince) / 1000}s" +
+                (if (userAsked) " and Connect was pressed for it" else "") +
+                ", and a link that never changes raises no event for the phone to notice. Wake " +
+                "$escalatedWakes of ${HandsFreeWakeEscalationPolicy.MAX_ESCALATED_WAKES}; afterwards " +
+                "the phone is left alone for ${NativeAaWakeDamagePolicy.PROBE_WINDOW_MS / 1000}s so " +
+                "the link can come back."
+        )
+        return true
+    }
+
+    /**
+     * Holds the poke loop off [device] while its hands-free link has a chance to return, and, while
+     * this unit is still unmeasured, records whether it did. The hold is the repair; the reading is
+     * what lets a unit that never recovers stop waking by itself. Runs when the escalated poke has
+     * let go of the phone, so the window is the link's own and not shared with the poke's hold.
+     */
+    private fun armWakeProbe(device: BluetoothDevice, acceptedBefore: Int) {
+        val window = NativeAaWakeDamagePolicy.PROBE_WINDOW_MS
+        escalationProbeUntil[device.address] = SystemClock.elapsedRealtime() + window
+        val verdict = NativeAaWakeDamagePolicy.Verdict.of(settings.nativeAaWakeDamageVerdict)
+        if (!NativeAaWakeDamagePolicy.isProbe(verdict, settings.nativeAaWakeArmingsWithoutSession)) return
+        wakeProbeJob?.cancel()
+        wakeProbeJob = scope.launch(Dispatchers.IO + CoroutineName("NativeAa-WakeProbe")) {
+            delay(window)
+            // The link read answers for the adapter. A link that is up while this phone holds no
+            // connection to the unit is another device's, and not this one's come back.
+            val returned = when (BluetoothHelper.handsFreeLinkState(context)) {
+                null -> null
+                false -> false
+                true -> BluetoothHelper.deviceConnectionState(device) != false
+            }
+            val measured = NativeAaWakeDamagePolicy.verdictFrom(
+                linkReturned = returned,
+                wakeStartedAaSession = aaAcceptCount != acceptedBefore,
+            )
+            if (!NativeAaWakeDamagePolicy.recordable(measured)) {
+                AppLog.i("NativeAA: this unit would not say whether its hands-free link came back " +
+                    "after the wake, so whether a wake costs it the link stays unmeasured.")
+                return@launch
+            }
+            settings.nativeAaWakeDamageVerdict = measured.ordinal
+            settings.nativeAaWakeArmingsWithoutSession = 0
+            if (measured == NativeAaWakeDamagePolicy.Verdict.SAFE) {
+                AppLog.i("NativeAA: the wake either brought the phone in or the hands-free link " +
+                    "came back within ${window / 1000}s, so waking over it costs this unit a blip " +
+                    "and will keep being used.")
+            } else {
+                AppLog.w("NativeAA: the hands-free link is still down ${window / 1000}s after the " +
+                    "wake and the phone did not start Android Auto. On this unit a wake costs the " +
+                    "link, so it will not be used again until " +
+                    "${NativeAaWakeDamagePolicy.REPROBE_AFTER_ARMINGS} starts have gone by without a " +
+                    "session — the phone has to raise the Bluetooth event itself.")
+            }
+        }
+    }
+
     /**
      * Tries each of [BluetoothWakePolicy.POKE_TARGETS] in turn, holding whichever connects for
-     * [holdMs]. Returns true if any of them did, false without opening anything if either guard
-     * below stands the poke down. Both poke entry points come through here, so one check covers
-     * the retry loop and the manual poke alike.
+     * [holdMs]. Both poke entry points come through here, so one check covers the retry loop and
+     * the manual poke alike. The outcome separates a stand-down, which opens nothing, from a poke
+     * that nothing answered. [userAsked] is the Connect button: the user picked this phone.
      */
-    private suspend fun pokeDevice(device: BluetoothDevice, holdMs: Long): Boolean {
+    private suspend fun pokeDevice(
+        device: BluetoothDevice,
+        holdMs: Long,
+        userAsked: Boolean = false,
+    ): BluetoothWakePolicy.WakeOutcome {
         // A poke that connects takes the phone's single hands-free slot, and this unit's own client
-        // is dropped to make room. See BluetoothWakePolicy for the measurement.
-        val handsFreeLink = BluetoothWakePolicy.HandsFreeLink.of(BluetoothHelper.handsFreeLinkState(context))
-        if (!BluetoothWakePolicy.shouldPoke(handsFreeLink)) {
-            noteHandsFreePokeSkip(device)
-            return false
+        // is dropped to make room. The link read is adapter-wide, so the policy is also told what
+        // the target itself is doing, and says whose link it takes it to be.
+        val decision = BluetoothWakePolicy.wakeDecision(
+            handsFreeLink = BluetoothWakePolicy.HandsFreeLink.of(BluetoothHelper.handsFreeLinkState(context)),
+            targetLink = BluetoothWakePolicy.TargetLink.of(BluetoothHelper.deviceConnectionState(device)),
+            userAsked = userAsked,
+        )
+        var escalated = false
+        if (!decision.poke) {
+            val now = SystemClock.elapsedRealtime()
+            val standDownSince = handsFreeStandDownSince.getOrPut(device.address) { now }
+            standDownReachedThisArming = true
+            if (!escalateHandsFreeWake(device, decision.reason, standDownSince, now, userAsked)) {
+                noteHandsFreePokeSkip(device, decision.reason)
+                return BluetoothWakePolicy.WakeOutcome.STOOD_DOWN
+            }
+            escalated = true
+        } else {
+            handsFreeStandDownSince.remove(device.address)
+            if (decision.reason == BluetoothWakePolicy.WakeReason.TARGET_ABSENT) {
+                AppLog.i("NativeAA: poking ${device.name ?: "unnamed"} (${device.address}) with a " +
+                    "hands-free link up: the phone holds no connection to this unit, so the link " +
+                    "is another device's, and Connect was pressed for this one.")
+            }
         }
         handsFreeSkipLogged = false
 
@@ -817,10 +967,12 @@ class NativeAaHandshakeManager(
             AppLog.w("NativeAA: Not poking ${device.name ?: "unnamed"} (${device.address}) — it is not " +
                     "currently paired with this head unit, and connecting to an unpaired device would " +
                     "ask the user to pair rather than wake anything.")
-            return false
+            return BluetoothWakePolicy.WakeOutcome.NOT_PAIRED
         }
 
         pokeAttemptInFlight = true
+        val acceptedBefore = aaAcceptCount
+        var slotTaken = false
         try {
             for (uuid in BluetoothWakePolicy.POKE_TARGETS) {
                 val profile = BluetoothWakePolicy.profileName(uuid)
@@ -835,8 +987,9 @@ class NativeAaHandshakeManager(
                     // Counted before the hold, so a poke that is cancelled mid-hold still counts:
                     // the phone answered, which is the whole point of the count.
                     pokesSinceLastAccept++
+                    slotTaken = true
                     delay(holdMs)
-                    return true
+                    return BluetoothWakePolicy.WakeOutcome.ANSWERED
                 } catch (e: CancellationException) {
                     // Rethrow instead of falling through to the next UUID: a cancelled poke (e.g.
                     // handleHandshake()'s pokeJob?.cancel() once a real handshake lands) must stop
@@ -851,9 +1004,14 @@ class NativeAaHandshakeManager(
                     try { socket?.close() } catch (e: Exception) {}
                 }
             }
-            return false
+            return BluetoothWakePolicy.WakeOutcome.NO_ANSWER
         } finally {
             pokeAttemptInFlight = false
+            // Here and not at the decision: also reached when a handshake cancels the hold, and the
+            // phone's slot is only free again once the socket above is closed. Only for a wake that
+            // connected: one that reached nothing took nothing, so there is nothing to give back
+            // and a link still up afterwards would be read as "it came back".
+            if (escalated && slotTaken) armWakeProbe(device, acceptedBefore)
         }
     }
 
@@ -961,6 +1119,29 @@ class NativeAaHandshakeManager(
                         }
                     }
 
+                    val probeLeftMs = (escalationProbeUntil[device.address] ?: 0L) - SystemClock.elapsedRealtime()
+                    if (probeLeftMs > 0) {
+                        AppLog.i("NativeAA: leaving ${device.name ?: "unnamed"} (${device.address}) " +
+                            "unpoked for another ${probeLeftMs / 1000}s so the hands-free link this " +
+                            "unit took from it has a chance to come back.")
+                        continue
+                    }
+                    escalationProbeUntil.remove(device.address)
+
+                    // An escalated wake took the phone's hands-free slot and bought nothing. With
+                    // the link gone the guard no longer refuses, so the ordinary loop would re-take
+                    // the slot on every pass and the link would never come back.
+                    if (HandsFreeWakeEscalationPolicy.escalationSpent(escalatedWakes, pokesSinceLastAccept)) {
+                        if (!escalationSpentLogged) {
+                            escalationSpentLogged = true
+                            AppLog.i("NativeAA: leaving the paired phones alone for now: this unit " +
+                                "woke one over its hands-free link and $pokesSinceLastAccept pokes " +
+                                "have gone unanswered since, so the link is given back rather than " +
+                                "taken again. They are poked again on the next start or Connect.")
+                        }
+                        continue
+                    }
+
                     AppLog.i("NativeAA: Attempting active poke to device: ${device.name} (${device.address})...")
                     pokeDevice(device, holdMs = 15000)
                 }
@@ -1027,12 +1208,86 @@ class NativeAaHandshakeManager(
                 }
 
                 AppLog.i("NativeAA: Attempting manual poke to ${device.name}...")
-                pokeDevice(device, holdMs = 20000)
-                AppLog.i("NativeAA: Manual poke to ${device.name} finished.")
+                val acceptedBefore = aaAcceptCount
+                fun phoneArrived() = aaAcceptCount != acceptedBefore || isHandshakeInFlight() ||
+                    isHandoffSettling() || commManager.isConnected
+                // A wake that has just taken this phone's hands-free slot is still owed its quiet
+                // window; with the link gone the guard would not refuse, and Connect would take the
+                // slot straight back.
+                val probeLeftMs = (escalationProbeUntil[device.address] ?: 0L) - SystemClock.elapsedRealtime()
+                if (probeLeftMs > 0) {
+                    AppLog.i("NativeAA: ${device.name ?: "the phone"} was woken over its hands-free link " +
+                        "a moment ago; waiting ${probeLeftMs / 1000}s before the manual poke so that " +
+                        "link has a chance to come back.")
+                    var waitedMs = 0L
+                    while (waitedMs < probeLeftMs && isRunning && isActive && !phoneArrived()) {
+                        delay(500)
+                        waitedMs += 500
+                    }
+                    if (!isRunning || !isActive || phoneArrived()) return@launch
+                }
+                var outcome = pokeDevice(device, holdMs = 20000, userAsked = true)
+                val stoodDown = outcome == BluetoothWakePolicy.WakeOutcome.STOOD_DOWN
+                if (stoodDown) {
+                    // The guard stood the wake down. Give the phone the time it takes to dial by
+                    // itself when its Bluetooth had only just connected; the same time is what
+                    // turns a stand-down into grounds for a wake the user asked for.
+                    var waitedMs = 0L
+                    while (waitedMs < HandsFreeWakeEscalationPolicy.ESCALATE_AFTER_CONNECT_MS &&
+                        isRunning && isActive && !phoneArrived()) {
+                        delay(500)
+                        waitedMs += 500
+                    }
+                    if (isRunning && isActive && !phoneArrived()) {
+                        outcome = pokeDevice(device, holdMs = 20000, userAsked = true)
+                    }
+                }
+                AppLog.i("NativeAA: Manual poke to ${device.name} finished ($outcome).")
+                if (stoodDown && isRunning && isActive && !phoneArrived()) tellUserWakeStoodDown(device)
             }
         } catch (e: Exception) {
             AppLog.e("NativeAA: Manual poke error", e)
         }
+    }
+
+    /**
+     * Connect was pressed, the hands-free guard was in the way and the phone has not arrived.
+     * Until now that ended in silence: the status pill timed out and nothing said why. The one
+     * thing that always works is the phone raising the Bluetooth event itself, so say that.
+     */
+    private suspend fun tellUserWakeStoodDown(device: BluetoothDevice) {
+        if (HandsFreeWakeEscalationPolicy.callMayBeActive(currentAudioMode())) {
+            AppLog.i("NativeAA: ${device.name ?: "the phone"} has not started Android Auto, and a call " +
+                "may be on its hands-free link, so nothing more is tried and nothing is suggested.")
+            return
+        }
+        AppLog.i("NativeAA: ${device.name ?: "the phone"} is on this unit's Bluetooth hands-free link " +
+            "and has not started Android Auto. Telling the user to switch the phone's Bluetooth off " +
+            "and on, which raises the connection event Android Auto starts from.")
+        withContext(Dispatchers.Main) {
+            com.andrerinas.openheadunit.utils.ToastUtils.showToast(
+                context, com.andrerinas.openheadunit.R.string.native_aa_wake_stood_down,
+                android.widget.Toast.LENGTH_LONG, true
+            )
+        }
+    }
+
+    /** Ends one arming's wake bookkeeping: counts it if it stood down and nothing came of it. */
+    private fun endWakeArming() {
+        if (standDownReachedThisArming && !acceptedAaConnectionThisArming) {
+            settings.nativeAaWakeArmingsWithoutSession = settings.nativeAaWakeArmingsWithoutSession + 1
+        }
+        acceptedAaConnectionThisArming = false
+        standDownReachedThisArming = false
+        handsFreeStandDownSince.clear()
+        escalationProbeUntil.clear()
+        escalatedWakes = 0
+        lastEscalatedWakeAt = 0L
+        escalationSpentLogged = false
+        // An unfinished measurement is dropped, never read as a failure: stop() runs on every mode
+        // change and user exit, and that would condemn a healthy unit.
+        wakeProbeJob?.cancel()
+        wakeProbeJob = null
     }
 
     /**
@@ -1084,6 +1339,11 @@ class NativeAaHandshakeManager(
         // primary and the secondary-radio loops are covered by one statement.
         everAcceptedAaConnection = true
         pokesSinceLastAccept = 0
+        // The phone opened the Android Auto channel: no stand-down is waiting on it any more.
+        aaAcceptCount++
+        acceptedAaConnectionThisArming = true
+        handsFreeStandDownSince.clear()
+        if (settings.nativeAaWakeArmingsWithoutSession != 0) settings.nativeAaWakeArmingsWithoutSession = 0
 
         // The wake poke is deliberately left running here. It used to be cancelled on entry, on
         // the reasoning that a real AA_UUID connection means the poke has done its job and is now
@@ -1675,6 +1935,7 @@ class NativeAaHandshakeManager(
         // Only the per-attempt count resets: everAcceptedAaConnection is deliberately kept, so a
         // unit that has connected before is not warned just because the manager was re-armed.
         pokesSinceLastAccept = 0
+        endWakeArming()
         // A mode change or a user exit is a fresh start, so the next start() serves handshakes
         // again rather than inheriting a backoff the user cannot see.
         resetHandshakeBackoff()

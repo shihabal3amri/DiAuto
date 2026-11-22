@@ -613,6 +613,7 @@
     <string name="failed_start_android_auto">Failed to start Android Auto</string>
     <string name="failed_self_mode_android10">Self-mode is likely blocked by Google on Android 10 (AA 16.4+).</string>
     <string name="android_auto_starting">Android Auto is starting…</string>
+    <string name="native_aa_wake_stood_down">This phone is already on the car\'s Bluetooth, so Android Auto has not started. Turn Bluetooth off and on again on the phone.</string>
     <string name="connection_interrupted">Connection lost</string>
     <string name="connection_interrupted_detail">Retrying…</string>
     <string name="renderer_fallback_surface">The video kept freezing, so the display was switched to SurfaceView for this session. If it is stable, set View mode to SurfaceView in Settings.</string>

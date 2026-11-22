@@ -134,4 +134,80 @@ class BluetoothWakePolicyTest {
             )
         }
     }
+
+    // --- whose link it is: the per-device decision ---
+
+    private fun decide(
+        link: BluetoothWakePolicy.HandsFreeLink,
+        target: BluetoothWakePolicy.TargetLink,
+        userAsked: Boolean = false,
+    ) = BluetoothWakePolicy.wakeDecision(link, target, userAsked)
+
+    @Test
+    fun `with no hands-free link the target does not matter`() {
+        for (target in BluetoothWakePolicy.TargetLink.values()) {
+            val decision = decide(BluetoothWakePolicy.HandsFreeLink.ABSENT, target)
+            assertTrue(decision.poke)
+            assertEquals(BluetoothWakePolicy.WakeReason.NO_LINK, decision.reason)
+        }
+    }
+
+    /** Unchanged from [BluetoothWakePolicy.shouldPoke]: an adapter that will not say is poked. */
+    @Test
+    fun `an unreadable adapter is still poked whatever the target reads`() {
+        for (target in BluetoothWakePolicy.TargetLink.values()) {
+            assertTrue(decide(BluetoothWakePolicy.HandsFreeLink.UNREADABLE, target).poke)
+        }
+    }
+
+    /** The guard as it was: the phone on the link is the phone a poke would take the slot from. */
+    @Test
+    fun `a connected target is stood down, also when the user pressed Connect`() {
+        for (userAsked in listOf(false, true)) {
+            val decision = decide(
+                BluetoothWakePolicy.HandsFreeLink.CONNECTED, BluetoothWakePolicy.TargetLink.CONNECTED, userAsked
+            )
+            assertFalse(decision.poke)
+            assertEquals(BluetoothWakePolicy.WakeReason.TARGET_CONNECTED, decision.reason)
+        }
+    }
+
+    /**
+     * #59: four paired devices, another one on the hands-free link, and Connect pressed for a phone
+     * that was not connected at all. The adapter-wide read refused it.
+     */
+    @Test
+    fun `a phone that is not connected is woken over another device's link when Connect asks for it`() {
+        val decision = decide(
+            BluetoothWakePolicy.HandsFreeLink.CONNECTED, BluetoothWakePolicy.TargetLink.ABSENT, userAsked = true
+        )
+        assertTrue(decision.poke)
+        assertEquals(BluetoothWakePolicy.WakeReason.TARGET_ABSENT, decision.reason)
+    }
+
+    /** The loop runs every 15 s; paging an absent phone that often under somebody's call is not free. */
+    @Test
+    fun `the automatic loop does not page an absent phone while another device holds the link`() {
+        val decision = decide(BluetoothWakePolicy.HandsFreeLink.CONNECTED, BluetoothWakePolicy.TargetLink.ABSENT)
+        assertFalse(decision.poke)
+        assertEquals(BluetoothWakePolicy.WakeReason.TARGET_ABSENT, decision.reason)
+    }
+
+    @Test
+    fun `a target that cannot be read is never taken as absent`() {
+        for (userAsked in listOf(false, true)) {
+            val decision = decide(
+                BluetoothWakePolicy.HandsFreeLink.CONNECTED, BluetoothWakePolicy.TargetLink.UNREADABLE, userAsked
+            )
+            assertFalse(decision.poke)
+            assertEquals(BluetoothWakePolicy.WakeReason.TARGET_UNREADABLE, decision.reason)
+        }
+    }
+
+    @Test
+    fun `the target's own reading keeps its unknown case`() {
+        assertEquals(BluetoothWakePolicy.TargetLink.CONNECTED, BluetoothWakePolicy.TargetLink.of(true))
+        assertEquals(BluetoothWakePolicy.TargetLink.ABSENT, BluetoothWakePolicy.TargetLink.of(false))
+        assertEquals(BluetoothWakePolicy.TargetLink.UNREADABLE, BluetoothWakePolicy.TargetLink.of(null))
+    }
 }

@@ -79,6 +79,76 @@ object BluetoothWakePolicy {
      */
     fun shouldPoke(handsFreeLink: HandsFreeLink): Boolean = handsFreeLink != HandsFreeLink.CONNECTED
 
+    /** What the poke target's own connection to this unit reads as, from `BluetoothDevice.isConnected()`. */
+    enum class TargetLink {
+        CONNECTED,
+        ABSENT,
+
+        /** The hidden method is unreachable on this ROM. Never taken as absence. */
+        UNREADABLE;
+
+        companion object {
+            fun of(connected: Boolean?): TargetLink = when (connected) {
+                true -> CONNECTED
+                false -> ABSENT
+                null -> UNREADABLE
+            }
+        }
+    }
+
+    /** Why a poke went out, or did not, with a hands-free link in the picture. */
+    enum class WakeReason {
+        /** No hands-free link is known to be up, so there is nothing a poke could displace. */
+        NO_LINK,
+
+        /** The target holds no connection to this unit at all, so the link is another device's. */
+        TARGET_ABSENT,
+
+        /** The target is connected while a link is up; taken as its link. */
+        TARGET_CONNECTED,
+
+        /** The target's state could not be read while a link is up. */
+        TARGET_UNREADABLE
+    }
+
+    data class WakeDecision(val poke: Boolean, val reason: WakeReason)
+
+    /**
+     * Whether the wake poke may run, and whose link a live hands-free link is taken to be.
+     *
+     * [shouldPoke] answers for the adapter, and the adapter cannot say whose link it holds. On a
+     * unit with several paired phones that stood every poke down while *another* phone was on the
+     * hands-free link, including the one the user had just picked with Connect (#59 has four paired
+     * devices). The target's own connection tells the two apart: a phone with no connection to this
+     * unit cannot be the one holding the link, so nothing of its is taken by waking it.
+     *
+     * Follows Open Headunit's `wakeDecision`, narrower in one place: a target that is absent is
+     * woken only when the user asked for that phone ([userAsked]). The automatic loop runs every
+     * 15 s, and paging an absent phone that often while somebody else's call or music is on the
+     * link is a cost nobody asked for.
+     */
+    fun wakeDecision(handsFreeLink: HandsFreeLink, targetLink: TargetLink, userAsked: Boolean): WakeDecision = when {
+        shouldPoke(handsFreeLink) -> WakeDecision(true, WakeReason.NO_LINK)
+        targetLink == TargetLink.ABSENT -> WakeDecision(userAsked, WakeReason.TARGET_ABSENT)
+        targetLink == TargetLink.CONNECTED -> WakeDecision(false, WakeReason.TARGET_CONNECTED)
+        else -> WakeDecision(false, WakeReason.TARGET_UNREADABLE)
+    }
+
+    /** What one wake attempt did, rather than only whether the phone answered. */
+    enum class WakeOutcome {
+        /** A socket to the phone opened. */
+        ANSWERED,
+
+        /** Tried, and nothing answered. */
+        NO_ANSWER,
+
+        /** Opened nothing because of a hands-free link: it cost the phone nothing. */
+        STOOD_DOWN,
+
+        /** Opened nothing because the phone is not paired with this unit. */
+        NOT_PAIRED
+    }
+
     /** What a stored Auto Start MAC's pairing state read as, when the poke went looking for it. */
     enum class BondReading {
         /** Paired. Safe to poke. */

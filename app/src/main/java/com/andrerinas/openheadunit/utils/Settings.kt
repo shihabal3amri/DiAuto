@@ -816,6 +816,16 @@ class Settings(private val context: Context) {
             prefs.edit().putStringSet("auto-start-bt-macs", value).apply()
         }
 
+    /** NativeAaWakeDamagePolicy.Verdict ordinal: what a wake over a hands-free link costs this unit. */
+    var nativeAaWakeDamageVerdict: Int
+        get() = prefs.getInt("native-aa-wake-damage-verdict", 0)
+        set(value) { prefs.edit().putInt("native-aa-wake-damage-verdict", value).apply() }
+
+    /** Armings that reached a stand-down and produced no session, since the last measurement. */
+    var nativeAaWakeArmingsWithoutSession: Int
+        get() = prefs.getInt("native-aa-wake-armings-without-session", 0)
+        set(value) { prefs.edit().putInt("native-aa-wake-armings-without-session", value).apply() }
+
     var autoStartBluetoothDeviceName: String
         get() = prefs.getString("auto-start-bt-name", "")!!
         set(value) { prefs.edit().putString("auto-start-bt-name", value).apply() }

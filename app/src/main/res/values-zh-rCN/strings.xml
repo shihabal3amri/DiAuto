@@ -313,6 +313,7 @@
     <string name="failed_start_android_auto">启动 Android Auto 失败</string>
     <string name="failed_self_mode_android10">Google 可能在 Android 10 (AA 16.4+) 上封锁了自我模式。请参阅 README。</string>
     <string name="android_auto_starting">Android Auto 启动中…</string>
+    <string name="native_aa_wake_stood_down">手机已连接车机蓝牙，因此 Android Auto 没有启动。请在手机上关闭蓝牙后重新打开。</string>
     <string name="connection_interrupted">连接中断</string>
     <string name="connection_interrupted_detail">正在重试…</string>
     <string name="wifi_disconnect_toast">Android Auto 已断线：若使用无线 AA，请在手机 WiFi 设置中停用「切换网络」或「网络加速」</string>
