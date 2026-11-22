@@ -23,7 +23,8 @@ class WarmRelaunchKeyframePolicyTest {
         msSinceLinkActivity: Long = 100,
         linkQuietThresholdMs: Long = ProjectionWatchdogPolicy.LINK_QUIET_MS,
         cycleAlreadySpent: Boolean = false,
-        msSinceLastRequest: Long = 60_000
+        msSinceLastRequest: Long = 60_000,
+        escalateAfterSurfaceMs: Long = WarmRelaunchKeyframePolicy.ESCALATE_AFTER_SURFACE_MS
     ) = WarmRelaunchKeyframePolicy.decide(
         sessionHasRendered = sessionHasRendered,
         renderedSinceSurfaceSet = renderedSinceSurfaceSet,
@@ -32,7 +33,8 @@ class WarmRelaunchKeyframePolicyTest {
         msSinceLinkActivity = msSinceLinkActivity,
         linkQuietThresholdMs = linkQuietThresholdMs,
         cycleAlreadySpent = cycleAlreadySpent,
-        msSinceLastRequest = msSinceLastRequest
+        msSinceLastRequest = msSinceLastRequest,
+        escalateAfterSurfaceMs = escalateAfterSurfaceMs
     )
 
     @Test
@@ -124,6 +126,30 @@ class WarmRelaunchKeyframePolicyTest {
         assertEquals(
             Action.CYCLE_FOCUS,
             warmRelaunch(msSinceSurfaceSet = WarmRelaunchKeyframePolicy.ESCALATE_AFTER_SURFACE_MS)
+        )
+    }
+
+    @Test
+    fun `a backend that does not release focus on teardown is cycled almost at once`() {
+        // TextureView and GLES never tell the phone the picture went away, and the phone never sent
+        // one unasked after such a return, so the healthy path's window is not waited out there.
+        val window = WarmRelaunchKeyframePolicy.escalateAfterSurfaceMs(teardownReleasesFocus = false)
+        assertEquals(WarmRelaunchKeyframePolicy.ESCALATE_AFTER_SURFACE_WITHOUT_RELEASE_MS, window)
+        assertEquals(Action.NONE, warmRelaunch(msSinceSurfaceSet = window - 1, escalateAfterSurfaceMs = window))
+        assertEquals(Action.CYCLE_FOCUS, warmRelaunch(msSinceSurfaceSet = window, escalateAfterSurfaceMs = window))
+    }
+
+    @Test
+    fun `the SurfaceView backend keeps the healthy path's window`() {
+        // Its teardown already released focus, so the phone is re-running sink setup and a picture
+        // is on its way; cycling early there would release focus across a stream about to render.
+        assertEquals(
+            WarmRelaunchKeyframePolicy.ESCALATE_AFTER_SURFACE_MS,
+            WarmRelaunchKeyframePolicy.escalateAfterSurfaceMs(teardownReleasesFocus = true)
+        )
+        assertTrue(
+            WarmRelaunchKeyframePolicy.ESCALATE_AFTER_SURFACE_WITHOUT_RELEASE_MS <
+                WarmRelaunchKeyframePolicy.ESCALATE_AFTER_SURFACE_MS
         )
     }
 

@@ -81,6 +81,28 @@ object WarmRelaunchKeyframePolicy {
      */
     const val HEALTHY_FIRST_FRAME_CEILING_MS = 404L
 
+    /**
+     * The window for a backend whose teardown does not release video focus: TextureView and GLES.
+     *
+     * [ESCALATE_AFTER_SURFACE_MS] waits out the healthy path's own worst case, and that healthy path
+     * is the SurfaceView one, where the teardown released focus and the phone re-runs sink setup by
+     * itself. On these two backends the phone is never told the picture went away, and it was never
+     * seen to send a picture unasked: `Media Start Request VIDEO` landed after 0 of 10 returns. So
+     * the wait there is spent on a picture that is not coming.
+     *
+     * Measured on a BYD DiLink 3.0 (Qualcomm, TextureView) across six returns: the cycle fired at
+     * 850-860 ms every time and the picture followed 0.8-1.6 s later, so the window was about half
+     * of what the driver saw as a black screen.
+     *
+     * Not zero: the relaunch churns surfaces for a moment (the GLES backend posts its teardown one
+     * main-looper turn later), and 100 ms lets that settle before anything is sent.
+     */
+    const val ESCALATE_AFTER_SURFACE_WITHOUT_RELEASE_MS = 100L
+
+    /** The escalation window for the current backend - see [ESCALATE_AFTER_SURFACE_WITHOUT_RELEASE_MS]. */
+    fun escalateAfterSurfaceMs(teardownReleasesFocus: Boolean): Long =
+        if (teardownReleasesFocus) ESCALATE_AFTER_SURFACE_MS else ESCALATE_AFTER_SURFACE_WITHOUT_RELEASE_MS
+
     /** Minimum spacing between two nudges, shared with the other keyframe requesters. */
     const val NUDGE_THROTTLE_MS = VideoRecoveryPolicy.KEYFRAME_REQUEST_THROTTLE_MS
 
@@ -121,6 +143,7 @@ object WarmRelaunchKeyframePolicy {
      * @param linkQuietThresholdMs how long that may be before the phone counts as gone.
      * @param cycleAlreadySpent whether this surface has already had its one focus cycle.
      * @param msSinceLastRequest age of the last keyframe request of any kind.
+     * @param escalateAfterSurfaceMs how long the surface is given first - see [escalateAfterSurfaceMs].
      */
     fun decide(
         sessionHasRendered: Boolean,
@@ -130,7 +153,8 @@ object WarmRelaunchKeyframePolicy {
         msSinceLinkActivity: Long,
         linkQuietThresholdMs: Long,
         cycleAlreadySpent: Boolean,
-        msSinceLastRequest: Long
+        msSinceLastRequest: Long,
+        escalateAfterSurfaceMs: Long = ESCALATE_AFTER_SURFACE_MS
     ): Action {
         if (!transportStarted) return Action.NONE
         // A picture is on screen. Nothing to ask for, and asking is what costs a stream.
@@ -150,7 +174,7 @@ object WarmRelaunchKeyframePolicy {
         // What the gate is for is a link that has gone away, and the app has that signal directly.
         if (msSinceLinkActivity > linkQuietThresholdMs) return Action.NONE
         // Give the surface the healthy path's own worst case before escalating.
-        if (msSinceSurfaceSet < ESCALATE_AFTER_SURFACE_MS) return Action.NONE
+        if (msSinceSurfaceSet < escalateAfterSurfaceMs) return Action.NONE
 
         if (!cycleAlreadySpent) return Action.CYCLE_FOCUS
         if (msSinceLastRequest >= NUDGE_THROTTLE_MS) return Action.NUDGE
