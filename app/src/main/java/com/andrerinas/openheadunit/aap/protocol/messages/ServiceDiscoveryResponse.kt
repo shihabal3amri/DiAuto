@@ -23,6 +23,8 @@ class ServiceDiscoveryResponse(private val context: Context)
             val settings = App.provide(context).settings
             // Initialize HeadUnitScreenConfig with actual physical screen dimensions
             HeadUnitScreenConfig.init(context, context.resources.displayMetrics, settings)
+            // What is read from it below is what the phone will stream until the session ends.
+            HeadUnitScreenConfig.beginSession()
 
             val services = mutableListOf<Control.Service>()
 

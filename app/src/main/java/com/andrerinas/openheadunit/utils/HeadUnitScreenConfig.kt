@@ -30,6 +30,12 @@ object HeadUnitScreenConfig {
     var isResolutionLocked: Boolean = false
         private set
 
+    // What service discovery told the phone, held from then until the session ends. A session
+    // cannot change its resolution, so while this is set nothing below chooses another one: every
+    // re-choice mid-session left the scaling and the touch mapping computed for a size the phone
+    // was not sending (#61). Null between sessions, where the lock alone decides as it always did.
+    @Volatile private var announced: SessionShapePolicy.Shape? = null
+
     private lateinit var currentSettings: Settings // Store settings instance
 
     // System Insets (Bars/Cutouts)
@@ -47,6 +53,7 @@ object HeadUnitScreenConfig {
     private var realScreenHeightPx: Int = 0
 
 
+    @Synchronized
     fun init(context: Context, displayMetrics: DisplayMetrics, settings: Settings) {
         stretchToFill = settings.stretchToFill
         forcedScale = settings.forcedScale && settings.viewMode == Settings.ViewMode.SURFACE
@@ -125,8 +132,13 @@ object HeadUnitScreenConfig {
 
         // If settings changed (e.g. orientation swap), unlock resolution before recalculating
         if (isInitialized && lastSettingsHash != 0 && lastSettingsHash != currentHash) {
-            AppLog.i("[UI_DEBUG] HeadUnitScreenConfig: Settings changed ($lastSettingsHash -> $currentHash). Unlocking resolution.")
-            unlockResolution()
+            if (announced == null) {
+                AppLog.i("[UI_DEBUG] HeadUnitScreenConfig: Settings changed ($lastSettingsHash -> $currentHash). Unlocking resolution.")
+                dropLock()
+            } else {
+                // The hash covers the anchor, so a window that changed size lands here as well.
+                AppLog.i("[UI_DEBUG] HeadUnitScreenConfig: Settings changed ($lastSettingsHash -> $currentHash) under a running session. Keeping $negotiatedResolutionType until it ends.")
+            }
         }
 
         isInitialized = true
@@ -209,8 +221,10 @@ object HeadUnitScreenConfig {
         systemInsetRight = 0
         systemInsetBottom = 0
         isResolutionLocked = false
+        announced = null
     }
 
+    @Synchronized
     fun updateInsets(left: Int, top: Int, right: Int, bottom: Int) {
         if (systemInsetLeft == left && systemInsetTop == top && systemInsetRight == right && systemInsetBottom == bottom) {
             return
@@ -271,6 +285,116 @@ object HeadUnitScreenConfig {
         }
     }
 
+    /** The resolution the setting asks for on a [usableW] x [usableH] window, before the panel cap. */
+    private fun requestedFor(usableW: Int, usableH: Int): Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType {
+        val selectedResolution = Settings.Resolution.fromId(currentSettings.resolutionId)
+        val portrait = usableH > usableW
+        if (selectedResolution != Settings.Resolution.AUTO) {
+            // Manual selection: map to the correct orientation via the shared helper.
+            return protoForResolution(selectedResolution ?: Settings.Resolution._800x480, portrait)
+        }
+        if (portrait) {
+            return if (usableW > 720 || usableH > 1280) {
+                Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType._1080x1920
+            } else {
+                Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType._720x1280
+            }
+        }
+        // AUTO picks 1440p/4K only on a decoder from the HEVC reliability list (or software HEVC
+        // the user chose), the rule the Auto codec setting already used. Those sizes need H.265, and
+        // a hardware HEVC decoder outside the list got a 1440p H.264 profile and no picture (#35,
+        // MediaTek mt8676). A manual 1440p choice still gets H.265 on any hardware HEVC decoder.
+        val autoHevcHighResolution = canAutoNegotiateHevcHighResolution()
+        return when {
+            usableW <= 800 && usableH <= 480 -> Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType._800x480
+            (usableW >= 3840 || usableH >= 2160) && VideoDecoder.isHevcReliable() && Build.VERSION.SDK_INT >= 24 ->
+                Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType._3840x2160
+            (usableW >= 2560 || usableH >= 1440) && autoHevcHighResolution && Build.VERSION.SDK_INT >= 24 ->
+                Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType._2560x1440
+            usableW > 1280 || usableH > 720 -> Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType._1920x1080
+            else -> Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType._1280x720
+        }
+    }
+
+    /**
+     * [requested] capped to what a [realW] x [realH] panel warrants, so we never ask the phone for
+     * more pixels than the screen can show. Downscaling e.g. 1080p to a 600p panel every frame
+     * overloads the display scaler (MediaTek MDP) and stalls video (issue #650).
+     * min(requested, panelCeiling): only ever lowers, so explicit lower choices and HEVC-gated
+     * 1440p/4K are never raised.
+     */
+    private fun cappedFor(
+        requested: Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType,
+        realW: Int,
+        realH: Int,
+        portrait: Boolean
+    ): Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType {
+        val panelCeiling = autoResolutionForPanel(realW, realH, portrait, canNegotiateHevcHighResolution())
+        return if (pixelsOf(requested) > pixelsOf(panelCeiling)) panelCeiling else requested
+    }
+
+    private fun sizeOf(type: Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType): SessionShapePolicy.Size {
+        val parts = type.toString().replace("_", "").split("x")
+        return try {
+            SessionShapePolicy.Size(parts[0].toInt(), parts[1].toInt())
+        } catch (e: Exception) {
+            SessionShapePolicy.Size(800, 480)
+        }
+    }
+
+    /** A reading turned the way a fixed orientation setting says; left as it came for the others. */
+    private fun orientedAsSet(w: Int, h: Int): Pair<Int, Int> {
+        val screenOrientation = if (this::currentSettings.isInitialized) currentSettings.screenOrientation else Settings.ScreenOrientation.SYSTEM
+        return when (screenOrientation) {
+            Settings.ScreenOrientation.LANDSCAPE,
+            Settings.ScreenOrientation.LANDSCAPE_REVERSE -> Pair(Math.max(w, h), Math.min(w, h))
+            Settings.ScreenOrientation.PORTRAIT,
+            Settings.ScreenOrientation.PORTRAIT_REVERSE -> Pair(Math.min(w, h), Math.max(w, h))
+            else -> Pair(w, h)
+        }
+    }
+
+    /**
+     * What a [width] x [height] window would be announced as, were a session to start in it now:
+     * what [recalculate] chooses with that window as the anchor and the insets as they are.
+     * Changes nothing here.
+     */
+    @Synchronized
+    fun shapeForWindow(width: Int, height: Int): SessionShapePolicy.Shape? {
+        if (!isInitialized || width <= 0 || height <= 0) return null
+        val (realW, realH) = orientedAsSet(width, height)
+        var usableW = realW - systemInsetLeft - systemInsetRight
+        var usableH = realH - systemInsetTop - systemInsetBottom
+        if (usableW <= 0 || usableH <= 0) {
+            usableW = realW
+            usableH = realH
+        }
+        val resolution = cappedFor(requestedFor(usableW, usableH), realW, realH, portrait = usableH > usableW)
+        return SessionShapePolicy.Shape(sizeOf(resolution), SessionShapePolicy.Size(realW, realH))
+    }
+
+    /**
+     * Takes a [width] x [height] window as the anchor, for a session about to be ended so that it
+     * is announced again for that window. True when the anchor changed.
+     *
+     * Not every resize reaches [updateSurfaceDimensions] (the TextureView backend reports none as
+     * a surface change), and without this the next announcement would be made for the old window.
+     * The hash is stored for the reason it is in [init]: it covers the anchor, and a stale one
+     * makes the init() of the next service discovery start over and drop the insets.
+     */
+    @Synchronized
+    fun adoptWindow(width: Int, height: Int): Boolean {
+        if (!isInitialized || width <= 0 || height <= 0) return false
+        val (realW, realH) = orientedAsSet(width, height)
+        if (realW == realScreenWidthPx && realH == realScreenHeightPx) return false
+        AppLog.i("[UI_DEBUG] HeadUnitScreenConfig: Anchor ${realScreenWidthPx}x${realScreenHeightPx} -> ${realW}x${realH}, the window the session is redrawn for")
+        realScreenWidthPx = realW
+        realScreenHeightPx = realH
+        lastSettingsHash = computeSettingsHash(currentSettings)
+        recalculate()
+        return true
+    }
+
     private fun recalculate() {
         // Calculate USABLE area
         screenWidthPx = realScreenWidthPx - systemInsetLeft - systemInsetRight
@@ -281,74 +405,45 @@ object HeadUnitScreenConfig {
             screenHeightPx = realScreenHeightPx
         }
 
-        val selectedResolution = Settings.Resolution.fromId(currentSettings.resolutionId)
         val isPortraitDisplay = screenHeightPx > screenWidthPx
-        val canNegotiateHevc = canNegotiateHevcHighResolution()
-        // AUTO picks 1440p/4K only on a decoder from the HEVC reliability list (or software HEVC
-        // the user chose), the rule the Auto codec setting already used. Those sizes need H.265, and
-        // a hardware HEVC decoder outside the list got a 1440p H.264 profile and no picture (#35,
-        // MediaTek mt8676). A manual 1440p choice still gets H.265 on any hardware HEVC decoder.
-        val autoHevcHighResolution = canAutoNegotiateHevcHighResolution()
 
         // 1. Determine base negotiated resolution
-        if (isResolutionLocked) {
+        val session = announced
+        if (session != null) {
+            // The phone streams what service discovery announced until the session ends, whatever
+            // the window does. This used to drop the lock on an orientation mismatch and to cap a
+            // locked resolution to the new window; both re-chose a size the phone was not sending,
+            // and the picture was drawn stretched until a reconnect (#61).
+            AppLog.i("[UI_DEBUG] CarScreen: SESSION HOLDS $negotiatedResolutionType. Usable area is ${screenWidthPx}x${screenHeightPx}.")
+        } else if (isResolutionLocked) {
             // Safety Check: If the locked resolution's orientation (Landscape/Portrait) 
             // no longer matches the display orientation, the lock is stale and must be dropped.
             val isPortraitRes = getNegotiatedHeight() > getNegotiatedWidth()
             if (isPortraitRes != isPortraitDisplay) {
                 AppLog.i("[UI_DEBUG] CarScreen: Orientation mismatch detected (Res: ${if(isPortraitRes) "P" else "L"}, Display: ${if(isPortraitDisplay) "P" else "L"}). DROPPING LOCK.")
-                unlockResolution()
+                dropLock()
             } else {
                 AppLog.i("[UI_DEBUG] CarScreen: RESOLUTION LOCKED to $negotiatedResolutionType. Usable area is ${screenWidthPx}x${screenHeightPx}. Skipping re-negotiation.")
             }
         }
-        
-        if (isResolutionLocked) {
-            // A locked session keeps what it already negotiated. This used to fall through to the
-            // manual branch below, where AUTO carries no codec and the fallback landed on 480p: the
-            // margins re-announced for a surface change were then computed for an 800x480 stream
-            // while the phone still sent 1080p, and the next connection asked for 800x480 (#19).
-            // Upstream Open Headunit fixed the same fall-through in 9e1ce321.
-        } else if (selectedResolution == Settings.Resolution.AUTO) {
-            if (isPortraitDisplay) {
-                negotiatedResolutionType = if (screenWidthPx > 720 || screenHeightPx > 1280) {
-                    Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType._1080x1920
-                } else {
-                    Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType._720x1280
-                }
-            } else {
-                negotiatedResolutionType = when {
-                    screenWidthPx <= 800 && screenHeightPx <= 480 -> Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType._800x480
-                    (screenWidthPx >= 3840 || screenHeightPx >= 2160) && VideoDecoder.isHevcReliable() && Build.VERSION.SDK_INT >= 24 ->
-                        Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType._3840x2160
-                    (screenWidthPx >= 2560 || screenHeightPx >= 1440) && autoHevcHighResolution && Build.VERSION.SDK_INT >= 24 ->
-                        Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType._2560x1440
-                    screenWidthPx > 1280 || screenHeightPx > 720 -> Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType._1920x1080
-                    else -> Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType._1280x720
-                }
-            }
-        } else {
-            // Manual selection: map to the correct orientation via the shared helper.
-            negotiatedResolutionType = protoForResolution(
-                selectedResolution ?: Settings.Resolution._800x480, isPortraitDisplay
-            )
-        }
 
-        // Cap the negotiated resolution to what the physical panel warrants, so we never ask the
-        // phone for more pixels than the screen can show. Downscaling e.g. 1080p to a 600p panel
-        // every frame overloads the display scaler (MediaTek MDP) and stalls video (issue #650).
-        // min(current, panelCeiling): only ever lowers, so explicit lower choices and HEVC-gated
-        // 1440p/4K are never raised.
-        val preCapResolution = negotiatedResolutionType
-        val panelCeiling = autoResolutionForPanel(realScreenWidthPx, realScreenHeightPx, isPortraitDisplay, canNegotiateHevc)
-        if (pixelsOf(negotiatedResolutionType) > pixelsOf(panelCeiling)) {
-            negotiatedResolutionType = panelCeiling
+        // A locked session keeps what it already negotiated. This used to fall through to the
+        // manual branch, where AUTO carries no codec and the fallback landed on 480p: the
+        // margins re-announced for a surface change were then computed for an 800x480 stream
+        // while the phone still sent 1080p, and the next connection asked for 800x480 (#19).
+        // Upstream Open Headunit fixed the same fall-through in 9e1ce321.
+        val preCapResolution =
+            if (session != null || isResolutionLocked) negotiatedResolutionType
+            else requestedFor(screenWidthPx, screenHeightPx)
+        if (session == null) {
+            negotiatedResolutionType = cappedFor(preCapResolution, realScreenWidthPx, realScreenHeightPx, isPortraitDisplay)
         }
         AppLog.i(
             "[RES_CAP] resolutionId=${currentSettings.resolutionId} " +
                 "realScreen=${realScreenWidthPx}x${realScreenHeightPx} usable=${screenWidthPx}x${screenHeightPx} " +
                 "portrait=$isPortraitDisplay locked=$isResolutionLocked chosen=$preCapResolution " +
-                "capped=$negotiatedResolutionType changed=${preCapResolution != negotiatedResolutionType}"
+                "capped=$negotiatedResolutionType changed=${preCapResolution != negotiatedResolutionType} " +
+                "session=${session?.resolution ?: "none"}"
         )
 
         // 2. Perform scaling calculations (now safe because negotiatedResolutionType is set)
@@ -503,23 +598,9 @@ object HeadUnitScreenConfig {
      * Compares with the current usable area and updates the anchor if they differ.
      * @return true if the dimensions changed and margins need to be re-sent to AA.
      */
+    @Synchronized
     fun updateSurfaceDimensions(surfaceW: Int, surfaceH: Int): Boolean {
-        val finalSurfaceW: Int
-        val finalSurfaceH: Int
-
-        val screenOrientation = if (this::currentSettings.isInitialized) currentSettings.screenOrientation else Settings.ScreenOrientation.SYSTEM
-        if (screenOrientation == Settings.ScreenOrientation.LANDSCAPE || 
-            screenOrientation == Settings.ScreenOrientation.LANDSCAPE_REVERSE) {
-            finalSurfaceW = Math.max(surfaceW, surfaceH)
-            finalSurfaceH = Math.min(surfaceW, surfaceH)
-        } else if (screenOrientation == Settings.ScreenOrientation.PORTRAIT || 
-                   screenOrientation == Settings.ScreenOrientation.PORTRAIT_REVERSE) {
-            finalSurfaceW = Math.min(surfaceW, surfaceH)
-            finalSurfaceH = Math.max(surfaceW, surfaceH)
-        } else {
-            finalSurfaceW = surfaceW
-            finalSurfaceH = surfaceH
-        }
+        val (finalSurfaceW, finalSurfaceH) = orientedAsSet(surfaceW, surfaceH)
 
         val diffW = kotlin.math.abs(finalSurfaceW - screenWidthPx)
         val diffH = kotlin.math.abs(finalSurfaceH - screenHeightPx)
@@ -571,6 +652,7 @@ object HeadUnitScreenConfig {
         return hash
     }
 
+    @Synchronized
     fun lockResolution() {
         if (!isResolutionLocked) {
             AppLog.i("[UI_DEBUG] HeadUnitScreenConfig: Locking resolution at $negotiatedResolutionType")
@@ -578,11 +660,53 @@ object HeadUnitScreenConfig {
         }
     }
 
+    /** Ends the session and releases the lock, so the next one is negotiated afresh. */
+    @Synchronized
     fun unlockResolution() {
+        dropLock()
+        endSession()
+    }
+
+    private fun dropLock() {
         if (isResolutionLocked) {
             AppLog.i("[UI_DEBUG] HeadUnitScreenConfig: Unlocking resolution (was $negotiatedResolutionType)")
             isResolutionLocked = false
         }
+    }
+
+    /**
+     * Service discovery is telling the phone [negotiatedResolutionType], chosen for the window as
+     * it is now. The phone streams that until the session ends, so from here it is held whatever
+     * the window does, and remembered as the shape a changed window is compared with
+     * ([SessionShapePolicy]).
+     */
+    @Synchronized
+    fun beginSession() {
+        lockResolution()
+        val shape = SessionShapePolicy.Shape(
+            sizeOf(negotiatedResolutionType),
+            SessionShapePolicy.Size(realScreenWidthPx, realScreenHeightPx)
+        )
+        announced = shape
+        AppLog.i("[UI_DEBUG] HeadUnitScreenConfig: Session announced as ${shape.resolution} for a ${shape.canvas} window")
+    }
+
+    /** What service discovery announced for the running session, or null between sessions. */
+    fun sessionShape(): SessionShapePolicy.Shape? = announced
+
+    /**
+     * The session is over: nothing holds its resolution any more.
+     *
+     * The window may have changed while it was held, and nothing else is certain to run before the
+     * next service discovery, which would then announce the ended session's shape for a window
+     * that no longer has it. So the choice is made again here, under the lock if that is still set
+     * (a session the transport ended keeps it, as it always did).
+     */
+    @Synchronized
+    fun endSession() {
+        if (announced == null) return
+        announced = null
+        if (isInitialized) recalculate()
     }
 
     private const val SURFACE_MISMATCH_TOLERANCE = 4
