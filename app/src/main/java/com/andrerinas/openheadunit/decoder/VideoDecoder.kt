@@ -230,6 +230,7 @@ class VideoDecoder(
     private var requestedMaxInputSize = 0
     private var loggedInputBufferCapacity = false
     private var loggedDecoderCapability = false
+    private var lastCodecChoiceLogged: String? = null
 
     /**
      * What the component claimed at configure time, kept so the backpressure line can quote it.
@@ -636,6 +637,7 @@ class VideoDecoder(
             loggedFirstHardwareFrame = false
             loggedInputBufferCapacity = false
             loggedDecoderCapability = false
+            lastCodecChoiceLogged = null
             decoderCapability = null
             backpressureWindows = 0
             reportedBackpressure = false
@@ -765,11 +767,16 @@ class VideoDecoder(
                         hevcUsable = hevcUsable,
                     )
                     if (selected != requestedType) {
-                        AppLog.i(
-                            "Building a $selected decoder although the setting asks for " +
-                                "$requestedType (stream says ${detectedType ?: "nothing yet"}, " +
-                                "HEVC detectable=$hevcDetectable usable=$hevcUsable)"
-                        )
+                        val choice = "Building a $selected decoder although the setting asks for " +
+                            "$requestedType (stream says ${detectedType ?: "nothing yet"}, " +
+                            "HEVC detectable=$hevcDetectable usable=$hevcUsable)"
+                        // Once per choice, not once per frame: with no surface to start on, this
+                        // runs for every frame fed, and one dashboard session without a window put
+                        // 3,791 copies in a 6,000-line report (#64).
+                        if (choice != lastCodecChoiceLogged) {
+                            lastCodecChoiceLogged = choice
+                            AppLog.i(choice)
+                        }
                     }
                     selected
                 }
