@@ -317,6 +317,7 @@
     <string name="failed_start_android_auto">Не удалось запустить Android Auto</string>
     <string name="failed_self_mode_android10">Автономный режим (Self-mode), вероятно, заблокирован Google на Android 10 (AA 16.4+). См. README.</string>
     <string name="android_auto_starting">Запуск Android Auto…</string>
+    <string name="native_aa_wake_stood_down">Телефон уже подключён к Bluetooth автомобиля, поэтому Android Auto не запустился. Выключите и снова включите Bluetooth на телефоне.</string>
     <string name="connection_interrupted">Соединение потеряно</string>
     <string name="connection_interrupted_detail">Повторное подключение…</string>
     <string name="wifi_disconnect_toast">Android Auto отключён: При беспроводном AA отключите \"Переключение между сетями\" или \"Ускорение сети\" в настройках Wi‑Fi телефона</string>

@@ -314,6 +314,7 @@
     <string name="failed_start_android_auto">فشل تشغيل Android Auto</string>
     <string name="failed_self_mode_android10">من المحتمل أن يكون \"Self-mode\" محظورًا من قبل Google على Android 10 (AA 16.4+). راجع README.</string>
     <string name="android_auto_starting">جار تشغيل Android Auto…</string>
+    <string name="native_aa_wake_stood_down">هذا الهاتف متصل مسبقًا ببلوتوث السيارة، لذلك لم يبدأ Android Auto. أوقف البلوتوث في الهاتف ثم شغّله من جديد.</string>
     <string name="connection_interrupted">فُقد الاتصال</string>
     <string name="connection_interrupted_detail">جارٍ إعادة المحاولة…</string>
     <string name="wifi_disconnect_toast">تم قطع اتصال Android Auto: إذا كنت تستخدم AA لاسلكي، عطّل \"التبديل بين الشبكات\" أو \"تسريع الشبكة\" في إعدادات WiFi الهاتف</string>

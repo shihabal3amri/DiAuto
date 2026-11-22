@@ -141,6 +141,29 @@ object BluetoothHelper {
         return if (readAnyState) false else null
     }
 
+    /** `BluetoothDevice.isConnected()`: hidden from the SDK, present since Android 5. Looked up once. */
+    private val isConnectedMethod: java.lang.reflect.Method? by lazy {
+        try {
+            android.bluetooth.BluetoothDevice::class.java.getMethod("isConnected")
+        } catch (e: Throwable) {
+            null
+        }
+    }
+
+    /**
+     * Whether [device] holds any connection to this unit right now, or null when this ROM will not
+     * say. The hands-free reads above answer for the adapter; this is what tells a link held by the
+     * phone being woken apart from one held by another paired device. Null is never absence.
+     */
+    fun deviceConnectionState(device: android.bluetooth.BluetoothDevice): Boolean? {
+        val method = isConnectedMethod ?: return null
+        return try {
+            method.invoke(device) as? Boolean
+        } catch (e: Throwable) {
+            null
+        }
+    }
+
     /**
      * `BluetoothProfile.A2DP_SINK`. Hidden from the SDK, but [BluetoothAdapter.getProfileConnectionState]
      * takes a plain profile int and answers for it, and the sink role is the one a head unit plays:
