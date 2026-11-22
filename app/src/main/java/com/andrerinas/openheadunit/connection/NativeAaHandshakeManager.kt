@@ -189,6 +189,11 @@ class NativeAaHandshakeManager(
     // settling. The phone spends the next several seconds associating, doing WPS and getting a
     // DHCP lease; see isHandoffSettling() and NativeHandoffPolicy.
     @Volatile private var handoffSettlingSince = 0L
+    // elapsedRealtime() when a phone was last handed the WiFi credentials, or 0 when none has been
+    // since start(). Unlike handoffSettlingSince this is never cleared by the join finishing or
+    // timing out: it answers "was this network ever offered to a phone", which is what tells a
+    // group nobody joined apart from a group nobody was told about. See NativeJoinWatchdogPolicy.
+    @Volatile private var lastCredentialsDeliveredAt = 0L
     // The socket of the handshake currently being served. Kept so a phone that gives up and
     // reconnects over Bluetooth during a settle supersedes the stale one instead of running a
     // second handleHandshake() alongside it.
@@ -247,6 +252,9 @@ class NativeAaHandshakeManager(
     // this restores the invariant for: isActive() must mean "genuinely able to accept," not
     // "believed to be running."
     fun isActive(): Boolean = isRunning && !aaListenersClosedForSession
+
+    /** elapsedRealtime() of the last credentials handed to a phone, or 0 if none since start(). */
+    fun lastCredentialsDeliveredAtMs(): Long = lastCredentialsDeliveredAt
 
     fun isHandshakeInFlight(): Boolean =
         NativeHandoffPolicy.isHandshaking(handshakeStartedAt, SystemClock.elapsedRealtime())
@@ -1009,6 +1017,7 @@ class NativeAaHandshakeManager(
                             sendWifiSecurityResponse(output, credSsid, credPsk, credBssid, transport)
                         }
                         AppLog.i("NativeAA: Handshake completed successfully on Bluetooth side.")
+                        lastCredentialsDeliveredAt = SystemClock.elapsedRealtime()
                         ifOwner(socket) {
                             // The exchange is done; the phone's work is not — it still has to
                             // associate, run WPS and get a DHCP lease. See isHandoffSettling().
@@ -1449,6 +1458,7 @@ class NativeAaHandshakeManager(
         // needs.
         handshakeStartedAt = 0L
         handoffSettlingSince = 0L
+        lastCredentialsDeliveredAt = 0L
         // Cancel before dropping the reference, for the same reason a supersede does: the socket
         // this manager just closed does not necessarily end the coroutine reading from it.
         activeHandshakeJob?.cancel()
