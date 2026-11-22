@@ -1,11 +1,25 @@
 package com.andrerinas.openheadunit.utils
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import java.util.ArrayDeque
 
 /** Small, shareable report. Never exports saved credentials or raw protocol payloads. */
 object DiagnosticReport {
+    /**
+     * Which screen the "Bluetooth settings" buttons reach. On one DiLink 3.0 unit that screen only
+     * answered "IVI system doesn't support this operation" (#69), and the report did not say which
+     * app had been asked, or whether the car's own Bluetooth app could be opened instead.
+     */
+    private fun bluetoothSettingsTarget(context: Context): String = runCatching {
+        val packages = context.packageManager
+        val standard = packages.resolveActivity(Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS), 0)
+            ?.activityInfo?.let { "${it.packageName}/${it.name}" } ?: "nothing"
+        val carApp = packages.getLaunchIntentForPackage("com.byd.btsetting")?.component?.flattenToShortString()
+        "$standard; com.byd.btsetting can be opened=${carApp ?: "no"}"
+    }.getOrElse { "unreadable (${it.javaClass.simpleName})" }
+
     fun build(context: Context): String {
         val settings = Settings(context)
         val ssid = settings.hotspotSsid
@@ -40,6 +54,7 @@ object DiagnosticReport {
             appendLine("Hotspot auto-enable=${settings.autoEnableHotspot}; hotspot state=${SoftApStateReader.read(context)}")
             appendLine("Hotspot name saved=${settings.hotspotSsid.isNotBlank()}; password saved=${settings.hotspotPassword.isNotEmpty()}")
             appendLine("Logging level=${settings.exporterLogLevel}; source=${settings.logSource}")
+            appendLine("Bluetooth settings open with: ${bluetoothSettingsTarget(context)}")
             appendLine("Saved credentials, network addresses and protocol payloads are omitted.")
             appendLine("--- Hotspot and network interfaces at report time (read-only) ---")
             HotspotNetworkProbe.report(context).forEach { appendLine(it) }

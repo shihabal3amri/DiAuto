@@ -24,6 +24,17 @@ class SocketAccessoryConnection(private val ip: String, private val port: Int, p
     // manual-IP connections are NOT single-message and need those handshake safeguards.
     private var singleMessage: Boolean = false
 
+    // A read that ends the session is reported upwards as -1 whatever ended it, and printed there
+    // as "Connection closed (EOF)". Whether the other side closed, the link was reset or it timed
+    // out is the first question about a session that dropped (#58), so it is said here, once.
+    @Volatile private var readEndLogged = false
+
+    private fun logReadEnd(why: String) {
+        if (readEndLogged) return
+        readEndLogged = true
+        AppLog.i("Wireless link: reading stopped ($why).")
+    }
+
     init {
         transport = Socket()
     }
@@ -69,7 +80,9 @@ class SocketAccessoryConnection(private val ip: String, private val port: Int, p
                 inp.readFully(buf, 0, length)
                 length
             } else {
-                inp.read(buf, 0, length)
+                val count = inp.read(buf, 0, length)
+                if (count < 0) logReadEnd("the other side closed the connection")
+                count
             }
         } catch (e: SocketTimeoutException) {
             // With raw DataInputStream (no BufferedInputStream), timeout during
@@ -77,6 +90,10 @@ class SocketAccessoryConnection(private val ip: String, private val port: Int, p
             // Let the caller decide if this is fatal based on context.
             0
         } catch (e: IOException) {
+            logReadEnd(
+                if (e is java.io.EOFException) "the other side closed the connection"
+                else "${e.javaClass.simpleName}: ${e.message}"
+            )
             -1
         }
     }
