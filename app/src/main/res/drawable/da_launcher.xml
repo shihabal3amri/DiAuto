@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/da_background"/>
-    <item android:drawable="@drawable/da_launcher_foreground"/>
+    <!-- Only reached below Android 8 (mipmap-anydpi); see da_launcher_foreground_legacy. -->
+    <item android:drawable="@drawable/da_launcher_foreground_legacy"/>
 </layer-list>
