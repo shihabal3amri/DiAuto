@@ -464,6 +464,16 @@
     <string name="playback_focus_mode_static_hint">With Static Audio Focus on, this applies from the moment the phone connects and lasts the whole session, rather than only while audio is playing.</string>
     <string name="separate_audio_streams">Separate Audio Streams</string>
     <string name="separate_audio_streams_description">Separate audio channels for music, calls, and notifications instead of a single multimedia stream (may not work correctly on some devices).</string>
+    <string name="car_volume_groups">Use the car’s volume sliders</string>
+    <string name="car_volume_groups_description">Plays Android Auto media, navigation prompts and the Assistant on the car’s own Media, Navi and Voice volume sliders. Applies on the next connection.</string>
+    <string name="car_volume_groups_static_hint">Turn off Static audio focus for this: it mixes all Android Auto sound into one stream, which the car can only put on one slider.</string>
+    <string name="car_navi_stream">Navi slider stream</string>
+    <string name="car_voice_stream">Assistant (Voice slider) stream</string>
+    <string name="car_stream_auto">Automatic (%1$d)</string>
+    <string name="car_stream_auto_label">Automatic (Android label)</string>
+    <string name="car_stream_label_only">Android label only</string>
+    <string name="car_stream_same_as_navi">Same as navigation</string>
+    <string name="car_stream_hint">BYD’s Navi slider follows stream 15 on DiLink 5 and 14 on DiLink 3/4; the Voice slider follows stream 17 on DiLink 5. Choosing a number plays a short tone on it: move the car’s sliders to hear which one controls it, then Save. Applies on the next connection.</string>
     <string name="use_aac_audio">Use AAC Audio</string>
     <string name="use_aac_audio_description">Use AAC codec for audio to save bandwidth (Experimental).</string>
     <string name="attach_hw_dsp_equalizer">Hardware DSP Equalizer Trigger</string>

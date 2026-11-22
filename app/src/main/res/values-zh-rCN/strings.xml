@@ -236,6 +236,16 @@
     <string name="enable_audio_sink_description">如果已停用，主机将不会作为音频接收器。 音频将从手机播放。</string>
     <string name="separate_audio_streams">分离音频串流</string>
     <string name="separate_audio_streams_description">为音乐、通话和通知分离音频频道，而不是单一的多媒体串流（可能在某些设备上无法正常运作）。</string>
+    <string name="car_volume_groups">使用车辆的音量滑块</string>
+    <string name="car_volume_groups_description">让 Android Auto 的媒体、导航语音和助理分别使用车辆自带的“媒体”“导航”“语音”音量滑块。下次连接时生效。</string>
+    <string name="car_volume_groups_static_hint">需要关闭“静态音频焦点”：它会把所有 Android Auto 声音混成一路，车辆只能把它放到一个滑块上。</string>
+    <string name="car_navi_stream">导航滑块的音频流</string>
+    <string name="car_voice_stream">助理（语音滑块）的音频流</string>
+    <string name="car_stream_auto">自动（%1$d）</string>
+    <string name="car_stream_auto_label">自动（Android 标签）</string>
+    <string name="car_stream_label_only">仅 Android 标签</string>
+    <string name="car_stream_same_as_navi">与导航相同</string>
+    <string name="car_stream_hint">比亚迪的导航滑块在 DiLink 5 上对应音频流 15，在 DiLink 3/4 上对应 14。Voice 滑块在 DiLink 5 上对应音频流 17。选择一个编号会在其上播放短音：拖动车辆滑块听哪个能控制它，然后保存。下次连接时生效。</string>
     <string name="use_aac_audio">使用 AAC 音频</string>
     <string name="use_aac_audio_description">使用 AAC 编码器进行音频处理以节省带宽 (实验性)。</string>
     <string name="attach_hw_dsp_equalizer">硬件 DSP 等化器触发器</string>

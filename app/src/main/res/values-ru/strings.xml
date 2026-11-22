@@ -240,6 +240,16 @@
     <string name="enable_audio_sink_description">Если выключить этот параметр, то ГУ не будет выводить звук. Звук будет воспроизводиться на телефоне.</string>
     <string name="separate_audio_streams">Раздельные аудиопотоки</string>
     <string name="separate_audio_streams_description">Разделять каналы звука для музыки, звонков и уведомлений вместо единого мультимедийного потока (может некорректно работать на некоторых устройствах).</string>
+    <string name="car_volume_groups">Использовать регуляторы громкости автомобиля</string>
+    <string name="car_volume_groups_description">Медиа, подсказки навигации и Ассистент Android Auto звучат на собственных регуляторах «Медиа», «Навигация» и «Голос» автомобиля. Применяется при следующем подключении.</string>
+    <string name="car_volume_groups_static_hint">Для этого выключите «Статический аудиофокус»: он смешивает весь звук Android Auto в один поток, который автомобиль может отнести только к одному регулятору.</string>
+    <string name="car_navi_stream">Поток регулятора «Навигация»</string>
+    <string name="car_voice_stream">Поток Ассистента (регулятор «Голос»)</string>
+    <string name="car_stream_auto">Автоматически (%1$d)</string>
+    <string name="car_stream_auto_label">Автоматически (метка Android)</string>
+    <string name="car_stream_label_only">Только метка Android</string>
+    <string name="car_stream_same_as_navi">Как у навигации</string>
+    <string name="car_stream_hint">Регулятор «Навигация» в BYD управляет потоком 15 на DiLink 5 и 14 на DiLink 3/4. Ползунок Voice соответствует потоку 17 на DiLink 5. При выборе номера звучит короткий тон: двигайте регуляторы автомобиля, чтобы услышать, какой им управляет, затем сохраните. Применяется при следующем подключении.</string>
     <string name="use_aac_audio">Использовать AAC</string>
     <string name="use_aac_audio_description">Использовать кодек AAC для аудио для экономии трафика (Экспериментально).</string>
     <string name="attach_hw_dsp_equalizer">Триггер аппаратного DSP эквалайзера</string>
