@@ -182,9 +182,33 @@ object HeadUnitScreenConfig {
             }
         }
 
+        // The hash covers the anchor, and the anchor has just been set. Remembering the hash from
+        // before that made the next call see a settings change that never happened: on the first
+        // connection after the app starts the anchor goes from 0x0 to the screen, so the call that
+        // builds the service discovery response re-seeded the insets below and dropped the system
+        // bar the projection window had already reported. The phone was then told there were no
+        // margins and drew under the bar until the next connection (#72).
+        lastSettingsHash = computeSettingsHash(settings)
+
         AppLog.i("[UI_DEBUG] HeadUnitScreenConfig: Honest Init | Mode: ${settings.fullscreenMode} | Anchor: ${realScreenWidthPx}x${realScreenHeightPx} | Seeded Insets: L$systemInsetLeft T$systemInsetTop R$systemInsetRight B$systemInsetBottom")
         
         recalculate()
+    }
+
+    /** Back to the state of a newly started app. For unit tests of the start-up order only. */
+    @androidx.annotation.VisibleForTesting
+    internal fun resetForTest() {
+        isInitialized = false
+        lastSettingsHash = 0
+        realScreenWidthPx = 0
+        realScreenHeightPx = 0
+        screenWidthPx = 0
+        screenHeightPx = 0
+        systemInsetLeft = 0
+        systemInsetTop = 0
+        systemInsetRight = 0
+        systemInsetBottom = 0
+        isResolutionLocked = false
     }
 
     fun updateInsets(left: Int, top: Int, right: Int, bottom: Int) {
