@@ -1587,6 +1587,13 @@ class Settings(private val context: Context) {
         get() = prefs.getBoolean("hotspot-teardown-proven-unsafe", false)
         set(value) = prefs.edit().putBoolean("hotspot-teardown-proven-unsafe", value).apply()
 
+    // Set once an access point this app switched on came up with no address (Android 7.x, see
+    // SoftApLegacyStartPolicy). The app then neither switches this unit's hotspot on nor off: it is
+    // the user's, set up in the car's own settings. A property of the firmware, so it is kept.
+    var hotspotStartLeavesNoAddress: Boolean
+        get() = prefs.getBoolean("hotspot-start-leaves-no-address", false)
+        set(value) = prefs.edit().putBoolean("hotspot-start-leaves-no-address", value).apply()
+
     var useLibusb: Boolean
         get() = prefs.getBoolean("use-libusb", false)
         set(value) = prefs.edit().putBoolean("use-libusb", value).apply()

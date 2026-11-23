@@ -1829,8 +1829,14 @@ class AapService : Service(), UsbReceiver.Listener {
 
         if (App.provide(this).settings.autoEnableHotspot &&
             UserExitHotspotPolicy.usesHeadUnitHotspot(settings.wifiConnectionMode, settings.helperConnectionStrategy, nativeTransport())) {
-            AppLog.i("AapService: Auto-disabling hotspot...")
-            HotspotManager.setHotspotEnabled(this, false)
+            if (settings.hotspotStartLeavesNoAddress) {
+                // This app cannot switch this unit's hotspot back on (#50), so the one that is up
+                // is the one the user started in the car's settings. It stays.
+                AppLog.i("AapService: Leaving the hotspot on: this unit's hotspot cannot be switched on from an app, so it is not switched off by one either.")
+            } else {
+                AppLog.i("AapService: Auto-disabling hotspot...")
+                HotspotManager.setHotspotEnabled(this, false)
+            }
         }
 
         wifiReadyTimeoutJob?.cancel()

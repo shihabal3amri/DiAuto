@@ -16,6 +16,7 @@ import com.andrerinas.openheadunit.utils.SoftApConfigCompat
 import com.andrerinas.openheadunit.aap.ApBand
 import com.andrerinas.openheadunit.aap.ApInterfaceCandidate
 import com.andrerinas.openheadunit.aap.SoftApBandPolicy
+import com.andrerinas.openheadunit.aap.SoftApLegacyStartPolicy
 import com.andrerinas.openheadunit.aap.SoftApNetworkPolicy
 import com.andrerinas.openheadunit.aap.SoftApState
 
@@ -107,6 +108,13 @@ object HotspotManager {
 
         // Claimed before anything slow runs, or the WiFi-disable sleep below is long enough for a
         // second caller to walk straight past the check.
+        // Learned once and kept (see Settings.hotspotStartLeavesNoAddress): asking again costs the
+        // unit its WiFi connection for several seconds and ends the same way every time.
+        if (Settings(context).hotspotStartLeavesNoAddress) {
+            AppLog.i("HotspotManager: Not switching the hotspot on from here: on this unit the access point an app can start comes up with no address, which no phone can join. Switch the hotspot on in the car's own settings, or use WiFi Direct.")
+            return hasApInterface(context)
+        }
+
         synchronized(this) {
             if (startInFlight) {
                 AppLog.i("HotspotManager: A hotspot start is already running; letting it finish rather than starting a second one.")
@@ -120,6 +128,7 @@ object HotspotManager {
         // targets well past that, so on most devices the request is silently ignored and the
         // framework drops the station itself when it needs the radio. Announcing the attempt as if
         // it worked is how the radio state ends up being read as ours.
+        var wifiSwitchedOffHere = false
         try {
             try {
                 val wm = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
@@ -130,6 +139,7 @@ object HotspotManager {
                     if (wm.isWifiEnabled) {
                         AppLog.i("HotspotManager: Asked to disable WiFi and the platform ignored it (expected on modern Android); the framework will take the radio itself if it needs to.")
                     } else {
+                        wifiSwitchedOffHere = true
                         AppLog.i("HotspotManager: WiFi disabled before enabling hotspot.")
                     }
                 }
@@ -140,6 +150,7 @@ object HotspotManager {
             // 5 GHz first, 2.4 GHz only if the radio will not host an access point on it. See
             // SoftApBandPolicy for why the order is not a preference.
             var attemptedAny = false
+            var cameUpUnusable = false
             for ((index, band) in SoftApBandPolicy.attemptOrder().withIndex()) {
                 if (index > 0) {
                     AppLog.w("HotspotManager: no access point on ${SoftApBandPolicy.describe(SoftApBandPolicy.attemptOrder()[index - 1])}; retrying on ${SoftApBandPolicy.describe(band)}. Android Auto is known to drop within seconds on 2.4 GHz — if the projection dies shortly after connecting, this line is why.")
@@ -149,6 +160,11 @@ object HotspotManager {
                 if (outcome.up) {
                     AppLog.i(describeApUp(outcome.configured, band))
                     return true
+                }
+                if (outcome.unusable) {
+                    // Another band would be started the same way and come up the same way.
+                    cameUpUnusable = true
+                    break
                 }
                 if (!outcome.configured) {
                     // The band never reached the framework, so the next one would post the same
@@ -164,17 +180,23 @@ object HotspotManager {
             // A request the framework accepted late still brings an access point up, after the band
             // it belonged to has been written off. Look once more before reporting failure: saying
             // no here is what makes a caller start a second, overlapping sweep.
-            if (attemptedAny && awaitApUp(context)) {
+            // Not after an access point was just switched off again for having no address: its
+            // state still reads "enabled" for a moment, and that is not a late start.
+            if (!cameUpUnusable && attemptedAny && awaitApUp(context)) {
                 AppLog.i("HotspotManager: An access point came up after its band's window had expired; taking it. Which band it chose is not something this app can read.")
                 return true
             }
 
-            if (attemptedAny) {
+            if (cameUpUnusable) {
+                AppLog.w("HotspotManager: This unit cannot have its hotspot switched on from an app in a way a phone can use. Switch it on in the car's own settings, or use WiFi Direct.")
+            } else if (attemptedAny) {
                 AppLog.w("HotspotManager: Every start path was tried on every band and no access point came up within ${AP_STATE_TIMEOUT_MS / 1000}s each. On a non-privileged install this usually cannot be done from an app — switch the hotspot on in system settings instead.")
             } else {
                 AppLog.w("HotspotManager: All hotspot attempts failed.")
             }
-            warnIfRadioLeftDown(context)
+            // The warning is for a radio nothing here can bring back; one just asked to come back
+            // still reads as off for a moment.
+            if (!restoreWifiTakenForTheHotspot(context, wifiSwitchedOffHere)) warnIfRadioLeftDown(context)
             return false
         } finally {
             startInFlight = false
@@ -185,7 +207,13 @@ object HotspotManager {
      * What one band's worth of start attempts achieved: whether anything was tried, whether an
      * access point actually came up, and whether the band we asked for ever reached the framework.
      */
-    private data class BandOutcome(val attempted: Boolean, val up: Boolean, val configured: Boolean)
+    private data class BandOutcome(
+        val attempted: Boolean,
+        val up: Boolean,
+        val configured: Boolean,
+        /** An access point came up, could not be used, and was switched off again. */
+        val unusable: Boolean = false,
+    )
 
     /**
      * What to say about an access point that is up, given whether the band request was accepted.
@@ -221,9 +249,13 @@ object HotspotManager {
         // The remaining reflection paths (startTethering / setWifiApEnabled) require the special
         // "Modify system settings" access (WRITE_SETTINGS). Without it the framework throws a
         // SecurityException, so check first and surface a clear, actionable message instead.
+        var startedByLegacyCallOnly = false
         if (AppPermissions.isWriteSettingsGranted(context)) {
-            attempted = tryConnectivityManager(context, enabled) || attempted
-            attempted = tryLegacyWifiManager(context, enabled) || attempted
+            val tetheringRequestPosted = tryConnectivityManager(context, enabled)
+            val legacyCallPosted = tryLegacyWifiManager(context, enabled)
+            // Read before folding into `attempted`, which may already hold a TetheringManager post.
+            startedByLegacyCallOnly = enabled && legacyCallPosted && !tetheringRequestPosted && !attempted
+            attempted = tetheringRequestPosted || legacyCallPosted || attempted
         } else {
             AppLog.w("HotspotManager: Cannot enable the hotspot without the \"Modify system settings\" permission (WRITE_SETTINGS). Grant it in the setup wizard or Settings > Permissions.")
         }
@@ -236,7 +268,54 @@ object HotspotManager {
         // on one head unit the framework refused it a millisecond later ("Tethering is already
         // active or in recovering") while this method reported success and logged nothing at all.
         // Only "an access point is up" is worth reporting as success.
-        return BandOutcome(attempted, up = awaitApUp(context), configured = configured)
+        val up = awaitApUp(context)
+        if (up && SoftApLegacyStartPolicy.needsAddressProof(Build.VERSION.SDK_INT, startedByLegacyCallOnly) &&
+            !awaitApAddress(context)
+        ) {
+            // The framework says "enabled" and the interface has no address: Android 7 only sets an
+            // access point up for clients when it was asked for through startTethering(), which it
+            // refused above. Left like this the radio serves nobody, so it is switched off again.
+            AppLog.w("HotspotManager: The access point came up with no address after ${SoftApLegacyStartPolicy.ADDRESS_TIMEOUT_MS / 1000}s, so no phone could join it. This Android version refused the tethering request and the older call starts the radio without the network behind it. Switching it off again.")
+            tryLegacyWifiManager(context, false)
+            Settings(context).apply {
+                hotspotStartLeavesNoAddress = true
+                // What this app cannot switch on, it must not take down either.
+                hotspotTeardownProvenUnsafe = true
+            }
+            return BandOutcome(attempted, up = false, configured = configured, unusable = true)
+        }
+        return BandOutcome(attempted, up = up, configured = configured)
+    }
+
+    /** Waits for an interface this unit is hosting an access point on to have its address. */
+    private fun awaitApAddress(context: Context): Boolean {
+        val deadline = System.currentTimeMillis() + SoftApLegacyStartPolicy.ADDRESS_TIMEOUT_MS
+        while (true) {
+            if (hasApInterface(context)) return true
+            if (System.currentTimeMillis() >= deadline) return false
+            try { Thread.sleep(400) } catch (e: InterruptedException) { return false }
+        }
+    }
+
+    /**
+     * Gives the unit its WiFi connection back when it was switched off for a hotspot that then did
+     * not start. Only possible where [SoftApLegacyStartPolicy.canRestoreWifi]; elsewhere this app
+     * could not have switched it off either. Returns whether WiFi was asked to come back.
+     */
+    private fun restoreWifiTakenForTheHotspot(context: Context, wifiSwitchedOffHere: Boolean): Boolean {
+        if (!wifiSwitchedOffHere || !SoftApLegacyStartPolicy.canRestoreWifi(Build.VERSION.SDK_INT)) return false
+        return try {
+            val wm = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+            if (!wm.isWifiEnabled) {
+                @Suppress("DEPRECATION")
+                wm.isWifiEnabled = true
+                AppLog.i("HotspotManager: No hotspot came up, so WiFi is switched back on as it was before the attempt.")
+            }
+            true
+        } catch (e: Exception) {
+            AppLog.w("HotspotManager: Could not switch WiFi back on: ${e.message}")
+            false
+        }
     }
 
     /**
