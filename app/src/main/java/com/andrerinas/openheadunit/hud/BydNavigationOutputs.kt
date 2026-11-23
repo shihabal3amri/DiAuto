@@ -3,6 +3,7 @@ package com.andrerinas.openheadunit.hud
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import com.andrerinas.openheadunit.utils.AppLog
 import com.andrerinas.openheadunit.utils.Settings
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -24,6 +25,20 @@ object BydNavigationOutputs {
 
     private fun installed(context: Context, pkg: String): Boolean =
         runCatching { context.packageManager.getPackageInfo(pkg, 0) }.isSuccess
+
+    /**
+     * Which of this car's outputs guidance is sent to, in the order [start] picks them. Written
+     * into the diagnostic report: two reports of a HUD that showed nothing (#58, #64) could only
+     * be read by working this out from the package list and the source.
+     */
+    internal fun describe(context: Context): String = when {
+        Build.VERSION.SDK_INT < 28 -> "none (needs Android 9 or newer)"
+        BydStandaloneHudOutput.available(context) -> "the standalone windshield HUD only"
+        else -> listOfNotNull(
+            clusterPackage(context)?.let { "the cluster broadcast to $it" },
+            "the SOME/IP HUD".takeIf { installed(context, "com.ts.car.someip.service") },
+        ).ifEmpty { listOf("none") }.joinToString(" and ")
+    }
 
     @Synchronized fun start(context: Context) {
         Log.i("DiAuto-BYD", "start enabled=${Settings(context).bydNavigationEnabled} cluster=${clusterPackage(context)} hud=${installed(context, "com.ts.car.someip.service")}")
@@ -68,6 +83,7 @@ object BydNavigationOutputs {
     private fun schedule(name: String, context: Context, repeatNs: Long, send: (BydGuidance?) -> Unit) {
         var previous: BydGuidance? = null
         var lastSendNs = 0L
+        var lastFailure: String? = null
         Executors.newSingleThreadScheduledExecutor { task -> Thread(task, name).apply { isDaemon = true } }
             .scheduleWithFixedDelay({
                 try {
@@ -78,8 +94,18 @@ object BydNavigationOutputs {
                         send(value)
                         previous = value
                         lastSendNs = now
+                        lastFailure = null
                     }
-                } catch (error: Exception) { Log.w("DiAuto-BYD", "$name output failed", error) }
+                } catch (error: Exception) {
+                    Log.w("DiAuto-BYD", "$name output failed", error)
+                    // Into the app log too, which is what a diagnostic report carries; once per
+                    // failure rather than on every tick, which runs twice a second.
+                    val failure = "${error.javaClass.simpleName}: ${error.message}"
+                    if (failure != lastFailure) {
+                        lastFailure = failure
+                        AppLog.w("BYD navigation: sending guidance through $name failed ($failure). Repeats of the same failure are not logged.")
+                    }
+                }
             }, 0, 500, TimeUnit.MILLISECONDS)
     }
 }

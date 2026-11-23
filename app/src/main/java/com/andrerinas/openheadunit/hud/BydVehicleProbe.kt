@@ -34,7 +34,9 @@ internal object BydVehicleProbe {
         section(out, "Validated outputs") {
             listOf(
                 "standalone windshield HUD available=${BydStandaloneHudOutput.available(context)}",
-                "navigation setting shown=${BydNavigationOutputs.available(context)}"
+                "navigation setting shown=${BydNavigationOutputs.available(context)}",
+                "navigation setting on=${com.andrerinas.openheadunit.utils.Settings(context).bydNavigationEnabled}",
+                "guidance is sent to ${BydNavigationOutputs.describe(context)}"
             )
         }
         section(out, "Navigation packages (looked up by name)") { knownPackages(context) }

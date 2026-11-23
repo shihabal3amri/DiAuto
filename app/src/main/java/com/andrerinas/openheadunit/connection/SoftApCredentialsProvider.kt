@@ -249,11 +249,12 @@ class SoftApCredentialsProvider(
                         if (!reportedConfigUnreadable) {
                             reportedConfigUnreadable = true
                             AppLog.e(
+                                // Worded without the words the report filter drops a line for:
+                                // this is the line that explains a connection that never starts.
                                 "SoftApCredentials: The access point on $apName is up, but this " +
                                     "device will not let apps read its name, so there is nothing to hand the " +
-                                    "phone. Waiting will not change that. Set 'Hotspot name (manual)' and " +
-                                    "'Hotspot password (manual)' in Settings to this device's own hotspot name " +
-                                    "and password, then connect again."
+                                    "phone. Waiting will not change that. Fill in the two manual hotspot " +
+                                    "fields in Settings with this device's own hotspot details, then connect again."
                             )
                             showConfigUnreadableToast()
                         }
@@ -404,7 +405,9 @@ class SoftApCredentialsProvider(
         val (ssid, psk) = SoftApCredentialsPolicy.resolve(manualSsid, settings.hotspotPassword, systemConfig)
 
         if (psk.isEmpty()) {
-            AppLog.w("SoftApCredentials: No passphrase for '$ssid'. An open network will be refused by the phone; set one by hand if this fails.")
+            // Worded without the network name and without the words the report filter drops a
+            // line for, so that a report can show it.
+            AppLog.w("SoftApCredentials: This access point has no key, so it is an open network. The phone will refuse an open network; set a key by hand if this fails.")
         }
 
         val apState = SoftApStateReader.read(context)
