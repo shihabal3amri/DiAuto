@@ -50,6 +50,35 @@ class BydNavigationMapperTest {
         val clockwise = BydNavigationMapper.codes(BydNavigationMapper.legacyType(13, 3, 3, leftHandTraffic = true)!!, 3)!!
         assertEquals(37, BydFactoryTurnCode.map(clockwise.cluster, clockwise.exit))
     }
+    @Test fun `a legacy merge without a side is drawn as continue`() {
+        // #58: Google Maps sent MERGE with no side for 77 s and the HUD went blank for all of it.
+        assertEquals(29, BydNavigationMapper.legacyType(10, 3))
+        assertEquals(BydNavigationMapper.codes(29), BydNavigationMapper.codes(BydNavigationMapper.legacyType(10, 3)!!))
+        // A side is still honoured.
+        assertEquals(5, BydNavigationMapper.legacyType(10, 1))
+        assertEquals(6, BydNavigationMapper.legacyType(10, 2))
+    }
+    @Test fun `a turn ramp or fork without a side still shows nothing`() {
+        // These do have a direction; guessing it would put a wrong arrow in front of the driver.
+        for (event in listOf(3, 4, 5, 6, 7, 8, 9)) assertNull("event $event", BydNavigationMapper.legacyType(event, 3))
+    }
+    @Test fun `a sideless legacy merge keeps its distance and road`() {
+        val value = AapNavigationHelper.NavigationSnapshot().apply {
+            nextTurnDetail = AapNavigationHelper.TimedMessage(N.NextTurnDetail.newBuilder()
+                .setRoad("Ring road").setNextTurn(N.NextTurnDetail.NextEvent.MERGE).setSide(N.NextTurnDetail.Side.UNSPECIFIED).build(), 0)
+            nextTurnDistance = AapNavigationHelper.TimedMessage(
+                N.NextTurnDistanceEvent.newBuilder().setDistanceMeters(640).build(), 0)
+        }
+        val frame = BydNavigationMapper.from(value)!!
+        assertEquals(640, frame.distanceMeters)
+        assertEquals("Ring road", frame.road)
+        assertEquals(BydNavigationMapper.codes(29)!!.cluster, frame.clusterIcon)
+        assertEquals(BydNavigationMapper.codes(29)!!.arrow, frame.hudArrow)
+        // The same event with no side field at all behaves the same way.
+        value.nextTurnDetail = AapNavigationHelper.TimedMessage(N.NextTurnDetail.newBuilder()
+            .setRoad("Ring road").setNextTurn(N.NextTurnDetail.NextEvent.MERGE).build(), 0)
+        assertEquals(frame.clusterIcon, BydNavigationMapper.from(value)!!.clusterIcon)
+    }
     private fun snapshot(distance: Int? = 75): AapNavigationHelper.NavigationSnapshot {
         val step = N.NavigationStep.newBuilder()
             .setManeuver(N.NavigationManeuver.newBuilder().setType(N.NavigationManeuver.NavigationType.TURN_NORMAL_LEFT))

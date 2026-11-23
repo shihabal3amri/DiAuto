@@ -63,7 +63,13 @@ internal object BydNavigationMapper {
     fun legacyType(event: Int, side: Int, roundaboutExit: Int = 0, leftHandTraffic: Boolean = false): Int? = when (event) {
         1 -> 1
         2 -> 2
-        3, 7, 8, 9, 10 -> when(side) { 1 -> 5; 2 -> 6; else -> null }
+        3, 7, 8, 9 -> when(side) { 1 -> 5; 2 -> 6; else -> null }
+        // A merge is the one manoeuvre a phone sends without a side as a matter of course: the
+        // road joins another and there is nothing to turn. The step-based protocol has a type for
+        // exactly that (29, drawn as "continue" in [codes]), so the legacy event gets the same.
+        // Returning null instead cleared the HUD, the cluster and the turn card for the whole
+        // step: 77 s on a Leopard 5 (#58), which read as the HUD dropping out mid-route.
+        10 -> when(side) { 1 -> 5; 2 -> 6; else -> 29 }
         4 -> when(side) { 1 -> 7; 2 -> 8; else -> null }
         5 -> when(side) { 1 -> 9; 2 -> 10; else -> null }
         6 -> when(side) { 1 -> 11; 2 -> 12; else -> null }
