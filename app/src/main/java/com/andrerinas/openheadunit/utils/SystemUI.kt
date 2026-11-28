@@ -14,6 +14,14 @@ import com.andrerinas.openheadunit.utils.AppLog
 
 object SystemUI {
 
+    /**
+     * Undocumented systemUiVisibility bit that Harman gwmv2 head units (GWM / Haval, e.g.
+     * the Jolion) honor to grant the app the full screen, reclaiming the OEM side panel
+     * (the clock / now-playing card drawn next to the projection). It is an unused flag
+     * bit on AOSP, so setting it is a no-op on non-Harman devices.
+     */
+    const val OEM_FULLSCREEN_BIT = 0x8
+
     fun apply(window: Window, root: View, mode: Settings.FullscreenMode, onInsetsChanged: (() -> Unit)? = null) {
         // Always keep screen on for Headunit functionality
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -86,6 +94,13 @@ object SystemUI {
             }
             
             window.decorView.systemUiVisibility = flags
+
+            // Harman gwmv2: reclaim the OEM side panel (clock card) in immersive mode.
+            if (mode == Settings.FullscreenMode.IMMERSIVE || mode == Settings.FullscreenMode.IMMERSIVE_WITH_NOTCH) {
+                @Suppress("DEPRECATION")
+                window.decorView.systemUiVisibility =
+                    window.decorView.systemUiVisibility or OEM_FULLSCREEN_BIT
+            }
         }
 
         // Visual Polish: Background colors and Light/Dark icon appearance
