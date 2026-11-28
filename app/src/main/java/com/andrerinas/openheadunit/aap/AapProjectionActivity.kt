@@ -1363,6 +1363,20 @@ class AapProjectionActivity : SurfaceActivity(), IProjectionView.Callbacks, Vide
             }
         }
 
+        // Harman gwmv2: the OEM side panel (clock card) is drawn shortly after our window
+        // gains focus and clears our fullscreen state, so re-assert the OEM bit a moment
+        // later so it wins over the card. No-op on non-Harman devices.
+        if (mode == Settings.FullscreenMode.IMMERSIVE || mode == Settings.FullscreenMode.IMMERSIVE_WITH_NOTCH) {
+            val decor = window.decorView
+            val handler = android.os.Handler(android.os.Looper.getMainLooper())
+            longArrayOf(700L, 1500L).forEach { delayMs ->
+                handler.postDelayed({
+                    @Suppress("DEPRECATION")
+                    decor.systemUiVisibility = decor.systemUiVisibility or SystemUI.OEM_FULLSCREEN_BIT
+                }, delayMs)
+            }
+        }
+
         // Workaround for API < 19 (Jelly Bean) where Sticky Immersive Mode doesn't exist.
         // If bars appear (e.g. on touch), hide them again after a delay.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT && mode != Settings.FullscreenMode.NONE) {
